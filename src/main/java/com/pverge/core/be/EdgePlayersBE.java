@@ -1,22 +1,32 @@
 package com.pverge.core.be;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.db.PlayerDBLoader;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Player data requests
  * @author Hypernucle
  */
+@Stateless
 public class EdgePlayersBE {
 
+	@EJB
+	private PlayerDBLoader playerDB;
+	
 	private static String forcePlayerId = "33";
-	private static String forceVehicleId = "16666";
 	
 	/**
 	 * Common player data, same on several requests
 	 * @return Player data
 	 */
 	public String getPlayerInfoCommon(boolean isArray) {
+		PlayerEntity playerEntity = playerDB.getPlayer(forcePlayerId);
+		
 		JsonArray rootArrayJson = new JsonArray();
 		JsonObject playerJson = new JsonObject();
 		rootArrayJson.add(playerJson);
@@ -47,7 +57,7 @@ public class EdgePlayersBE {
 		playerJson.add("checkedat", checkedAtJson);
 		
 		JsonObject recentJson = new JsonObject();
-		recentJson.addProperty("vid", forceVehicleId); // player recent vehicle ID
+		recentJson.addProperty("vid", String.valueOf(playerEntity.getVid())); // player recent vehicle ID
 		playerJson.add("recent", recentJson);
 		
 		playerJson.addProperty("challengepoint", 1400);

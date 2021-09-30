@@ -1,5 +1,6 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -17,7 +18,9 @@ import com.pverge.core.be.EdgePresenceBE;
 @Path("/v2")
 public class EdgePlayerConfig {
 	
-	EdgePresenceBE presence = new EdgePresenceBE();
+	@EJB
+	private EdgePresenceBE presence;
+	
 	private static String forcePlayerId = "33";
 	// TODO Store Client Feature config somewhere
 	// TODO Send proper full Player config, according to the original request

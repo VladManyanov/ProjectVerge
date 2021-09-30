@@ -1,13 +1,17 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgePlayersBE;
+import com.pverge.core.db.PlayerDBLoader;
+import com.pverge.core.db.PlayerVehicleDBLoader;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Player & Account information requests
@@ -17,10 +21,15 @@ import com.pverge.core.be.EdgePlayersBE;
 @Path("/v2")
 public class EdgePlayers {
 	
-	EdgePlayersBE edgePlayersBE = new EdgePlayersBE();
+	@EJB
+	private PlayerDBLoader playerDB;
+	@EJB
+	private PlayerVehicleDBLoader playerVehicleDB;
+	@EJB
+	private EdgePlayersBE edgePlayersBE;
+	
 	private static String forcePlayerId = "33";
 	private static String forceAccountId = "11";
-	private static String forceVehicleId = "16666";
 	// TODO 
 	
 	/**
@@ -100,8 +109,12 @@ public class EdgePlayers {
 	@PUT
 	@Path("players/{playerId}/recent")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response apiPlayersRecent(@PathParam(value = "playerId") String playerId) {
-		System.out.println("### [Players] Player Recent request from player ID " + playerId + ".");
+	public Response apiPlayersRecent(String requestBody, @PathParam(value = "playerId") String playerId) {
+		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
+		String vid = requestJson.get("vid").getAsString();
+		playerDB.changeRecentVehicle(playerId, vid);
+		
+		System.out.println("### [Players] Player Recent request from player ID " + playerId + ", new vehicle ID: " + vid + ".");
 	    return Response.ok().build();
 	}
 	
@@ -113,6 +126,8 @@ public class EdgePlayers {
 	@Path("snippets/players")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPlayerSnippet() {
+		PlayerEntity playerEntity = playerDB.getPlayer(forcePlayerId);
+		
 		JsonArray rootArrayJson = new JsonArray();
 		JsonObject playerJson = new JsonObject();
 		rootArrayJson.add(playerJson);
@@ -123,8 +138,8 @@ public class EdgePlayers {
 		playerJson.addProperty("avatar", "");
 		playerJson.addProperty("igr", false);
 		playerJson.addProperty("vip", false);
-		playerJson.addProperty("vid", forceVehicleId);
-		playerJson.addProperty("vCode", 145); // vehicle model code
+		playerJson.addProperty("vid", String.valueOf(playerEntity.getVid()));
+		playerJson.addProperty("vCode", playerVehicleDB.getVehicleByVid(playerEntity.getVid()).getVcode()); // vehicle model code
 		playerJson.addProperty("ovr", 707);
 		playerJson.addProperty("loginDate", "2021-09-19T12:15:03.597Z");
 		playerJson.addProperty("online", true);

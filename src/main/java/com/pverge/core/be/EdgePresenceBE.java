@@ -1,12 +1,18 @@
 package com.pverge.core.be;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
 /**
  * Player presence current status & socket event actions
  * @author Hypernucle
  */
+@Stateless
 public class EdgePresenceBE {
 
-	EdgeEventLauncherBE eventLauncher = new EdgeEventLauncherBE();
+	@EJB
+	private EdgeEventLauncherBE eventLauncher;
+	
 	static String playerState = "idle";
 	static String playerActivity = "openworld";
 	static String futureTrackId = "1";

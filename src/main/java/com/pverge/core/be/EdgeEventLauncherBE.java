@@ -3,7 +3,13 @@ package com.pverge.core.be;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
 import com.pverge.core.be.util.TrackCode;
+import com.pverge.core.db.PlayerDBLoader;
+import com.pverge.core.db.PlayerVehicleDBLoader;
+import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 import com.pverge.core.socket.NettySocketIO;
 import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.AppearanceInfo;
 import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.Attrs;
@@ -21,8 +27,15 @@ import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.TTRootObject;
  * Prepare and send race events with Socket
  * @author Hypernucle
  */
+@Stateless
 public class EdgeEventLauncherBE {
 
+	@EJB
+	private PlayerDBLoader playerDB;
+	
+	@EJB
+	private PlayerVehicleDBLoader playerVehicleDB;
+	
 	NettySocketIO socketIO = new NettySocketIO();
 	// TODO Try to add cars & tracks choices?
 	
@@ -41,6 +54,8 @@ public class EdgeEventLauncherBE {
 	 * Prepare Time Trial event
 	 */
 	public void prepareTimeTrial(String playerId, String trackLevel) {
+		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
+		
 		TTRootObject ttRootData = new TTRootObject();
 		
 		ttRootData.setCmd("match2.start.timetrial.play");
@@ -59,11 +74,11 @@ public class EdgeEventLauncherBE {
 		Clients client = new Clients();
 		client.setPlayerId(playerId);
 		client.setAccountId(playerId);
-		client.setVCode(42); // Diablo SV
+		client.setVCode(currentVehicle.getVcode());
 		client.setAI(false);
 		client.setTeam(0);
 		client.setPositionOnStartingGrid(0);
-		client.setVid("16666");
+		client.setVid(String.valueOf(currentVehicle.getId()));
 		
 		Attrs attrEngineSpeedLimiter = new Attrs();
 		attrEngineSpeedLimiter.setAttr("Engine.SpeedLimiter");
@@ -197,8 +212,8 @@ public class EdgeEventLauncherBE {
 		AppearanceInfo appearanceInfo = new AppearanceInfo();
 		ColorData colorData = new ColorData();
 		Rgb rgb = new Rgb();
-		rgb.setSolid("#0d0d10");
-		rgb.setSecondary("#3d3f44");
+		rgb.setSolid(currentVehicle.getRGBSolid());
+		rgb.setSecondary(currentVehicle.getRGBSecondary());
 		colorData.setRgb(rgb);
 		appearanceInfo.setColorData(colorData);
 		appearanceInfo.setWheelId(1);
