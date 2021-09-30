@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.0">
-	<deployment>
-		<dependencies>
-			<module name="javax.annotation.api" />
-		</dependencies>
-	</deployment>
-</jboss-deployment-structure>
