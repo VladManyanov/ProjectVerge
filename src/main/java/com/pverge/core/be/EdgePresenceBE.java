@@ -33,9 +33,19 @@ public class EdgePresenceBE {
 		}
 	}
 	
+	/**
+	 * Set current player activity (Game Mode and Track Code)
+	 */
 	public void setPlayerActivity(String activity, String trackId) {
 		playerActivity = activity;
 		futureTrackId = trackId;
+	}
+	
+	/**
+	 * Set current player vehicle (Socket request)
+	 */
+	public void changeRecentVehicleSIORequest(String pid, String vid) {
+		eventLauncher.changeRecentVehicleSIO(pid, vid);
 	}
 }
 

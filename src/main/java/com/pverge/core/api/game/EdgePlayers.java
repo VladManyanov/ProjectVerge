@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgePlayersBE;
+import com.pverge.core.be.EdgePresenceBE;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerEntity;
@@ -27,6 +28,8 @@ public class EdgePlayers {
 	private PlayerVehicleDBLoader playerVehicleDB;
 	@EJB
 	private EdgePlayersBE edgePlayersBE;
+	@EJB
+	private EdgePresenceBE edgePresenceBE;
 	
 	private static String forcePlayerId = "33";
 	private static String forceAccountId = "11";
@@ -113,6 +116,7 @@ public class EdgePlayers {
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		String vid = requestJson.get("vid").getAsString();
 		playerDB.changeRecentVehicle(playerId, vid);
+		edgePresenceBE.changeRecentVehicleSIORequest(playerId, vid);
 		
 		System.out.println("### [Players] Player Recent request from player ID " + playerId + ", new vehicle ID: " + vid + ".");
 	    return Response.ok().build();

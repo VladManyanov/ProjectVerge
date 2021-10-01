@@ -10,6 +10,10 @@ import javax.persistence.TypedQuery;
 
 import com.pverge.core.db.dbobjects.PlayerEntity;
 
+/**
+ * DB - Load player-related data
+ * @author Hypernucle
+ */
 @Stateless
 public class PlayerDBLoader extends DBEntityBase<PlayerEntity> {
 

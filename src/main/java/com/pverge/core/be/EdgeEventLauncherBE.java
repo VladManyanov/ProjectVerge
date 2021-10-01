@@ -11,6 +11,10 @@ import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 import com.pverge.core.socket.NettySocketIO;
+import com.pverge.core.socket.dataobjects.SIODataObjects.OWJoinChannelObj;
+import com.pverge.core.socket.dataobjects.SIODataObjects.OWJoinOpts;
+import com.pverge.core.socket.dataobjects.SIODataObjects.RecentOpts;
+import com.pverge.core.socket.dataobjects.SIODataObjects.ResourceDataObject;
 import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.AppearanceInfo;
 import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.Attrs;
 import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.AttrsGraph;
@@ -234,5 +238,40 @@ public class EdgeEventLauncherBE {
 		ttOpts.setClients(clientList);
 		
 		socketIO.sendEvent("msg", ttRootData, ttRootData.getCmd());
+	}
+	
+	/**
+	 * Get correct track level resource name
+	 */
+	public void changeRecentVehicleSIO(String pid, String vid) {
+		ResourceDataObject recentRootData = new ResourceDataObject();
+		List<Object> optsList = new ArrayList<>();
+		RecentOpts recentOpts = new RecentOpts();
+		recentOpts.setUri("/players/" + pid + "/recent/vid");
+		recentOpts.setBody(vid);
+		optsList.add(recentOpts);
+		recentRootData.setCmd("resources");
+		recentRootData.setOpts(optsList);
+		
+		socketIO.sendEvent("msg", recentRootData, recentRootData.getCmd());
+	}
+	
+	/**
+	 * Open World channel connection message
+	 */
+	public void chatOWJoinSIO(int channelId) {
+		ResourceDataObject owJoinRootData = new ResourceDataObject();
+		List<Object> optsList = new ArrayList<>();
+		OWJoinOpts owJoinOpts = new OWJoinOpts();
+		owJoinOpts.setUri("chat.ow.joined");
+		OWJoinChannelObj owJoinChannelObj = new OWJoinChannelObj();
+		owJoinChannelObj.setOpenworldId(channelId);
+		
+		owJoinOpts.setBody(owJoinChannelObj);
+		optsList.add(owJoinOpts);
+		owJoinRootData.setCmd("resources");
+		owJoinRootData.setOpts(optsList);
+		
+		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd());
 	}
 }

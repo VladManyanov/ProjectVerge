@@ -20,7 +20,6 @@ public class SocketIOListeners {
             public void onData(SocketIOClient client, IOAuthObject data, AckRequest ackRequest) {
             	data.setResult(true);
             	ioServer.getBroadcastOperations().sendEvent("auth", data);
-            	ioServer.getBroadcastOperations().sendEvent("msg", "{cmd: 'resources', opts: [{uri: 'chat.ow.joined', body: {openworldId: 94}}]}");
             	ioServer.getBroadcastOperations().sendEvent("msg", "{cmd: 'resources', opts: [{uri: 'chat.channel.joined', body: {channelCode: 94}}]}");
             }
         });

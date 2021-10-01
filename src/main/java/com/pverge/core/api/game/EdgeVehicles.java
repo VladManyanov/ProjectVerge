@@ -47,6 +47,18 @@ public class EdgeVehicles {
 	    return rootArrayJson.toString();
 	}
 	
+	/**
+	 * Get Time Trial exclusive vehicles request (Array)
+	 * @return Vehicles array
+	 */
+	@GET
+	@Path("timetrial/exclusivevehicles")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiExclusiveVehicles(@HeaderParam("_") String someValue) {
+		JsonArray rootArrayJson = new JsonArray();
+		
+		System.out.println("### [Vehicles] TT exclusive vehicles request from player ID " + forcePlayerId + ".");
+	    return rootArrayJson.toString();
+	}
 	
-    
 }

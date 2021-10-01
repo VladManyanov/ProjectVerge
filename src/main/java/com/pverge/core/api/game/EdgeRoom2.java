@@ -1,11 +1,18 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgePresenceBE;
+import com.pverge.core.db.PlayerDBLoader;
+import com.pverge.core.db.PlayerVehicleDBLoader;
+import com.pverge.core.db.dbobjects.PlayerEntity;
+import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 
 /**
  * Edge - Race rooms requests. To start the race, a proper Socket-IO with event details must be sent
@@ -13,6 +20,13 @@ import com.google.gson.JsonObject;
  */
 @Path("/v2")
 public class EdgeRoom2 {
+	
+	@EJB
+	private PlayerDBLoader playerDB;
+	@EJB
+	private PlayerVehicleDBLoader playerVehicleDB;
+	@EJB
+	private EdgePresenceBE edgePresenceBE;
 	
 	private static String forcePlayerId = "33";
 	// TODO Learn more about room2summaries
@@ -23,13 +37,19 @@ public class EdgeRoom2 {
 	@POST
 	@Path("room2")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String apiRoom2Create() {
+	public String apiRoom2Create(String requestBody) {
 		// TODO A lot of parameters was added during tests, not all of them is actually used
+		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
+		String gameMode = requestJson.get("gameMode").getAsString();
+		
+		PlayerEntity playerEntity = playerDB.getPlayer(forcePlayerId);
+		PlayerVehicleEntity playerVehicleEntity = playerVehicleDB.getVehicleByVid(playerEntity.getVid());
+		
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("title", "ProjectVergeRoom");
 		rootJson.addProperty("maxPlayer", 1);
 		rootJson.addProperty("maxVehicleClazz", "ALL");
-		rootJson.addProperty("gameMode", "SPEEDINDIVIDUAL");
+		rootJson.addProperty("gameMode", gameMode);
 		rootJson.addProperty("password", "-1");
 		rootJson.addProperty("channel", "ALL");
 		
@@ -55,22 +75,22 @@ public class EdgeRoom2 {
 		
 		JsonArray observersArray = new JsonArray();
 		JsonObject p1oJson = new JsonObject();
-		p1oJson.addProperty("pid", "33");
+		p1oJson.addProperty("pid", forcePlayerId);
 		observersArray.add(p1oJson);
 		rootJson.add("observers", observersArray);
 		
 		JsonArray playersArray = new JsonArray();
 		JsonObject p1Json = new JsonObject();
-		p1Json.addProperty("pid", "33");
+		p1Json.addProperty("pid", forcePlayerId);
 		
 		playersArray.add(p1Json);
 		rootJson.add("players", playersArray);
 		
 		JsonObject carJson = new JsonObject();
 		
-		carJson.addProperty("embededId", "16666"); // on 1 more than Id value for some reason
-		carJson.addProperty("pid", "33"); // player id
-		carJson.addProperty("code", 224);
+		carJson.addProperty("embededId", String.valueOf(playerVehicleEntity.getId())); // on 1 more than Id value for some reason
+		carJson.addProperty("pid", forcePlayerId); // player id
+		carJson.addProperty("code", playerVehicleEntity.getVcode());
 		carJson.addProperty("createdat", "2017-11-12T18:42:19.874Z");
 		carJson.addProperty("updatedat", "2020-08-12T20:42:53.861Z");
 		carJson.addProperty("__v", 1);
@@ -95,7 +115,7 @@ public class EdgeRoom2 {
 		carJson.addProperty("favorite", false);
 		carJson.addProperty("grade", 3);
 		carJson.addProperty("__v", 1);
-		carJson.addProperty("id", "16666"); // vehicle id
+		carJson.addProperty("id", String.valueOf(playerVehicleEntity.getId())); // vehicle id
 		
 		JsonObject carStatus = new JsonObject();
 		carStatus.addProperty("topSpeed", 562);
@@ -122,6 +142,21 @@ public class EdgeRoom2 {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiRoom2Start(@PathParam(value = "roomId") String roomId) {
 		System.out.println("### [Room] Room ID " + roomId + " start request from player ID " + forcePlayerId + ".");
+	    return Response.ok().build();
+	}
+	
+	/**
+	 * Change track on room request
+	 */
+	@PUT
+	@Path("room2/{roomId}/trackcode")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response apiRoom2ChangeTrack(String requestBody, @PathParam(value = "roomId") String roomId) {
+		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
+		String trackCode = requestJson.get("trackCode").getAsString();
+		edgePresenceBE.setPlayerActivity("room2superpeer", trackCode);
+		
+		System.out.println("### [Room] Track Code " + trackCode + " change request from player ID " + forcePlayerId + ".");
 	    return Response.ok().build();
 	}
 	

@@ -2,6 +2,10 @@ package com.pverge.core.db;
 
 import javax.persistence.EntityManager;
 
+/**
+ * EJB Entity support base
+ * @author Hypernucle
+ */
 public abstract class DBEntityBase<T> {
 
 	protected EntityManager entityManager;

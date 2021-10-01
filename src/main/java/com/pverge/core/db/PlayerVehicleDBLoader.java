@@ -9,6 +9,10 @@ import javax.persistence.TypedQuery;
 
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 
+/**
+ * DB - Load vehicle-related data
+ * @author Hypernucle
+ */
 @Stateless
 public class PlayerVehicleDBLoader extends DBEntityBase<PlayerVehicleEntity> {
 
