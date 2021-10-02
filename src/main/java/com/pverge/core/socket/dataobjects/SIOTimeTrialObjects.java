@@ -3,6 +3,7 @@ package com.pverge.core.socket.dataobjects;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pverge.core.socket.dataobjects.SIOMatchObjects.NumberPlate;
 
 /**
  * Socket-IO - Collection of various data objects (Time Trial)
@@ -174,7 +175,7 @@ public class SIOTimeTrialObjects {
 		private ColorData colorData; 
 		private int wheelId; 
 		private int wrapId; 
-		private Plate plate; 
+		private NumberPlate plate; 
 
 		public ColorData getColorData() {
 			return colorData; 
@@ -197,10 +198,10 @@ public class SIOTimeTrialObjects {
 			this.wrapId = input;
 		}
 		
-		public Plate getPlate() {
+		public NumberPlate getPlate() {
 			return plate; 
 		}
-		public void setPlate(Plate input) {
+		public void setPlate(NumberPlate input) {
 			this.plate = input;
 		}
 	}

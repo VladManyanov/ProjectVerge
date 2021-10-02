@@ -11,8 +11,9 @@ import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 import com.pverge.core.socket.NettySocketIO;
-import com.pverge.core.socket.dataobjects.SIODataObjects.OWJoinChannelObj;
-import com.pverge.core.socket.dataobjects.SIODataObjects.OWJoinOpts;
+import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinChatChannelObj;
+import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinChannelObj;
+import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinOpts;
 import com.pverge.core.socket.dataobjects.SIODataObjects.RecentOpts;
 import com.pverge.core.socket.dataobjects.SIODataObjects.ResourceDataObject;
 import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.AppearanceInfo;
@@ -41,6 +42,7 @@ public class EdgeEventLauncherBE {
 	private PlayerVehicleDBLoader playerVehicleDB;
 	
 	NettySocketIO socketIO = new NettySocketIO();
+	EdgeMatchCreationBE edgeMatchCreationBE = new EdgeMatchCreationBE();
 	// TODO Try to add cars & tracks choices?
 	
 	/**
@@ -223,14 +225,7 @@ public class EdgeEventLauncherBE {
 		appearanceInfo.setWheelId(1);
 		appearanceInfo.setWrapId(0);
 		
-		Plate plate = new Plate();
-		plate.setPid(playerId);
-		plate.setPrefix("PJ");
-		plate.setPlateNumber("VERGE");
-		plate.setTemplateCode(0);
-		plate.setBackground(1);
-		plate.setFontColor("#ffffff");
-		appearanceInfo.setPlate(plate);
+		appearanceInfo.setPlate(edgeMatchCreationBE.getDefaultPlate(playerId));
 		client.setAppearanceInfo(appearanceInfo);
 		
 		List<Clients> clientList = new ArrayList<>();
@@ -238,6 +233,25 @@ public class EdgeEventLauncherBE {
 		ttOpts.setClients(clientList);
 		
 		socketIO.sendEvent("msg", ttRootData, ttRootData.getCmd());
+	}
+	
+	/**
+	 * Prepare Room (SuperPeer mode) event. Two events should be sent to initiate the race.
+	 * Note: to run races locally, user must be on "Super Peer" mode (on client side)
+	 */
+	public void prepareRoomSuperPeer(String playerId, String trackLevel) {
+		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
+		
+		TTRootObject matchCreatedRootData = new TTRootObject();
+		
+		
+		socketIO.sendEvent("msg", matchCreatedRootData, matchCreatedRootData.getCmd());
+		
+		
+		TTRootObject matchSuperPeerRootData = new TTRootObject();
+		
+		
+		socketIO.sendEvent("msg", matchSuperPeerRootData, matchSuperPeerRootData.getCmd());
 	}
 	
 	/**
@@ -254,6 +268,25 @@ public class EdgeEventLauncherBE {
 		recentRootData.setOpts(optsList);
 		
 		socketIO.sendEvent("msg", recentRootData, recentRootData.getCmd());
+	}
+	
+	/**
+	 * Open World chat connection message
+	 */
+	public void chatOWChatJoinSIO(int channelId) {
+		ResourceDataObject owJoinRootData = new ResourceDataObject();
+		List<Object> optsList = new ArrayList<>();
+		OWJoinOpts owJoinOpts = new OWJoinOpts();
+		owJoinOpts.setUri("chat.channel.joined");
+		OWJoinChatChannelObj owJoinChatChannelObj = new OWJoinChatChannelObj();
+		owJoinChatChannelObj.setChannelCode(channelId);
+		
+		owJoinOpts.setBody(owJoinChatChannelObj);
+		optsList.add(owJoinOpts);
+		owJoinRootData.setCmd("resources");
+		owJoinRootData.setOpts(optsList);
+		
+		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd());
 	}
 	
 	/**

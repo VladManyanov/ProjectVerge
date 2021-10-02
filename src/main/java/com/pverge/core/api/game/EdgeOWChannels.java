@@ -39,6 +39,7 @@ public class EdgeOWChannels {
 		rootJson.addProperty("host", "http://localhost");
 		rootJson.addProperty("port", 9999);
 		rootJson.addProperty("securityKey", "NMtEu3CAgpk22OIMIC4fBQ==");
+		eventLauncher.chatOWChatJoinSIO(forceChannelId);
 		eventLauncher.chatOWJoinSIO(forceChannelId);
 		
 		System.out.println("### [OW Channels] Open World Channel reserve request from player ID " + forcePlayerId + ", channelId: " + forceChannelId + ".");

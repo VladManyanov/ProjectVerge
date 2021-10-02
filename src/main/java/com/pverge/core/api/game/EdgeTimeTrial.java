@@ -2,6 +2,7 @@ package com.pverge.core.api.game;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -136,6 +137,19 @@ public class EdgeTimeTrial {
 		
 		System.out.println("### [Time Trial] Start match request from player ID " + playerId + ", track code: " + trackId + ".");
 	    return rootJson.toString();
+	}
+	
+	/**
+	 * Time Trial finish request. Player result is DES-crypted (ECB mode) by key (which is on client-side)
+	 */
+	@POST
+	@Path("timetrial/{playerId}/trackcode/{trackId}/complete")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response apiTTComplete(@PathParam(value = "playerId") String playerId, @PathParam(value = "trackId") String trackId) {	
+		String cryptKey = "37c1#5^z28x7s4ds10x[81";
+		
+		System.out.println("### [Time Trial] Match complete request from player ID " + playerId + ", track code: " + trackId + ".");
+	    return Response.ok().build();
 	}
     
 }
