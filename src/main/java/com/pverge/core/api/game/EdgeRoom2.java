@@ -40,29 +40,30 @@ public class EdgeRoom2 {
 	public String apiRoom2Create(String requestBody) {
 		// TODO A lot of parameters was added during tests, not all of them is actually used
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
+		String gameModeMeta = requestJson.get("gameMode").getAsString();
 		
 		PlayerEntity playerEntity = playerDB.getPlayer(forcePlayerId);
 		PlayerVehicleEntity playerVehicleEntity = playerVehicleDB.getVehicleByVid(playerEntity.getVid());
+		edgePresenceBE.changeRoomProperties(requestJson.get("maxPlayer").getAsInt(), gameModeMeta);
+		edgePresenceBE.setPlayerActivity("room2superpeer", 30, forcePlayerId);
 		
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("title", "ProjectVergeRoom");
-		rootJson.addProperty("maxPlayer", 1);
 		rootJson.addProperty("maxVehicleClazz", "ALL");
-		rootJson.addProperty("gameMode", requestJson.get("gameMode").getAsString());
+		rootJson.addProperty("gameMode", gameModeMeta);
 		rootJson.addProperty("password", "-1");
 		rootJson.addProperty("channel", "ALL");
 		
 		rootJson.addProperty("hostSlot", 1);
 		rootJson.addProperty("id", "123");
 		rootJson.addProperty("trackCode", 30);
+		rootJson.addProperty("lastTrackCode", 0);
 		rootJson.addProperty("isRandomTrack", false);
+		rootJson.addProperty("clientsversion", 0);
 		rootJson.addProperty("status", "READY");
+		//rootJson.addProperty("matchEndAt", 1632422068150);
 		rootJson.addProperty("isRefereeMode", false);
 		rootJson.addProperty("refereeSlot", -1);
-		
-		JsonObject gmInfoJson = new JsonObject();
-		gmInfoJson.addProperty("maxPlayer", requestJson.get("maxPlayer").getAsString());
-		rootJson.add("gameModeInfo", gmInfoJson);
 		
 		JsonArray lockedArray = new JsonArray();
 		for (int i = 2; i < 9; i++) {
@@ -144,8 +145,27 @@ public class EdgeRoom2 {
 	@Path("room2/{roomId}/@start")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiRoom2Start(@PathParam(value = "roomId") String roomId) {
+		edgePresenceBE.startWithDelay();
+		
 		System.out.println("### [Room] Room ID " + roomId + " start request from player ID " + forcePlayerId + ".");
 	    return Response.ok().build();
+	}
+	
+	/**
+	 * Start room race (Super Peer) request
+	 */
+	@POST
+	@Path("match2/superpeer/@start")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiRoom2SuperPeerStart() {
+		JsonObject rootJson = new JsonObject();
+		rootJson.addProperty("host", "");
+		rootJson.addProperty("port", 25200);
+		rootJson.addProperty("securityKey", "");
+		rootJson.addProperty("matchId", 1);
+		
+		System.out.println("### [Room] Room ID start (Super Peer) request from player ID " + forcePlayerId + ".");
+	    return rootJson.toString();
 	}
 	
 	/**
@@ -156,8 +176,8 @@ public class EdgeRoom2 {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiRoom2ChangeTrack(String requestBody, @PathParam(value = "roomId") String roomId) {
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
-		String trackCode = requestJson.get("trackCode").getAsString();
-		edgePresenceBE.setPlayerActivity("room2superpeer", trackCode);
+		int trackCode = requestJson.get("trackCode").getAsInt();
+		edgePresenceBE.setPlayerActivity("room2superpeer", trackCode, forcePlayerId);
 		
 		System.out.println("### [Room] Track Code " + trackCode + " change request from player ID " + forcePlayerId + ".");
 	    return "true";
@@ -201,6 +221,43 @@ public class EdgeRoom2 {
 	public Response apiRoom2RemovePlayer(@PathParam(value = "roomId") String roomId, @PathParam(value = "playerId") String playerId) {
 		System.out.println("### [Room] Player remove from Room ID " + roomId + " request from player ID " + playerId + ".");
 	    return Response.ok().build();
+	}
+	
+	/**
+	 * Remove player from match request. Can be called when player quits the race before finish
+	 */
+	@DELETE
+	@Path("match2/players/{playerId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response apiMatch2RemovePlayer(@PathParam(value = "roomId") String roomId, @PathParam(value = "playerId") String playerId) {
+		System.out.println("### [Room] Player remove from Match request from player ID " + playerId + ".");
+	    return Response.ok().build();
+	}
+	
+	/**
+	 * Remove player from match request. Can be called when player quits the race before finish
+	 * Note: for some reason it's different from "match2/players/{playerId}"
+	 */
+	@DELETE
+	@Path("room2/player")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response apiRoom2WeirdPlayerRemove() {
+		System.out.println("### [Room] Another Player remove from Match request from player ID " + forcePlayerId + ".");
+	    return Response.ok().build();
+	}
+	
+	/**
+	 * Finish match request
+	 */
+	@POST
+	@Path("match2/{matchId}/@end")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiMatch2End(@PathParam(value = "matchId") int matchId) {
+		// TODO Contains rewards information
+		JsonObject rootJson = new JsonObject();
+		
+		System.out.println("### [Room] Match ID " + matchId + " finish request from player ID " + forcePlayerId + ".");
+	    return rootJson.toString();
 	}
     
 }

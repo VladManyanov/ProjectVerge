@@ -3,6 +3,7 @@ package com.pverge.core.socket.dataobjects;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.TTOpts;
 
 /**
  * Socket-IO - Collection of various data objects
@@ -97,6 +98,32 @@ public class SIODataObjects {
 		public void setOpts(List<Object> input) {
 			this.opts = input;
 		}
+	}
+	
+	// Match start socket command
+	public static class MatchRootObject{
+		private String cmd; 
+		private Object opts; 
+
+		@JsonProperty("cmd")
+		public String getCmd() {
+			return cmd;
+		}
+		public void setCmd(String value) {
+			this.cmd = value;
+		}
+
+		@JsonProperty("opts")
+		public Object getOpts() {
+			return opts;
+		}
+		public void setOpts(Object value) {
+			this.opts = value;
+		}
+	}
+	
+	public static class Observers {
+		// TODO Get field data example
 	}
 
 }

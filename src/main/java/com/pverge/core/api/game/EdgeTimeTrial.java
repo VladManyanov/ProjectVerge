@@ -1,5 +1,6 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -15,7 +16,9 @@ import com.pverge.core.be.EdgePresenceBE;
 @Path("/v2")
 public class EdgeTimeTrial {
 	
+	@EJB
 	EdgePresenceBE presence = new EdgePresenceBE();
+	
 	private static String forcePlayerId = "33";
 	// TODO 
 	
@@ -129,8 +132,9 @@ public class EdgeTimeTrial {
 	@POST
 	@Path("timetrial/{playerId}/trackcode/{trackId}/match/@start")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String apiTTMatchStart(@PathParam(value = "playerId") String playerId, @PathParam(value = "trackId") String trackId) {		
-		presence.setPlayerActivity("timetrial", trackId);
+	public String apiTTMatchStart(@PathParam(value = "playerId") String playerId, @PathParam(value = "trackId") int trackId) {		
+		presence.setPlayerActivity("timetrial", trackId, playerId);
+		presence.startWithDelay();
 		
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("matchId", 1);

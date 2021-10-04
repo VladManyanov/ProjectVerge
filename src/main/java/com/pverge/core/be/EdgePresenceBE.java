@@ -1,5 +1,8 @@
 package com.pverge.core.be;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -15,30 +18,45 @@ public class EdgePresenceBE {
 	
 	static String playerState = "idle";
 	static String playerActivity = "openworld";
-	static String futureTrackId = "1";
+	static String savePlayerId = "33";
+	static int futureTrackId = 22;
+	static int room2MaxPlayers = 1;
+	static String room2GameModeMeta = "SPEEDINDIVIDUAL";
 	
 	/**
-	 * Set current player state, and send appropriate socket request 
+	 * Set current player state
 	 */
 	public void setPlayerState(String state, String playerId) {
 		playerState = state;
-		if (playerState.contentEquals("busy")) {
-			switch(playerActivity) {
-			case "timetrial":
-				eventLauncher.prepareTimeTrial(playerId, eventLauncher.getTrackLevel(futureTrackId));
-				break;
-			default:
-				break;
-			}
+		if (state.contentEquals("match.reward")) {
+			// TODO
 		}
 	}
 	
 	/**
-	 * Set current player activity (Game Mode and Track Code)
+	 * Send appropriate socket request to initiate event
 	 */
-	public void setPlayerActivity(String activity, String trackId) {
+	public void initRaceEvent() {
+		switch(playerActivity) {
+		case "timetrial":
+			eventLauncher.prepareTimeTrial(savePlayerId, eventLauncher.getTrackLevel(futureTrackId));
+			break;
+		case "room2superpeer":
+			eventLauncher.prepareRoomSuperPeer(savePlayerId, futureTrackId, room2GameModeMeta, room2MaxPlayers);
+			eventLauncher.prepareRoomSuperPeer2(savePlayerId, futureTrackId, room2GameModeMeta, room2MaxPlayers);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	/**
+	 * Set current player activity
+	 */
+	public void setPlayerActivity(String activity, int trackId, String playerId) {
 		playerActivity = activity;
 		futureTrackId = trackId;
+		savePlayerId = playerId;
 	}
 	
 	/**
@@ -47,14 +65,28 @@ public class EdgePresenceBE {
 	public void changeRecentVehicleSIORequest(String pid, String vid) {
 		eventLauncher.changeRecentVehicleSIO(pid, vid);
 	}
-}
-
-//TimerTask task = new TimerTask() {
-//public void run() {
 	
-//}
-//};
-//Timer timer = new Timer("Timer");
-
-//long delay = 2000L;
-//timer.schedule(task, delay);
+	/**
+	 * Set Room properties
+	 */
+	public void changeRoomProperties(int maxPlayers, String gameModeMeta) {
+		room2MaxPlayers = maxPlayers;
+		room2GameModeMeta = gameModeMeta;
+	}
+	
+	/**
+	 * Start Socket events with delay
+	 */
+	public void startWithDelay() {
+		TimerTask task = new TimerTask() {
+			public void run() {
+				initRaceEvent();
+			}
+		};
+		Timer timer = new Timer("Timer");
+		long delay = 1000L;
+		timer.schedule(task, delay);
+	}
+	
+	
+}

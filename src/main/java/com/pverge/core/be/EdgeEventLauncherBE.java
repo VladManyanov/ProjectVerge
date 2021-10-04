@@ -14,19 +14,13 @@ import com.pverge.core.socket.NettySocketIO;
 import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinChatChannelObj;
 import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinChannelObj;
 import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinOpts;
-import com.pverge.core.socket.dataobjects.SIODataObjects.RecentOpts;
-import com.pverge.core.socket.dataobjects.SIODataObjects.ResourceDataObject;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.AppearanceInfo;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.Attrs;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.AttrsGraph;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.Clients;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.ColorData;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.GraphValue;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.Observers;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.Plate;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.Rgb;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.TTOpts;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.TTRootObject;
+import com.pverge.core.socket.dataobjects.SIODataObjects.*;
+import com.pverge.core.socket.dataobjects.SIOMatch2Objects.End;
+import com.pverge.core.socket.dataobjects.SIOMatch2Objects.MatchPeerOpts;
+import com.pverge.core.socket.dataobjects.SIOMatch2Objects.TakeDownTarget;
+import com.pverge.core.socket.dataobjects.SIOMatchObjects.*;
+import com.pverge.core.socket.dataobjects.SIORaceCommonObjects.*;
+import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.*;
 
 /**
  * Prepare and send race events with Socket
@@ -48,12 +42,34 @@ public class EdgeEventLauncherBE {
 	/**
 	 * Get correct track level resource name
 	 */
-	public String getTrackLevel(String strTrackCode) {
-		String trackLevel = TrackCode.valueOf(Integer.parseInt(strTrackCode)).toString();
+	public String getTrackLevel(int trackCode) {
+		String trackLevel = TrackCode.valueOf(trackCode).toString();
 		if (trackLevel.startsWith("DUP_")) { // Some level resource names is the same
 			trackLevel = trackLevel.replaceFirst("DUP_", "");
 		}
 		return trackLevel;
+	}
+	
+	/**
+	 * Get correct core Game Mode, from meta Game Mode
+	 */
+	public String getGameModeCore(String gameModeMeta) {
+		String coreGameMode = "";
+		switch(gameModeMeta) {
+		case "SPEEDINDIVIDUAL":
+			coreGameMode = "GameMode_Speed_01_Schematic";
+			break;
+		case "ITEMINDIVIDUAL":
+			coreGameMode = "GameMode_ItemBattle_01_Schematic";
+			break;
+		case "DRIFTINDIVIDUAL":
+			coreGameMode = "GameMode_Drift_01_Schematic";
+			break;
+		case "FOXHUNTINGINDIVIDUAL": case "PURSUITINDIVIDUAL": case "SPEEDTEAM": default:
+			System.out.println("!!! [Room] Game mode " + gameModeMeta + " does not currently supported.");
+			break;
+		}
+		return coreGameMode;
 	}
 	
 	/**
@@ -62,7 +78,7 @@ public class EdgeEventLauncherBE {
 	public void prepareTimeTrial(String playerId, String trackLevel) {
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
 		
-		TTRootObject ttRootData = new TTRootObject();
+		MatchRootObject ttRootData = new MatchRootObject();
 		
 		ttRootData.setCmd("match2.start.timetrial.play");
 		TTOpts ttOpts = new TTOpts();
@@ -72,164 +88,13 @@ public class EdgeEventLauncherBE {
 		ttOpts.setLevel(trackLevel);
 		ttOpts.setLaps(1);
 		ttOpts.setManagerMode(false);
-		ttRootData.setTTOpts(ttOpts);
+		ttRootData.setOpts(ttOpts);
 		
 		List<Observers> observersList = new ArrayList<>();
 		ttOpts.setObservers(observersList); // Empty
 		
-		Clients client = new Clients();
-		client.setPlayerId(playerId);
-		client.setAccountId(playerId);
-		client.setVCode(currentVehicle.getVcode());
-		client.setAI(false);
-		client.setTeam(0);
-		client.setPositionOnStartingGrid(0);
-		client.setVid(String.valueOf(currentVehicle.getId()));
-		
-		Attrs attrEngineSpeedLimiter = new Attrs();
-		attrEngineSpeedLimiter.setAttr("Engine.SpeedLimiter");
-		attrEngineSpeedLimiter.setType("float");
-		attrEngineSpeedLimiter.setVal(168.9f);
-		Attrs attrEngineSpeedLimiterNOS = new Attrs();
-		attrEngineSpeedLimiterNOS.setAttr("Engine.SpeedLimiterNOS");
-		attrEngineSpeedLimiterNOS.setType("float");
-		attrEngineSpeedLimiterNOS.setVal(183.9f);
-		
-		AttrsGraph attrEngineTorque = new AttrsGraph();
-		attrEngineTorque.setAttr("Engine.Torque");
-		attrEngineTorque.setType("graph");
-		
-		GraphValue graphTorque1 = new GraphValue();
-		graphTorque1.setX(1000);
-		graphTorque1.setY(0);
-		graphTorque1.setZ(1);
-		GraphValue graphTorque2 = new GraphValue();
-		graphTorque2.setX(1020);
-		graphTorque2.setY(1865);
-		graphTorque2.setZ(8);
-		GraphValue graphTorque3 = new GraphValue();
-		graphTorque3.setX(1000);
-		graphTorque3.setY(427.14000000001215f);
-		graphTorque3.setZ(32);
-		GraphValue graphTorque4 = new GraphValue();
-		graphTorque4.setX(1712.5f);
-		graphTorque4.setY(458.34000000001214f);
-		graphTorque4.setZ(32);
-		GraphValue graphTorque5 = new GraphValue();
-		graphTorque5.setX(3012.49975f);
-		graphTorque5.setY(478.34000000001214f);
-		graphTorque5.setZ(32);
-		GraphValue graphTorque6 = new GraphValue();
-		graphTorque6.setX(4774.99975f);
-		graphTorque6.setY(491.14000000001215f);
-		graphTorque6.setZ(32);
-		GraphValue graphTorque7 = new GraphValue();
-		graphTorque7.setX(6000.000249999999f);
-		graphTorque7.setY(500.7400000000122f);
-		graphTorque7.setZ(32);
-		GraphValue graphTorque8 = new GraphValue();
-		graphTorque8.setX(6724.99975f);
-		graphTorque8.setY(492.7400000000122f);
-		graphTorque8.setZ(32);
-		GraphValue graphTorque9 = new GraphValue();
-		graphTorque9.setX(7637.5f);
-		graphTorque9.setY(480.7400000000122f);
-		graphTorque9.setZ(32);
-		GraphValue graphTorque10 = new GraphValue();
-		graphTorque10.setX(8500);
-		graphTorque10.setY(457.5400000000121f);
-		graphTorque10.setZ(32);
-		
-		List<GraphValue> graphValueList = new ArrayList<>();
-		graphValueList.add(graphTorque1);
-		graphValueList.add(graphTorque2);
-		graphValueList.add(graphTorque3);
-		graphValueList.add(graphTorque4);
-		graphValueList.add(graphTorque5);
-		graphValueList.add(graphTorque6);
-		graphValueList.add(graphTorque7);
-		graphValueList.add(graphTorque8);
-		graphValueList.add(graphTorque9);
-		graphValueList.add(graphTorque10);
-		attrEngineTorque.setVal(graphValueList);
-		
-		Attrs attrAerodynamicsDragCoefficient = new Attrs();
-		attrAerodynamicsDragCoefficient.setAttr("Aerodynamics.DragCoefficient");
-		attrAerodynamicsDragCoefficient.setType("float");
-		attrAerodynamicsDragCoefficient.setVal(0.419f);
-		Attrs attrTransmissionGearChangeTime = new Attrs();
-		attrTransmissionGearChangeTime.setAttr("Transmission.GearChangeTime");
-		attrTransmissionGearChangeTime.setType("float");
-		attrTransmissionGearChangeTime.setVal(0.40376f);
-		Attrs attrNosConfigCapacity = new Attrs();
-		attrNosConfigCapacity.setAttr("NosConfig.Capacity");
-		attrNosConfigCapacity.setType("float");
-		attrNosConfigCapacity.setVal(32.12f);
-		Attrs attrNosConfigTorqueBoost = new Attrs();
-		attrNosConfigTorqueBoost.setAttr("NosConfig.TorqueBoost");
-		attrNosConfigTorqueBoost.setType("float");
-		attrNosConfigTorqueBoost.setVal(1.089f);
-		Attrs attrNosConfigNosRechargeFactor = new Attrs();
-		attrNosConfigNosRechargeFactor.setAttr("NosConfig.NosRechargeFactor");
-		attrNosConfigNosRechargeFactor.setType("float");
-		attrNosConfigNosRechargeFactor.setVal(1.2668f);
-		Attrs attrNosConfigNosDispenseFactor = new Attrs();
-		attrNosConfigNosDispenseFactor.setAttr("NosConfig.NosDispenseFactor");
-		attrNosConfigNosDispenseFactor.setType("float");
-		attrNosConfigNosDispenseFactor.setVal(1.4666f);
-		Attrs attrStrengthStrength = new Attrs();
-		attrStrengthStrength.setAttr("Strength.Strength");
-		attrStrengthStrength.setType("float");
-		attrStrengthStrength.setVal(1.93f);
-		Attrs attrDurabilityCapacity = new Attrs();
-		attrDurabilityCapacity.setAttr("Durability.Capacity");
-		attrDurabilityCapacity.setType("float");
-		attrDurabilityCapacity.setVal(56f);
-		Attrs attrChassisMass = new Attrs();
-		attrChassisMass.setAttr("Chassis.Mass");
-		attrChassisMass.setType("float");
-		attrChassisMass.setVal(1800f);
-		Attrs attrTransmissionTorqueSplit = new Attrs();
-		attrTransmissionTorqueSplit.setAttr("Transmission.TorqueSplit");
-		attrTransmissionTorqueSplit.setType("float");
-		attrTransmissionTorqueSplit.setVal(0f);
-		Attrs attrTransmissionTorqueSplitInDrift = new Attrs();
-		attrTransmissionTorqueSplitInDrift.setAttr("Transmission.TorqueSplitInDrift");
-		attrTransmissionTorqueSplitInDrift.setType("float");
-		attrTransmissionTorqueSplitInDrift.setVal(0f);
-		
-		List<Object> attrsList = new ArrayList<>();
-		attrsList.add(attrEngineSpeedLimiter);
-		attrsList.add(attrEngineSpeedLimiterNOS);
-		attrsList.add(attrEngineTorque); // Graph
-		attrsList.add(attrAerodynamicsDragCoefficient);
-		attrsList.add(attrTransmissionGearChangeTime);
-		attrsList.add(attrNosConfigCapacity);
-		attrsList.add(attrNosConfigTorqueBoost);
-		attrsList.add(attrNosConfigNosRechargeFactor);
-		attrsList.add(attrNosConfigNosDispenseFactor);
-		attrsList.add(attrStrengthStrength);
-		attrsList.add(attrDurabilityCapacity);
-		attrsList.add(attrChassisMass);
-		attrsList.add(attrTransmissionTorqueSplit);
-		attrsList.add(attrTransmissionTorqueSplitInDrift);
-		client.setAttrs(attrsList);
-		
-		AppearanceInfo appearanceInfo = new AppearanceInfo();
-		ColorData colorData = new ColorData();
-		Rgb rgb = new Rgb();
-		rgb.setSolid(currentVehicle.getRGBSolid());
-		rgb.setSecondary(currentVehicle.getRGBSecondary());
-		colorData.setRgb(rgb);
-		appearanceInfo.setColorData(colorData);
-		appearanceInfo.setWheelId(1);
-		appearanceInfo.setWrapId(0);
-		
-		appearanceInfo.setPlate(edgeMatchCreationBE.getDefaultPlate(playerId));
-		client.setAppearanceInfo(appearanceInfo);
-		
 		List<Clients> clientList = new ArrayList<>();
-		clientList.add(client);
+		clientList.add(edgeMatchCreationBE.createPlayerClient(playerId, currentVehicle, false));
 		ttOpts.setClients(clientList);
 		
 		socketIO.sendEvent("msg", ttRootData, ttRootData.getCmd());
@@ -239,18 +104,140 @@ public class EdgeEventLauncherBE {
 	 * Prepare Room (SuperPeer mode) event. Two events should be sent to initiate the race.
 	 * Note: to run races locally, user must be on "Super Peer" mode (on client side)
 	 */
-	public void prepareRoomSuperPeer(String playerId, String trackLevel) {
+	public void prepareRoomSuperPeer(String playerId, int trackCode, String gameModeMeta, 
+			int maxPlayers) {
+		maxPlayers = maxPlayers - 1;
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
 		
-		TTRootObject matchCreatedRootData = new TTRootObject();
+		MatchRootObject matchCreatedRootData = new MatchRootObject();
+		matchCreatedRootData.setCmd("match2.created");
+		MatchCreatedOpts matchOpts = new MatchCreatedOpts();
+		matchOpts.setMatchId(1);
+		List<Observers> observersList = new ArrayList<>();
+		matchOpts.setObservers(observersList);
 		
+		List<Integer> aisList = new ArrayList<>();
+		int[] aiDrivers = new int[]{690,691,693,694,695}; 
+		switch(gameModeMeta) {
+		case "SPEEDINDIVIDUAL":
+			for (int i = 0; i < maxPlayers; i++) {
+				aisList.add(aiDrivers[i]); // add AI driver 
+			}
+			break;
+		case "ITEMINDIVIDUAL":
+			if (maxPlayers != 0) {
+				aisList.add(aiDrivers[0]); // add AI driver (Item Battle is unstable with AI, so we add only one bot)
+			}
+			break;
+		default:
+			break;
+		}
+		matchOpts.setAIs(aisList);
 		
+		matchOpts.setGameMode(gameModeMeta);
+		matchOpts.setUseDediSvr(true);
+		matchOpts.setTrackCode(trackCode);
+		matchOpts.setSchematic(getGameModeCore(gameModeMeta));
+		
+		List<Players> playersList = new ArrayList<>();
+		Players player = new Players();
+		
+		player.setId(playerId);
+		player.setPlate(edgeMatchCreationBE.getDefaultPlate(playerId));
+		player.setTeam(0);
+		
+		Vehicle vehicle = new Vehicle();
+		vehicle.setCode(currentVehicle.getVcode());
+		vehicle.setGrade(3);
+		vehicle.setId(String.valueOf(currentVehicle.getId()));
+		vehicle.setIGR(false);
+		vehicle.setOvr(549);
+		
+		Paint paint = new Paint();
+		paint.setColorCode(24);
+		paint.setWheelCode(20000);
+		paint.setWrapCode(0);
+		vehicle.setPaint(paint);
+		
+		Parts parts = new Parts();
+		parts.setBumper(0);
+		parts.setEngine(0);
+		parts.setFrame(0);
+		parts.setNitroTank(0);
+		parts.setTransmission(0);
+		vehicle.setParts(parts);
+		
+		Status status = new Status();
+		status.setAcceleration(765);
+		status.setDurability(658);
+		status.setNitroCapacity(777);
+		status.setStrength(680);
+		status.setTopSpeed(793);
+		vehicle.setStatus(status);
+		
+		List<Steering> steeringList = new ArrayList<>();
+		vehicle.setSteering(steeringList);
+		
+		player.setVehicle(vehicle);
+		playersList.add(player);
+		matchOpts.setPlayers(playersList);
+		
+		matchCreatedRootData.setOpts(matchOpts);
 		socketIO.sendEvent("msg", matchCreatedRootData, matchCreatedRootData.getCmd());
+	}
+	
+	/**
+	 * Prepare Room (SuperPeer mode) event. Two events should be sent to initiate the race.
+	 * Note: to run races locally, user must be on "Super Peer" mode (on client side)
+	 */
+	public void prepareRoomSuperPeer2(String playerId, int trackCode, String gameModeMeta, int maxPlayers) {
+		maxPlayers = maxPlayers - 1;
+		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
+		String gameModeCore = getGameModeCore(gameModeMeta);
 		
+		MatchRootObject matchSuperPeerRootData = new MatchRootObject();
+		matchSuperPeerRootData.setCmd("match2.start.superpeer");
+		MatchPeerOpts superPeerOpts = new MatchPeerOpts();
+		superPeerOpts.setMatchId(1);
+		superPeerOpts.setCreator("room2");
+		superPeerOpts.setCoreGameModeSchematic(gameModeCore);
+		superPeerOpts.setLevel(getTrackLevel(trackCode));
+		superPeerOpts.setLaps(1);
+		superPeerOpts.setManagerMode(false);
+		superPeerOpts.setClientVersion(0);
+		List<Observers> observersList = new ArrayList<>();
+		superPeerOpts.setObservers(observersList);
+		superPeerOpts.setSchematic(gameModeCore);
+		superPeerOpts.setTraffic(false);
 		
-		TTRootObject matchSuperPeerRootData = new TTRootObject();
+		End end = new End();
+		end.setChecker(15);
+		end.setLimitTime(0);
+		end.setTakeDowns(0);
+		List<TakeDownTarget> takeDownTargetList = new ArrayList<>();
+		end.setTakeDownTarget(takeDownTargetList);
+		superPeerOpts.setEnd(end);
 		
-		
+		List<Clients> clientList = new ArrayList<>();
+		clientList.add(edgeMatchCreationBE.createPlayerClient(playerId, currentVehicle, false));
+		switch(gameModeMeta) {
+		case "SPEEDINDIVIDUAL":
+			for (int i = 0; i < maxPlayers; i++) {
+				int[] aiDrivers = new int[]{690,691,693,694,695}; 
+				String aiPlayerId = String.valueOf(aiDrivers[i]);
+				clientList.add(edgeMatchCreationBE.createPlayerClient(aiPlayerId, currentVehicle, true));
+			}
+			break;
+		case "ITEMINDIVIDUAL":
+			if (maxPlayers != 0) {
+				clientList.add(edgeMatchCreationBE.createPlayerClient("690", currentVehicle, true));
+			}
+			break;
+		default:
+			break;
+		}
+		superPeerOpts.setClients(clientList);
+		matchSuperPeerRootData.setOpts(superPeerOpts);
 		socketIO.sendEvent("msg", matchSuperPeerRootData, matchSuperPeerRootData.getCmd());
 	}
 	
