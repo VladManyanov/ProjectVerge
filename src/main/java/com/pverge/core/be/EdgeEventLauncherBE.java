@@ -73,6 +73,32 @@ public class EdgeEventLauncherBE {
 	}
 	
 	/**
+	 * Get number of laps, depending on track
+	 */
+	public int getLapsAmount(String level) {
+		int laps = 1;
+		if (level.contentEquals("EDGE_CampingGround") || level.contentEquals("EDGE_ShanghaiTrack") ||
+				level.contentEquals("EDGE_AbandonedRoad") || level.contentEquals("EDGE_DuskCoast") || 
+				level.contentEquals("EDGE_Moebius") || level.contentEquals("EDGE_DesertCircuit") || 
+				level.contentEquals("EDGE_WesternTown") || level.contentEquals("EDGE_DowntownCircuit")
+				|| level.contentEquals("EDGE_DriftMode")) {
+			laps = 2;
+		}
+		return laps;
+	}
+	
+	/**
+	 * Enable traffic, if Track Code allows it
+	 */
+	public boolean isTrafficEnabled(int trackCode) {
+		if (trackCode == 102 || trackCode == 104 || trackCode == 105 || trackCode == 106 ||
+				trackCode == 107 || trackCode == 109) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Prepare Time Trial event
 	 */
 	public void prepareTimeTrial(String playerId, String trackLevel) {
@@ -86,7 +112,7 @@ public class EdgeEventLauncherBE {
 		ttOpts.setCreator("timetrial");
 		ttOpts.setCoreGameModeSchematic("GameMode_TimeTrial_01_Schematic");
 		ttOpts.setLevel(trackLevel);
-		ttOpts.setLaps(1);
+		ttOpts.setLaps(getLapsAmount(trackLevel));
 		ttOpts.setManagerMode(false);
 		ttRootData.setOpts(ttOpts);
 		
@@ -192,6 +218,7 @@ public class EdgeEventLauncherBE {
 	 */
 	public void prepareRoomSuperPeer2(String playerId, int trackCode, String gameModeMeta, int maxPlayers) {
 		maxPlayers = maxPlayers - 1;
+		String level = getTrackLevel(trackCode);
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
 		String gameModeCore = getGameModeCore(gameModeMeta);
 		
@@ -201,14 +228,14 @@ public class EdgeEventLauncherBE {
 		superPeerOpts.setMatchId(1);
 		superPeerOpts.setCreator("room2");
 		superPeerOpts.setCoreGameModeSchematic(gameModeCore);
-		superPeerOpts.setLevel(getTrackLevel(trackCode));
-		superPeerOpts.setLaps(1);
+		superPeerOpts.setLevel(level);
+		superPeerOpts.setLaps(getLapsAmount(level));
 		superPeerOpts.setManagerMode(false);
 		superPeerOpts.setClientVersion(0);
 		List<Observers> observersList = new ArrayList<>();
 		superPeerOpts.setObservers(observersList);
 		superPeerOpts.setSchematic(gameModeCore);
-		superPeerOpts.setTraffic(false);
+		superPeerOpts.setTraffic(isTrafficEnabled(trackCode));
 		
 		End end = new End();
 		end.setChecker(15);
