@@ -173,5 +173,20 @@ public class EdgePlayers {
 		System.out.println("### [Players] Player Snippet request from player ID " + forcePlayerId + ".");
 	    return rootArrayJson.toString();
 	}
+	
+	/**
+	 * Player paid currency balance
+	 * @return Balance
+	 */
+	@GET
+	@Path("tc/balance")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiTCBalance(@HeaderParam("_") String someValue) {
+		JsonObject rootJson = new JsonObject();
+		rootJson.addProperty("balance", 0);
+		
+		System.out.println("### [Players] Player TC balance request from player ID " + forcePlayerId + ".");
+	    return rootJson.toString();
+	}
     
 }

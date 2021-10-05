@@ -35,7 +35,13 @@ public class PlayerDBLoader extends DBEntityBase<PlayerEntity> {
 		query.setParameter("pid", Integer.parseInt(pid));
 		query.setParameter("vid", Integer.parseInt(vid));
 		query.executeUpdate();
-		
+	}
+	
+	public void setCampaignCode(String pid, int code) {
+		Query query = entityManager.createNamedQuery("PlayerEntity.setCampaignCode");
+		query.setParameter("pid", Integer.parseInt(pid));
+		query.setParameter("campaignCode", code);
+		query.executeUpdate();
 	}
 
 }

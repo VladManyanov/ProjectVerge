@@ -103,6 +103,9 @@ public class EdgePlayerConfig {
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		String state = requestJson.get("state").getAsString();
 		presence.setPlayerState(state, playerId);
+		if (state.contentEquals("match.reward")) {
+			presence.startWithDelay("matchFinish");
+		}
 		
 		JsonObject rootJson = new JsonObject();
 		JsonArray arrayJson = new JsonArray();

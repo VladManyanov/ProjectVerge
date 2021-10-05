@@ -3,12 +3,14 @@ package com.pverge.core.api.game;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.db.PlayerDBLoader;
 
 /**
  * Edge - Open World activity
@@ -17,7 +19,11 @@ import com.google.gson.JsonObject;
 @Path("/v2")
 public class EdgeOpenWorld {
 	
+	@EJB
+	private PlayerDBLoader playerDB;
+	
 	private static String forcePlayerId = "33";
+	private static int maxCampaignCode = 70;
 	// TODO Get the event ID from Campaign event start request
 	
 	/**
@@ -66,7 +72,7 @@ public class EdgeOpenWorld {
 	public String apiOWCampaign(@PathParam(value = "playerId") String playerId) {
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("pid", playerId);
-		rootJson.addProperty("code", 70);
+		rootJson.addProperty("code", playerDB.getPlayer(playerId).getCampaignCode());
 		
 		JsonObject tasksJson = new JsonObject();
 		tasksJson.addProperty("86", 1);
@@ -75,7 +81,7 @@ public class EdgeOpenWorld {
 		tasksJson.addProperty("7008", 40000);
 		rootJson.add("tasks", tasksJson);
 		
-		rootJson.addProperty("status", 2);
+		rootJson.addProperty("status", 1); // 0 - NotStarted, 1 - InProgress, 2 - Completed
 		
 		System.out.println("### [Open World] Get Campaign status request from player ID " + playerId + ".");
 	    return rootJson.toString();
@@ -100,6 +106,22 @@ public class EdgeOpenWorld {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiOWCampaignUpdate(@PathParam(value = "playerId") String playerId) {
 		System.out.println("### [Open World] Update Campaign tasks request from player ID " + playerId + ".");
+	    return Response.ok().build();
+	}
+	
+	/**
+	 * Finish task list of Campaign request
+	 */
+	@POST
+	@Path("openworld/campaign/{playerId}/@complete")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response apiOWCampaignComplete(@PathParam(value = "playerId") String playerId) {
+		int playerCampaignCode = playerDB.getPlayer(playerId).getCampaignCode();
+		if (playerCampaignCode < maxCampaignCode) {
+			playerDB.setCampaignCode(playerId, playerCampaignCode + 1);
+		}
+
+		System.out.println("### [Open World] Campaign tasks complete request from player ID " + playerId + ".");
 	    return Response.ok().build();
 	}
 	

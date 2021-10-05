@@ -28,9 +28,6 @@ public class EdgePresenceBE {
 	 */
 	public void setPlayerState(String state, String playerId) {
 		playerState = state;
-		if (state.contentEquals("match.reward")) {
-			// TODO
-		}
 	}
 	
 	/**
@@ -77,10 +74,17 @@ public class EdgePresenceBE {
 	/**
 	 * Start Socket events with delay
 	 */
-	public void startWithDelay() {
+	public void startWithDelay(String action) {
 		TimerTask task = new TimerTask() {
 			public void run() {
-				initRaceEvent();
+				switch(action) {
+				case "initRaceEvent":
+					initRaceEvent();
+					break;
+				case "matchFinish":
+					eventLauncher.MatchRewardSIO();
+					break;
+				}
 			}
 		};
 		Timer timer = new Timer("Timer");

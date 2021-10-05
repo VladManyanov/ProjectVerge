@@ -134,7 +134,7 @@ public class EdgeTimeTrial {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiTTMatchStart(@PathParam(value = "playerId") String playerId, @PathParam(value = "trackId") int trackId) {		
 		presence.setPlayerActivity("timetrial", trackId, playerId);
-		presence.startWithDelay();
+		presence.startWithDelay("initRaceEvent");
 		
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("matchId", 1);

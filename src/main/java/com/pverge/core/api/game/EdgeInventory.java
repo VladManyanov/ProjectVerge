@@ -16,7 +16,7 @@ public class EdgeInventory {
 	
 	EdgePlayersBE edgePlayersBE = new EdgePlayersBE();
 	private static String forcePlayerId = "33";
-	// TODO get "v2/tuning/inventories" request
+	// TODO 
 	
 	/**
 	 * Player parts request
@@ -40,6 +40,26 @@ public class EdgeInventory {
 		
 		System.out.println("### [Inventory] Player Parts request from player ID " + forcePlayerId + ".");
 	    return rootArrayJson.toString();
+	}
+	
+	/**
+	 * Player customization inventory request
+	 * @return Inventory
+	 */
+	@GET
+	@Path("tuning/inventories/{playerId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiTuningInventories(@HeaderParam("_") String someValue) {
+		JsonObject rootJson = new JsonObject();
+		rootJson.addProperty("__v", 8);
+		rootJson.addProperty("checkedat", "2021-10-05T02:36:43.446Z");
+		
+		JsonArray itemsArrayJson = new JsonArray();
+		rootJson.add("items", itemsArrayJson);
+		rootJson.addProperty("id", forcePlayerId);
+		
+		System.out.println("### [Inventory] Visual customization inventory request from player ID " + forcePlayerId + ".");
+	    return rootJson.toString();
 	}
 	
 	/**

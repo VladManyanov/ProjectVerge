@@ -81,7 +81,7 @@ public class EdgeEventLauncherBE {
 				level.contentEquals("EDGE_AbandonedRoad") || level.contentEquals("EDGE_DuskCoast") || 
 				level.contentEquals("EDGE_Moebius") || level.contentEquals("EDGE_DesertCircuit") || 
 				level.contentEquals("EDGE_WesternTown") || level.contentEquals("EDGE_DowntownCircuit")
-				|| level.contentEquals("EDGE_DriftMode")) {
+				|| level.contentEquals("EDGE_DriftMode") || level.contentEquals("EDGE_BaysideHills")) {
 			laps = 2;
 		}
 		return laps;
@@ -320,5 +320,15 @@ public class EdgeEventLauncherBE {
 		owJoinRootData.setOpts(optsList);
 		
 		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd());
+	}
+	
+	/**
+	 * Match finish rewards message
+	 */
+	public void MatchRewardSIO() {
+		ResourceDataObject testData = new ResourceDataObject();
+		testData.setCmd("match.finish");
+		
+		socketIO.sendEvent("msg", testData, testData.getCmd());
 	}
 }

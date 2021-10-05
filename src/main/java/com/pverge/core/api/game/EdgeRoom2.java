@@ -145,7 +145,7 @@ public class EdgeRoom2 {
 	@Path("room2/{roomId}/@start")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiRoom2Start(@PathParam(value = "roomId") String roomId) {
-		edgePresenceBE.startWithDelay();
+		edgePresenceBE.startWithDelay("initRaceEvent");
 		
 		System.out.println("### [Room] Room ID " + roomId + " start request from player ID " + forcePlayerId + ".");
 	    return Response.ok().build();

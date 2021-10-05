@@ -192,6 +192,8 @@ public class EdgeMatchCreationBE {
 		attrsList.add(attrTransmissionTorqueSplit);
 		attrsList.add(attrTransmissionTorqueSplitInDrift);
 		
-		return attrsList;
+		// TODO Currently disabled
+		List<Object> dummyAttrsList = new ArrayList<>();
+		return dummyAttrsList;
 	}
 }
