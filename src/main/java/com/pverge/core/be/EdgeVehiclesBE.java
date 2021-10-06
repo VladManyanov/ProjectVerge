@@ -43,9 +43,9 @@ public class EdgeVehiclesBE {
 			carJson.addProperty("depotStatus", 1);
 			
 			JsonObject carPaint = new JsonObject();
-			carPaint.addProperty("wheelCode", 20000);
-			carPaint.addProperty("wrapCode", 0);
-			carPaint.addProperty("colorCode", 12);
+			carPaint.addProperty("wheelCode", vehicle.getWheelColor());
+			carPaint.addProperty("wrapCode", vehicle.getWrapCode());
+			carPaint.addProperty("colorCode", vehicle.getColorCode());
 			carJson.add("paint", carPaint);
 			
 			JsonObject carParts = new JsonObject();
