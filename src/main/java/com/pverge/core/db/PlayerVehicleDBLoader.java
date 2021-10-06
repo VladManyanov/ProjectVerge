@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
@@ -35,6 +36,15 @@ public class PlayerVehicleDBLoader extends DBEntityBase<PlayerVehicleEntity> {
 		
 		List<PlayerVehicleEntity> resultList = query.getResultList();
 		return !resultList.isEmpty() ? resultList.get(0) : null;
+	}
+	
+	public void setVehicleColor(int vid, int colorCode, String rgbSolid, String rgbSecondary) {
+		Query query = entityManager.createNamedQuery("PlayerVehicleEntity.setVehicleColor");
+		query.setParameter("id", vid);
+		query.setParameter("colorCode", colorCode);
+		query.setParameter("rgbSolid", rgbSolid);
+		query.setParameter("rgbSecondary", rgbSecondary);
+		query.executeUpdate();
 	}
 
 }

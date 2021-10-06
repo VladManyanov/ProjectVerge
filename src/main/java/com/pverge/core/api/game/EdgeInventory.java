@@ -1,11 +1,14 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeInventoryBE;
 import com.pverge.core.be.EdgePlayersBE;
+import com.pverge.core.be.EdgeSocketVehiclesBE;
 
 /**
  * Edge - Vehicles requests & management
@@ -14,7 +17,13 @@ import com.pverge.core.be.EdgePlayersBE;
 @Path("/v2")
 public class EdgeInventory {
 	
-	EdgePlayersBE edgePlayersBE = new EdgePlayersBE();
+	@EJB
+	private EdgeSocketVehiclesBE EdgeSocketVehiclesBE;
+	@EJB
+	private EdgePlayersBE edgePlayersBE;
+	@EJB
+	private EdgeInventoryBE edgeInventoryBE;
+	
 	private static String forcePlayerId = "33";
 	// TODO 
 	
@@ -140,6 +149,71 @@ public class EdgeInventory {
 		
 		System.out.println("### [Inventory] Blueprints Produce (Vehicle ID " + "16660" + ") request from player ID " + forcePlayerId + ".");
 	    return carJson.toString();
+	}
+	
+	/**
+	 * Use inventory + shop item request
+	 * @return Actual inventory with recently used item
+	 */
+	@PUT
+	@Path("tuning/inventories/{playerId}/items/{itemId}/@use")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiUseInventoryItem(@PathParam(value = "playerId") String playerId, @PathParam(value = "itemId") String itemId) {
+		int itemCode = edgeInventoryBE.getPendingItemId();
+		String json = "{\"inventory\":{\"__v\":8,\"checkedat\":\"2021-10-05T02:36:43.446Z\",\"__t\":\"615bbf33e180e15e2885d229\",\"items\":[],\"id\":\"33\"},\"item\":{\"code\":"+itemCode+",\"updatedat\":\"2021-10-05T02:57:55.263Z\",\"createdat\":\"2019-02-08T06:28:06.899Z\",\"addedat\":\"2020-07-20T17:03:02.362Z\",\"usedat\":\"2021-10-05T02:57:55.263Z\",\"count\":0,\"id\":\"112233\"}}";
+		
+		System.out.println("### [Inventory] Use inventory item request from player ID " + forcePlayerId + ".");
+	    return json;
+	}
+	
+	/**
+	 * Use inbox item (can be direcly from Shop)
+	 * @return Response
+	 */
+	@POST
+	@Path("inboxes/{playerId}/packages/@use")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiInboxUse(@PathParam(value = "playerId") String playerId) {
+		int itemId = edgeInventoryBE.getPendingItemId();
+		
+		JsonArray rootArray = new JsonArray();
+		JsonObject mainObject = new JsonObject();
+		rootArray.add(mainObject);
+		mainObject.addProperty("pid", playerId);
+		mainObject.addProperty("type", "PURCHASED");
+		mainObject.addProperty("title", "test item");
+		mainObject.addProperty("desc", "good item for tests");
+		mainObject.addProperty("imgpath", "shop/product/5075.png");
+		
+		JsonObject optsObject = new JsonObject();
+		mainObject.add("opts", optsObject);
+		optsObject.addProperty("sellingShop", "TUNING_SHOP");
+		JsonObject bunchObject = new JsonObject();
+		mainObject.add("bunch", bunchObject);
+		bunchObject.addProperty("count", 1);
+		bunchObject.addProperty("currency", "SP");
+		bunchObject.addProperty("price", 1000);
+		bunchObject.addProperty("_id", "112233");
+		optsObject.addProperty("orderNo", "a1f6bf3acd694d95bca84a39193262bc");
+		
+		mainObject.addProperty("createdat", "2021-10-05T03:00:54.533Z");
+		mainObject.addProperty("__v", 0);
+		
+		JsonArray objectsArray = new JsonArray();
+		mainObject.add("objects", objectsArray);
+		JsonObject rewardObject = new JsonObject();
+		objectsArray.add(rewardObject);
+		rewardObject.addProperty("count", 1);
+		rewardObject.addProperty("code", itemId);
+		rewardObject.addProperty("type", "TUNING");
+		rewardObject.addProperty("_id", "112234");
+		
+		mainObject.addProperty("id", "615bbfe64bc9a149bf38b8db");
+		edgeInventoryBE.prepareInboxItemChangeSIO(playerId, itemId);
+		EdgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
+		
+		System.out.println("### [Inventory] Use inbox item request from player ID " + playerId + ".");
+	    return rootArray.toString();
 	}
 
 }

@@ -105,9 +105,9 @@ public class EdgeRoom2 {
 		carJson.addProperty("depotStatus", 1);
 		
 		JsonObject carPaint = new JsonObject();
-		carPaint.addProperty("wheelCode", 20000);
-		carPaint.addProperty("wrapCode", 0);
-		carPaint.addProperty("colorCode", 12);
+		carPaint.addProperty("wheelCode", playerVehicleEntity.getWheelColor());
+		carPaint.addProperty("wrapCode", playerVehicleEntity.getWrapCode());
+		carPaint.addProperty("colorCode", playerVehicleEntity.getColorCode());
 		carJson.add("paint", carPaint);
 		
 		JsonObject carStatus = new JsonObject();

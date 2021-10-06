@@ -104,7 +104,7 @@ public class EdgeEventLauncherBE {
 	public void prepareTimeTrial(String playerId, String trackLevel) {
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
 		
-		MatchRootObject ttRootData = new MatchRootObject();
+		ResourceDataObject ttRootData = new ResourceDataObject();
 		
 		ttRootData.setCmd("match2.start.timetrial.play");
 		TTOpts ttOpts = new TTOpts();
@@ -135,7 +135,7 @@ public class EdgeEventLauncherBE {
 		maxPlayers = maxPlayers - 1;
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
 		
-		MatchRootObject matchCreatedRootData = new MatchRootObject();
+		ResourceDataObject matchCreatedRootData = new ResourceDataObject();
 		matchCreatedRootData.setCmd("match2.created");
 		MatchCreatedOpts matchOpts = new MatchCreatedOpts();
 		matchOpts.setMatchId(1);
@@ -222,7 +222,7 @@ public class EdgeEventLauncherBE {
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
 		String gameModeCore = getGameModeCore(gameModeMeta);
 		
-		MatchRootObject matchSuperPeerRootData = new MatchRootObject();
+		ResourceDataObject matchSuperPeerRootData = new ResourceDataObject();
 		matchSuperPeerRootData.setCmd("match2.start.superpeer");
 		MatchPeerOpts superPeerOpts = new MatchPeerOpts();
 		superPeerOpts.setMatchId(1);
@@ -272,9 +272,9 @@ public class EdgeEventLauncherBE {
 	 * Get correct track level resource name
 	 */
 	public void changeRecentVehicleSIO(String pid, String vid) {
-		ResourceDataObject recentRootData = new ResourceDataObject();
+		ResourceListDataObject recentRootData = new ResourceListDataObject();
 		List<Object> optsList = new ArrayList<>();
-		RecentOpts recentOpts = new RecentOpts();
+		MessageDataStringObject recentOpts = new MessageDataStringObject();
 		recentOpts.setUri("/players/" + pid + "/recent/vid");
 		recentOpts.setBody(vid);
 		optsList.add(recentOpts);
@@ -288,7 +288,7 @@ public class EdgeEventLauncherBE {
 	 * Open World chat connection message
 	 */
 	public void chatOWChatJoinSIO(int channelId) {
-		ResourceDataObject owJoinRootData = new ResourceDataObject();
+		ResourceListDataObject owJoinRootData = new ResourceListDataObject();
 		List<Object> optsList = new ArrayList<>();
 		OWJoinOpts owJoinOpts = new OWJoinOpts();
 		owJoinOpts.setUri("chat.channel.joined");
@@ -307,7 +307,7 @@ public class EdgeEventLauncherBE {
 	 * Open World channel connection message
 	 */
 	public void chatOWJoinSIO(int channelId) {
-		ResourceDataObject owJoinRootData = new ResourceDataObject();
+		ResourceListDataObject owJoinRootData = new ResourceListDataObject();
 		List<Object> optsList = new ArrayList<>();
 		OWJoinOpts owJoinOpts = new OWJoinOpts();
 		owJoinOpts.setUri("chat.ow.joined");

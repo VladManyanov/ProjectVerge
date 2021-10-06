@@ -12,7 +12,8 @@ import javax.persistence.Table;
 @Table(name = "VEHICLES")
 @NamedQueries({ 
 	@NamedQuery(name = "PlayerVehicleEntity.getPlayerVehicles", query = "SELECT obj FROM PlayerVehicleEntity obj WHERE obj.pid = :pid"), //
-	@NamedQuery(name = "PlayerVehicleEntity.getVehicleByVid", query = "SELECT obj FROM PlayerVehicleEntity obj WHERE obj.id = :id") //
+	@NamedQuery(name = "PlayerVehicleEntity.getVehicleByVid", query = "SELECT obj FROM PlayerVehicleEntity obj WHERE obj.id = :id"), //
+	@NamedQuery(name = "PlayerVehicleEntity.setVehicleColor", query = "UPDATE PlayerVehicleEntity obj SET obj.colorCode = :colorCode, obj.rgbSolid = :rgbSolid, obj.rgbSecondary = :rgbSecondary WHERE obj.id = :id") //
 })
 public class PlayerVehicleEntity {
 
@@ -24,6 +25,9 @@ public class PlayerVehicleEntity {
 	private int vcode;
 	private String rgbSolid;
 	private String rgbSecondary;
+	private int colorCode;
+	private int wrapCode;
+	private int wheelColor;
 
 	public int getId() {
 		return id;
@@ -59,5 +63,25 @@ public class PlayerVehicleEntity {
 	public void setRGBSecondary(String rgbSecondary) {
 		this.rgbSecondary = rgbSecondary;
 	}
+	
+	public int getColorCode() {
+		return colorCode;
+	}
+	public void setColorCode(int colorCode) {
+		this.colorCode = colorCode;
+	}
 
+	public int getWrapCode() {
+		return wrapCode;
+	}
+	public void setWrapCode(int wrapCode) {
+		this.wrapCode = wrapCode;
+	}
+	
+	public int getWheelColor() {
+		return wheelColor;
+	}
+	public void setWheelColor(int wheelColor) {
+		this.wheelColor = wheelColor;
+	}
 }

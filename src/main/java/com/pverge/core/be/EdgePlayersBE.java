@@ -1,5 +1,8 @@
 package com.pverge.core.be;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -7,6 +10,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.dbobjects.PlayerEntity;
+import com.pverge.core.socket.NettySocketIO;
+import com.pverge.core.socket.dataobjects.SIODataObjects.MessageDataIntObject;
+import com.pverge.core.socket.dataobjects.SIODataObjects.MessageDataObject;
+import com.pverge.core.socket.dataobjects.SIODataObjects.ResourceListDataObject;
+import com.pverge.core.socket.dataobjects.SIOInboxObjects.Bunch;
+import com.pverge.core.socket.dataobjects.SIOInboxObjects.InboxItemBody;
+import com.pverge.core.socket.dataobjects.SIOInboxObjects.Opts;
+import com.pverge.core.socket.dataobjects.SIOInboxObjects.Rewards;
 
 /**
  * Edge - Player data requests
@@ -18,6 +29,7 @@ public class EdgePlayersBE {
 	@EJB
 	private PlayerDBLoader playerDB;
 	
+	NettySocketIO socketIO = new NettySocketIO();
 	private static String forcePlayerId = "33";
 	
 	/**
@@ -75,5 +87,23 @@ public class EdgePlayersBE {
 			return rootArrayJson.toString();}
 		else {
 			return playerJson.toString();}
+	}
+	
+	/**
+	 * Send player cash value update
+	 */
+	public void prepareCashValueUpdateSIO(String playerId) {
+		ResourceListDataObject rootData = new ResourceListDataObject();
+		List<Object> optsList = new ArrayList<>();
+		rootData.setCmd("resources");
+		rootData.setOpts(optsList);
+		
+		MessageDataIntObject cashOpts = new MessageDataIntObject();
+		cashOpts.setUri("/players/" + playerId + "/sp");
+		cashOpts.setBody(999998);
+		optsList.add(cashOpts);
+		
+		socketIO.sendEvent("msg", rootData, rootData.getCmd());
+		System.out.println("### [Socket] Cash value update request from player ID " + playerId + ".");
 	}
 }

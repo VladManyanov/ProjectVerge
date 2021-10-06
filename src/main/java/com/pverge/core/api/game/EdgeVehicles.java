@@ -17,8 +17,9 @@ public class EdgeVehicles {
 	
 	@EJB
 	private EdgeVehiclesBE edgeVehiclesBE;
+	@EJB
+	private EdgePlayersBE edgePlayersBE;
 	
-	EdgePlayersBE edgePlayersBE = new EdgePlayersBE();
 	private static String forcePlayerId = "33";
 	// TODO 
 	

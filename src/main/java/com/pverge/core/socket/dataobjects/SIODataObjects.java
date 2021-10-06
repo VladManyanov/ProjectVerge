@@ -60,7 +60,45 @@ public class SIODataObjects {
 		}
 	}
 	
-	public static class RecentOpts{
+	public static class MessageDataObject {
+		private String uri; 
+		private Object body; 
+
+		public String getUri() {
+			return uri; 
+		}
+		public void setUri(String input) {
+			this.uri = input;
+		}
+		
+		public Object getBody() {
+			return body; 
+		}
+		public void setBody(Object input) {
+			this.body = input;
+		}
+	}
+	
+	public static class MessageDataIntObject {
+		private String uri; 
+		private int body; 
+
+		public String getUri() {
+			return uri; 
+		}
+		public void setUri(String input) {
+			this.uri = input;
+		}
+		
+		public int getBody() {
+			return body; 
+		}
+		public void setBody(int input) {
+			this.body = input;
+		}
+	}
+	
+	public static class MessageDataStringObject {
 		private String uri; 
 		private String body; 
 
@@ -79,7 +117,7 @@ public class SIODataObjects {
 		}
 	}
 	
-	public static class ResourceDataObject {
+	public static class ResourceListDataObject {
 		private String cmd; 
 		private List<Object> opts; 
 
@@ -101,7 +139,7 @@ public class SIODataObjects {
 	}
 	
 	// Match start socket command
-	public static class MatchRootObject{
+	public static class ResourceDataObject {
 		private String cmd; 
 		private Object opts; 
 
