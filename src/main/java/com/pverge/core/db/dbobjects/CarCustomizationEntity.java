@@ -9,11 +9,12 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "CARCOLORS")
+@Table(name = "CARCUSTOMIZATION")
 @NamedQueries({ 
-	@NamedQuery(name = "CarColorsEntity.getColor", query = "SELECT obj FROM CarColorsEntity obj WHERE obj.code = :code") //
+	@NamedQuery(name = "CarCustomizationEntity.getItemProperties", query = "SELECT obj FROM CarCustomizationEntity obj WHERE obj.code = :code"), //
+	@NamedQuery(name = "CarCustomizationEntity.loadAllItems", query = "SELECT obj FROM CarCustomizationEntity obj") //
 })
-public class CarColorsEntity {
+public class CarCustomizationEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,9 @@ public class CarColorsEntity {
 	private int code;
 	private String rgbSolid;
 	private String rgbSecondary;
-
+	private String subType;
+	private int cid;
+	
 	public int getId() {
 		return id;
 	}
@@ -49,6 +52,20 @@ public class CarColorsEntity {
 	}
 	public void setRGBSecondary(String rgbSecondary) {
 		this.rgbSecondary = rgbSecondary;
+	}
+	
+	public String getSubType() {
+		return subType;
+	}
+	public void setSubType(String subType) {
+		this.subType = subType;
+	}
+	
+	public int getCID() {
+		return cid;
+	}
+	public void setCID(int cid) {
+		this.cid = cid;
 	}
 
 }

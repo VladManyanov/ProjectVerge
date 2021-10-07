@@ -11,6 +11,7 @@ import org.h2.tools.Server;
 public class Database {
 	
 	static Server h2Server = new Server();
+	// Currently using a standalone server
 	
 	public void startH2Database() throws SQLException {
 		h2Server = Server.createTcpServer("-tcpPort", "9092", "-tcpAllowOthers");

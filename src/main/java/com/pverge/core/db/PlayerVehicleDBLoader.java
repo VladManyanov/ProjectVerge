@@ -38,12 +38,12 @@ public class PlayerVehicleDBLoader extends DBEntityBase<PlayerVehicleEntity> {
 		return !resultList.isEmpty() ? resultList.get(0) : null;
 	}
 	
-	public void setVehicleColor(int vid, int colorCode, String rgbSolid, String rgbSecondary) {
-		Query query = entityManager.createNamedQuery("PlayerVehicleEntity.setVehicleColor");
+	public void setCustomization(int vid, int colorCode, int wheelColor, int wrapCode) {
+		Query query = entityManager.createNamedQuery("PlayerVehicleEntity.setCustomization");
 		query.setParameter("id", vid);
 		query.setParameter("colorCode", colorCode);
-		query.setParameter("rgbSolid", rgbSolid);
-		query.setParameter("rgbSecondary", rgbSecondary);
+		query.setParameter("wrapCode", wrapCode);
+		query.setParameter("wheelColor", wheelColor);
 		query.executeUpdate();
 	}
 

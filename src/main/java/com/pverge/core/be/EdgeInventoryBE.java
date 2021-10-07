@@ -46,7 +46,7 @@ public class EdgeInventoryBE {
 		inboxBody.setType("PURCHASED");
 		inboxBody.setTitle("test item");
 		inboxBody.setDesc("good item for tests");
-		inboxBody.setImgpath("shop/product/5075.png");
+		inboxBody.setImgpath("shop/product/" + itemId + ".png");
 		
 		Opts opts = new Opts();
 		opts.setOrderNo("a1f6bf3acd694d95bca84a39193262bc");

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @NamedQueries({ 
 	@NamedQuery(name = "PlayerVehicleEntity.getPlayerVehicles", query = "SELECT obj FROM PlayerVehicleEntity obj WHERE obj.pid = :pid"), //
 	@NamedQuery(name = "PlayerVehicleEntity.getVehicleByVid", query = "SELECT obj FROM PlayerVehicleEntity obj WHERE obj.id = :id"), //
-	@NamedQuery(name = "PlayerVehicleEntity.setVehicleColor", query = "UPDATE PlayerVehicleEntity obj SET obj.colorCode = :colorCode, obj.rgbSolid = :rgbSolid, obj.rgbSecondary = :rgbSecondary WHERE obj.id = :id") //
+	@NamedQuery(name = "PlayerVehicleEntity.setCustomization", query = "UPDATE PlayerVehicleEntity obj SET obj.colorCode = :colorCode, obj.wheelColor = :wheelColor, obj.wrapCode = :wrapCode WHERE obj.id = :id") //
 })
 public class PlayerVehicleEntity {
 
@@ -23,8 +23,6 @@ public class PlayerVehicleEntity {
 
 	private String pid;
 	private int vcode;
-	private String rgbSolid;
-	private String rgbSecondary;
 	private int colorCode;
 	private int wrapCode;
 	private int wheelColor;
@@ -48,20 +46,6 @@ public class PlayerVehicleEntity {
 	}
 	public void setVcode(int vcode) {
 		this.vcode = vcode;
-	}
-	
-	public String getRGBSolid() {
-		return rgbSolid;
-	}
-	public void setRGBSolid(String rgbSolid) {
-		this.rgbSolid = rgbSolid;
-	}
-	
-	public String getRGBSecondary() {
-		return rgbSecondary;
-	}
-	public void setRGBSecondary(String rgbSecondary) {
-		this.rgbSecondary = rgbSecondary;
 	}
 	
 	public int getColorCode() {

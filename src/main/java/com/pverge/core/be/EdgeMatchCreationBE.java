@@ -3,6 +3,11 @@ package com.pverge.core.be;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import com.pverge.core.db.CarCustomizationDBLoader;
+import com.pverge.core.db.dbobjects.CarCustomizationEntity;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 import com.pverge.core.socket.dataobjects.SIOMatchObjects.NumberPlate;
 import com.pverge.core.socket.dataobjects.SIORaceCommonObjects.*;
@@ -11,13 +16,27 @@ import com.pverge.core.socket.dataobjects.SIORaceCommonObjects.*;
  * Edge - Various methods to fill & prepare Match events data
  * @author Hypernucle
  */
+@Stateless
 public class EdgeMatchCreationBE {
+	
+	@EJB
+	private CarCustomizationDBLoader carCustomizationDB;
 	
 	/**
 	 * Create player client entry
 	 * @return Player data
 	 */
 	public Clients createPlayerClient(String playerId, PlayerVehicleEntity currentVehicle, boolean isAI) {
+		int colorCode = currentVehicle.getColorCode();
+		int wheelId = currentVehicle.getWheelColor();
+		int wrapId = currentVehicle.getWrapCode();
+		if (isAI) {
+			colorCode = 1;
+			wheelId = 20000;
+			wrapId = 0;
+		}
+		CarCustomizationEntity carColor = carCustomizationDB.getItemProperties(colorCode);
+		
 		Clients client = new Clients();
 		client.setPlayerId(playerId);
 		client.setAccountId(playerId);
@@ -31,12 +50,12 @@ public class EdgeMatchCreationBE {
 		AppearanceInfo appearanceInfo = new AppearanceInfo();
 		ColorData colorData = new ColorData();
 		Rgb rgb = new Rgb();
-		rgb.setSolid(currentVehicle.getRGBSolid());
-		rgb.setSecondary(currentVehicle.getRGBSecondary());
+		rgb.setSolid(carColor.getRGBSolid());
+		rgb.setSecondary(carColor.getRGBSecondary());
 		colorData.setRgb(rgb);
 		appearanceInfo.setColorData(colorData);
-		appearanceInfo.setWheelId(1);
-		appearanceInfo.setWrapId(0);
+		appearanceInfo.setWheelId(carCustomizationDB.getItemProperties(wheelId).getCID());
+		appearanceInfo.setWrapId(carCustomizationDB.getItemProperties(wrapId).getCID());
 		
 		appearanceInfo.setPlate(getDefaultPlate(playerId));
 		client.setAppearanceInfo(appearanceInfo);

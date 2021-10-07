@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pverge.core.db.PlayerVehicleDBLoader;
+import com.pverge.core.db.dbobjects.CarCustomizationEntity;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 
 /**
@@ -74,5 +75,25 @@ public class EdgeVehiclesBE {
 		}
 		
 		return rootArrayJson.toString();
+	}
+	
+	/**
+	 * Apply customization item to the player car
+	 */
+	public void applyCustomizationItem(CarCustomizationEntity carCustomizationEntity, PlayerVehicleEntity playerVehicleEntity) {
+		int colorCode = playerVehicleEntity.getColorCode();
+		int wheelCode = playerVehicleEntity.getWheelColor();
+		int wrapCode = playerVehicleEntity.getWrapCode();
+		switch(carCustomizationEntity.getSubType()) {
+		case "VEHICLECOLOR":
+			colorCode = carCustomizationEntity.getCode(); break;
+		case "WHEELCOLOR":
+			wheelCode = carCustomizationEntity.getCode(); break;
+		case "WRAP":
+			wrapCode = carCustomizationEntity.getCode(); break;
+		}
+		System.out.println("### [Inventory] Customization item ID" + carCustomizationEntity.getCode() + " (Category: " + carCustomizationEntity.getSubType() +
+				") has been applied on vehicle ID " + playerVehicleEntity.getId() + " of player ID " + playerVehicleEntity.getPid() + ".");
+		playerVehicleDB.setCustomization(playerVehicleEntity.getId(), colorCode, wheelCode, wrapCode);
 	}
 }

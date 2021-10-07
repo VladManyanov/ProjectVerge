@@ -31,12 +31,13 @@ public class EdgeEventLauncherBE {
 
 	@EJB
 	private PlayerDBLoader playerDB;
-	
 	@EJB
 	private PlayerVehicleDBLoader playerVehicleDB;
+	@EJB
+	private EdgeMatchCreationBE edgeMatchCreationBE;
 	
 	NettySocketIO socketIO = new NettySocketIO();
-	EdgeMatchCreationBE edgeMatchCreationBE = new EdgeMatchCreationBE();
+	
 	// TODO Try to add cars & tracks choices?
 	
 	/**
@@ -180,9 +181,9 @@ public class EdgeEventLauncherBE {
 		vehicle.setOvr(549);
 		
 		Paint paint = new Paint();
-		paint.setColorCode(24);
-		paint.setWheelCode(20000);
-		paint.setWrapCode(0);
+		paint.setColorCode(currentVehicle.getColorCode());
+		paint.setWheelCode(currentVehicle.getWheelColor());
+		paint.setWrapCode(currentVehicle.getWrapCode());
 		vehicle.setPaint(paint);
 		
 		Parts parts = new Parts();
