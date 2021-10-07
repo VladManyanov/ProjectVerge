@@ -35,6 +35,14 @@ public class EdgeMatchCreationBE {
 			wheelId = 20000;
 			wrapId = 0;
 		}
+		else { // Don't fetch default settings
+			if (wheelId != 20000) {
+				wheelId = carCustomizationDB.getItemProperties(wheelId).getCID();
+			}
+			if (wrapId != 0) {
+				wrapId = carCustomizationDB.getItemProperties(wrapId).getCID();
+			}
+		}
 		CarCustomizationEntity carColor = carCustomizationDB.getItemProperties(colorCode);
 		
 		Clients client = new Clients();
@@ -54,8 +62,8 @@ public class EdgeMatchCreationBE {
 		rgb.setSecondary(carColor.getRGBSecondary());
 		colorData.setRgb(rgb);
 		appearanceInfo.setColorData(colorData);
-		appearanceInfo.setWheelId(carCustomizationDB.getItemProperties(wheelId).getCID());
-		appearanceInfo.setWrapId(carCustomizationDB.getItemProperties(wrapId).getCID());
+		appearanceInfo.setWheelId(wheelId);
+		appearanceInfo.setWrapId(wrapId);
 		
 		appearanceInfo.setPlate(getDefaultPlate(playerId));
 		client.setAppearanceInfo(appearanceInfo);

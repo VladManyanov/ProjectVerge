@@ -3,12 +3,18 @@ package com.pverge.core.api.game;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgeInventoryBE;
 import com.pverge.core.be.EdgePlayersBE;
 import com.pverge.core.be.EdgeSocketVehiclesBE;
+import com.pverge.core.db.CarCustomizationDBLoader;
+import com.pverge.core.db.PlayerVehicleDBLoader;
+import com.pverge.core.db.dbobjects.CarCustomizationEntity;
+import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 
 /**
  * Edge - Vehicles requests & management
@@ -18,11 +24,15 @@ import com.pverge.core.be.EdgeSocketVehiclesBE;
 public class EdgeInventory {
 	
 	@EJB
-	private EdgeSocketVehiclesBE EdgeSocketVehiclesBE;
+	private EdgeSocketVehiclesBE edgeSocketVehiclesBE;
 	@EJB
 	private EdgePlayersBE edgePlayersBE;
 	@EJB
 	private EdgeInventoryBE edgeInventoryBE;
+	@EJB
+	private CarCustomizationDBLoader carCustomizationDB;
+	@EJB
+	private PlayerVehicleDBLoader playerVehicleDB;
 	
 	private static String forcePlayerId = "33";
 	// TODO 
@@ -210,10 +220,40 @@ public class EdgeInventory {
 		
 		mainObject.addProperty("id", "615bbfe64bc9a149bf38b8db");
 		edgeInventoryBE.prepareInboxItemChangeSIO(playerId, itemId);
-		EdgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
 		
 		System.out.println("### [Inventory] Use inbox item request from player ID " + playerId + ".");
 	    return rootArray.toString();
+	}
+	
+	/**
+	 * Remove inventory item (or item installed on car)
+	 * @return Response
+	 */
+	@PUT
+	@Path("tuning/inventories/{playerId}/item/{itemId}/remove")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response apiRemoveItem(String requestBody, @PathParam(value = "playerId") String playerId, 
+			@PathParam(value = "itemId") String itemId) {
+		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
+		int vid = requestJson.get("vid").getAsInt();
+		
+		PlayerVehicleEntity playerVehicleEntity = playerVehicleDB.getVehicleByVid(vid);
+		CarCustomizationEntity customizationItem = carCustomizationDB.getItemProperties(Integer.parseInt(itemId));
+		int colorCode = playerVehicleEntity.getColorCode();
+		int wheelColor = playerVehicleEntity.getWheelColor();
+		int wrapCode = playerVehicleEntity.getWrapCode();
+		switch(customizationItem.getSubType()) { // What type if item we should remove?
+		case "WHEELCOLOR":
+			wheelColor = 20000; break;
+		case "WRAP":
+			wrapCode = 0; break;
+		}
+		playerVehicleDB.setCustomization(vid, colorCode, wheelColor, wrapCode);
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(playerId);
+		
+		System.out.println("### [Inventory] Remove customization item ID " + itemId + " request from player ID " + playerId + ".");
+	    return Response.ok().build();
 	}
 
 }
