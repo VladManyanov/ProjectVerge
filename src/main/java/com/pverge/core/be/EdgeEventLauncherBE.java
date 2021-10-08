@@ -37,6 +37,7 @@ public class EdgeEventLauncherBE {
 	private EdgeMatchCreationBE edgeMatchCreationBE;
 	
 	NettySocketIO socketIO = new NettySocketIO();
+	static int[] aiDrivers = new int[]{677,691,693,694,695}; 
 	
 	// TODO Try to add cars & tracks choices?
 	
@@ -143,7 +144,6 @@ public class EdgeEventLauncherBE {
 		matchOpts.setObservers(observersList);
 		
 		List<Integer> aisList = new ArrayList<>();
-		int[] aiDrivers = new int[]{690,691,693,694,695}; 
 		switch(gameModeMeta) {
 		case "SPEEDINDIVIDUAL":
 			for (int i = 0; i < maxPlayers; i++) {
@@ -250,14 +250,13 @@ public class EdgeEventLauncherBE {
 		switch(gameModeMeta) {
 		case "SPEEDINDIVIDUAL":
 			for (int i = 0; i < maxPlayers; i++) {
-				int[] aiDrivers = new int[]{690,691,693,694,695}; 
 				String aiPlayerId = String.valueOf(aiDrivers[i]);
 				clientList.add(edgeMatchCreationBE.createPlayerClient(aiPlayerId, currentVehicle, true));
 			}
 			break;
 		case "ITEMINDIVIDUAL":
 			if (maxPlayers != 0) {
-				clientList.add(edgeMatchCreationBE.createPlayerClient("690", currentVehicle, true));
+				clientList.add(edgeMatchCreationBE.createPlayerClient(String.valueOf(aiDrivers[0]), currentVehicle, true));
 			}
 			break;
 		default:
