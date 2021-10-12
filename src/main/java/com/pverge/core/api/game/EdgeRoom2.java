@@ -86,15 +86,15 @@ public class EdgeRoom2 {
 		JsonObject carJson = new JsonObject();
 		carJson.addProperty("id", String.valueOf(playerVehicleEntity.getId())); // vehicle id
 		carJson.addProperty("code", playerVehicleEntity.getVcode());
-		carJson.addProperty("grade", 3);
+		carJson.addProperty("grade", playerVehicleEntity.getGrade());
 		carJson.addProperty("ovr", 573);
 		
 		JsonObject carParts = new JsonObject();
-		carParts.addProperty("frame", 0);
-		carParts.addProperty("bumper", 0);
-		carParts.addProperty("nitroTank", 0);
-		carParts.addProperty("transmission", 0);
-		carParts.addProperty("engine", 0);
+		carParts.addProperty("frame", playerVehicleEntity.getPartFrame());
+		carParts.addProperty("bumper", playerVehicleEntity.getPartBumper());
+		carParts.addProperty("nitroTank", playerVehicleEntity.getPartNitroTank());
+		carParts.addProperty("transmission", playerVehicleEntity.getPartTransmission());
+		carParts.addProperty("engine", playerVehicleEntity.getPartEngine());
 		carJson.add("parts", carParts);
 		
 		carJson.addProperty("createdat", "2017-11-12T18:42:19.874Z");

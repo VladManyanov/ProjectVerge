@@ -174,7 +174,7 @@ public class EdgeEventLauncherBE {
 		
 		Vehicle vehicle = new Vehicle();
 		vehicle.setCode(currentVehicle.getVcode());
-		vehicle.setGrade(3);
+		vehicle.setGrade(currentVehicle.getGrade());
 		vehicle.setId(String.valueOf(currentVehicle.getId()));
 		vehicle.setIGR(false);
 		vehicle.setOvr(549);
@@ -186,11 +186,11 @@ public class EdgeEventLauncherBE {
 		vehicle.setPaint(paint);
 		
 		Parts parts = new Parts();
-		parts.setBumper(0);
-		parts.setEngine(0);
-		parts.setFrame(0);
-		parts.setNitroTank(0);
-		parts.setTransmission(0);
+		parts.setBumper(currentVehicle.getPartBumper());
+		parts.setEngine(currentVehicle.getPartEngine());
+		parts.setFrame(currentVehicle.getPartFrame());
+		parts.setNitroTank(currentVehicle.getPartNitroTank());
+		parts.setTransmission(currentVehicle.getPartTransmission());
 		vehicle.setParts(parts);
 		
 		Status status = new Status();

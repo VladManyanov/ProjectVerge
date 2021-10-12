@@ -63,15 +63,15 @@ public class EdgeSocketVehiclesBE {
 		assetBody.setPaint(assetPaint);
 		
 		Parts assetParts = new Parts();
-		assetParts.setBumper(0);
-		assetParts.setEngine(0);
-		assetParts.setFrame(0);
-		assetParts.setNitroTank(0);
-		assetParts.setTransmission(0);
+		assetParts.setBumper(currentVehicle.getPartBumper());
+		assetParts.setEngine(currentVehicle.getPartEngine());
+		assetParts.setFrame(currentVehicle.getPartFrame());
+		assetParts.setNitroTank(currentVehicle.getPartNitroTank());
+		assetParts.setTransmission(currentVehicle.getPartTransmission());
 		assetBody.setParts(assetParts);
 		
 		assetBody.setFavorite(false);
-		assetBody.setGrade(3);
+		assetBody.setGrade(currentVehicle.getGrade());
 		assetBody.setId(String.valueOf(currentVehicle.getId()));
 		
 		Status assetStatus = new Status();

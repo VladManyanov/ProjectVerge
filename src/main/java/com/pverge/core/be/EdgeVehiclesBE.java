@@ -50,15 +50,15 @@ public class EdgeVehiclesBE {
 			carJson.add("paint", carPaint);
 			
 			JsonObject carParts = new JsonObject();
-			carParts.addProperty("frame", 0);
-			carParts.addProperty("bumper", 0);
-			carParts.addProperty("nitroTank", 0);
-			carParts.addProperty("transmission", 0);
-			carParts.addProperty("engine", 0);
+			carParts.addProperty("frame", vehicle.getPartFrame());
+			carParts.addProperty("bumper", vehicle.getPartBumper());
+			carParts.addProperty("nitroTank", vehicle.getPartNitroTank());
+			carParts.addProperty("transmission", vehicle.getPartNitroTank());
+			carParts.addProperty("engine", vehicle.getPartEngine());
 			carJson.add("parts", carParts);
 			
 			carJson.addProperty("favorite", false);
-			carJson.addProperty("grade", 3);
+			carJson.addProperty("grade", vehicle.getGrade());
 			carJson.addProperty("__v", 1);
 			carJson.addProperty("id", String.valueOf(vehicle.getId())); // vehicle id
 			

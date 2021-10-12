@@ -26,6 +26,13 @@ public class PlayerVehicleEntity {
 	private int colorCode;
 	private int wrapCode;
 	private int wheelColor;
+	//
+	private int grade;
+	private int partEngine;
+	private int partTransmission;
+	private int partNitroTank;
+	private int partBumper;
+	private int partFrame;
 
 	public int getId() {
 		return id;
@@ -67,5 +74,47 @@ public class PlayerVehicleEntity {
 	}
 	public void setWheelColor(int wheelColor) {
 		this.wheelColor = wheelColor;
+	}
+	
+	public int getGrade() {
+		return grade;
+	}
+	public void setGrade(int grade) {
+		this.grade = grade;
+	}
+	
+	public int getPartEngine() {
+		return partEngine;
+	}
+	public void setPartEngine(int partEngine) {
+		this.partEngine = partEngine;
+	}
+	
+	public int getPartTransmission() {
+		return partTransmission;
+	}
+	public void setPartTransmission(int partTransmission) {
+		this.partTransmission = partTransmission;
+	}
+	
+	public int getPartNitroTank() {
+		return partNitroTank;
+	}
+	public void setPartNitroTank(int partNitroTank) {
+		this.partNitroTank = partNitroTank;
+	}
+	
+	public int getPartBumper() {
+		return partBumper;
+	}
+	public void setPartBumper(int partBumper) {
+		this.partBumper = partBumper;
+	}
+	
+	public int getPartFrame() {
+		return partFrame;
+	}
+	public void setPartFrame(int partFrame) {
+		this.partFrame = partFrame;
 	}
 }

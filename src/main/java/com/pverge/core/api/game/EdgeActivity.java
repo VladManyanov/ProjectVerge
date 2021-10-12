@@ -73,11 +73,11 @@ public class EdgeActivity {
 	@Path("match2/vehicle/attrs")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiMatchVehicleAttrs(@QueryParam("code") String code, @QueryParam("grade") String grade) {
-		// TODO Lazy
-		String json = "[{\"attr\":\"Engine.SpeedLimiter\",\"type\":\"float\",\"val\":149.7},{\"attr\":\"Engine.SpeedLimiterNOS\",\"type\":\"float\",\"val\":164.7},{\"attr\":\"Engine.Torque\",\"type\":\"graph\",\"val\":[{\"x\":1000,\"y\":0,\"z\":1},{\"x\":10200,\"y\":1865,\"z\":8},{\"x\":1000,\"y\":391.78000000000884,\"z\":32},{\"x\":1712.5,\"y\":422.98000000000883,\"z\":32},{\"x\":3012.49975,\"y\":442.98000000000883,\"z\":32},{\"x\":4774.99975,\"y\":455.78000000000884,\"z\":32},{\"x\":6000.000249999999,\"y\":465.38000000000886,\"z\":32},{\"x\":6724.99975,\"y\":457.38000000000886,\"z\":32},{\"x\":7637.5,\"y\":445.38000000000886,\"z\":32},{\"x\":8500,\"y\":422.1800000000088,\"z\":32}]},{\"attr\":\"Aerodynamics.DragCoefficient\",\"type\":\"float\",\"val\":0.523},{\"attr\":\"Transmission.GearChangeTime\",\"type\":\"float\",\"val\":0.51192},{\"attr\":\"NosConfig.Capacity\",\"type\":\"float\",\"val\":22.76},{\"attr\":\"NosConfig.TorqueBoost\",\"type\":\"float\",\"val\":0.972},{\"attr\":\"NosConfig.NosRechargeFactor\",\"type\":\"float\",\"val\":1.1264},{\"attr\":\"NosConfig.NosDispenseFactor\",\"type\":\"float\",\"val\":1.5368},{\"attr\":\"Strength.Strength\",\"type\":\"float\",\"val\":1.582},{\"attr\":\"Durability.Capacity\",\"type\":\"float\",\"val\":50.56},{\"attr\":\"Chassis.Mass\",\"type\":\"float\",\"val\":1800},{\"attr\":\"Transmission.TorqueSplit\",\"type\":\"float\",\"val\":0.1},{\"attr\":\"Transmission.TorqueSplitInDrift\",\"type\":\"float\",\"val\":0.1}]";
+		// TODO Load actual Attrs from DB
+		JsonArray rootArray = new JsonArray();
 		
 		System.out.println("### [Activity] Match vehicle attrib request from player ID " + forcePlayerId + ", vehicle code: " + code + ".");
-	    return json;
+	    return rootArray.toString();
 	}
     
 }
