@@ -67,6 +67,17 @@ public class EdgeAuthorization {
 	}
 	
 	/**
+	 * Session creation request (Debug mode)
+	 */
+	@POST
+	@Path("session/@debug")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response apiCreateDebugSession() {
+		System.out.println("### [Auth] Session request on Debug mode from player ID " + forcePlayerId + ".");
+	    return Response.ok().build();
+	}
+	
+	/**
 	 * Session delete request - server-side only
 	 */
 	@DELETE

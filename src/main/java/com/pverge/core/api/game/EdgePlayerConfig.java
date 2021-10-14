@@ -40,6 +40,7 @@ public class EdgePlayerConfig {
 		rootArrayJson.add("QUESTSYSTEM");rootArrayJson.add("TIMETRIAL");rootArrayJson.add("MANAGER");
 		rootArrayJson.add("MILEAGE");rootArrayJson.add("NUMBERPLATE");rootArrayJson.add("PARTSMATERIALCOMBINE");
 		rootArrayJson.add("QUESTSYSTEM");rootArrayJson.add("TIMETRIAL");
+		//rootArrayJson.add("WRAPPING"); // Korean version vinyl editor
 		//arrayJson.add("PURSUIT");arrayJson.add("ESPORTS"); // Not available on official server
 		
 		System.out.println("### [PlayerConfig] Client Features request from player ID " + forcePlayerId + ".");
@@ -130,6 +131,18 @@ public class EdgePlayerConfig {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiIGRPublisher(@PathParam(value = "playerId") String playerId) {
 		System.out.println("### [PlayerConfig] Player IGR request from player ID " + playerId + ".");
+	    return Response.ok().build();
+	}
+	
+	/**
+	 * Banned features check. Required to use Wrap editor on Korean version
+	 */
+	@GET
+	@Path("bannedfeature/{playerId}/features/{featureName}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response apiCheckBannedFeature(@PathParam(value = "playerId") String playerId, 
+			@PathParam(value = "featureName") String featureName, @HeaderParam("_") String someValue) {
+		System.out.println("### [PlayerConfig] Banned feature " + featureName + " request from player ID " + playerId + ".");
 	    return Response.ok().build();
 	}
     

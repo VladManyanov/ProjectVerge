@@ -41,10 +41,10 @@ public class EdgeMatchCreationBE {
 			wrapId = 0;
 		}
 		else { // Don't fetch default settings
-			if (wheelId != 20000) {
+			if (wheelId != 20000 && wheelId != -1) {
 				wheelId = carCustomizationDB.getItemProperties(wheelId).getCID();
 			}
-			if (wrapId != 0) {
+			if (wrapId != 0 && wrapId != -1) {
 				wrapId = carCustomizationDB.getItemProperties(wrapId).getCID();
 			}
 		}

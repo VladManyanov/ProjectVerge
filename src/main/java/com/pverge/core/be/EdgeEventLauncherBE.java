@@ -133,6 +133,9 @@ public class EdgeEventLauncherBE {
 	 */
 	public void prepareRoomSuperPeer(String playerId, int trackCode, String gameModeMeta, 
 			int maxPlayers) {
+		if (maxPlayers > 6) {
+			maxPlayers = 6; // Dirty fix for core level test mode
+		}
 		maxPlayers = maxPlayers - 1;
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
 		
@@ -217,6 +220,9 @@ public class EdgeEventLauncherBE {
 	 * Note: to run races locally, user must be on "Super Peer" mode (on client side)
 	 */
 	public void prepareRoomSuperPeer2(String playerId, int trackCode, String gameModeMeta, int maxPlayers) {
+		if (maxPlayers > 6) {
+			maxPlayers = 6; // Dirty fix for core level test mode
+		}
 		maxPlayers = maxPlayers - 1;
 		String level = getTrackLevel(trackCode);
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
