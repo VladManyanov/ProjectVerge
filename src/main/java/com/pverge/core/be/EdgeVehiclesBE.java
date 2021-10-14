@@ -53,7 +53,7 @@ public class EdgeVehiclesBE {
 			carParts.addProperty("frame", vehicle.getPartFrame());
 			carParts.addProperty("bumper", vehicle.getPartBumper());
 			carParts.addProperty("nitroTank", vehicle.getPartNitroTank());
-			carParts.addProperty("transmission", vehicle.getPartNitroTank());
+			carParts.addProperty("transmission", vehicle.getPartTransmission());
 			carParts.addProperty("engine", vehicle.getPartEngine());
 			carJson.add("parts", carParts);
 			
