@@ -8,8 +8,11 @@ import javax.ejb.Stateless;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.db.AttrsPartsDBLoader;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
+import com.pverge.core.db.dbobjects.AttrsPartsEntity;
+import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 import com.pverge.core.socket.NettySocketIO;
 import com.pverge.core.socket.dataobjects.SIODataObjects.*;
 import com.pverge.core.socket.dataobjects.SIOInboxObjects.*;
@@ -25,6 +28,8 @@ public class EdgeInventoryBE {
 	private PlayerDBLoader playerDB;
 	@EJB
 	private PlayerVehicleDBLoader playerVehicleDB;
+	@EJB
+	private AttrsPartsDBLoader attrsPartsDB;
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	private static String forcePlayerId = "33";
@@ -116,117 +121,62 @@ public class EdgeInventoryBE {
 	public String fetchFakePerformanceInventory() {
 		JsonArray rootArrayJson = new JsonArray();
 		
-		JsonObject partJson1 = new JsonObject();
-		partJson1.addProperty("pid", forcePlayerId);
-		partJson1.addProperty("code", "100210");
-		partJson1.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson1.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson1.addProperty("__v", 0);
-		partJson1.addProperty("count", 21);
-		partJson1.addProperty("id", "110");
-		rootArrayJson.add(partJson1);
+		List<AttrsPartsEntity> parts = attrsPartsDB.loadAll();
+		int id = 100;
+		for (AttrsPartsEntity part : parts) {
+			id = id + 1;
+			JsonObject partJson = new JsonObject();
+			partJson.addProperty("pid", forcePlayerId);
+			partJson.addProperty("code", String.valueOf(part.getPartId()));
+			partJson.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
+			partJson.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
+			partJson.addProperty("__v", 0);
+			partJson.addProperty("count", 21);
+			partJson.addProperty("id", String.valueOf(id));
+			rootArrayJson.add(partJson);
+		}
 		
-		JsonObject partJson2 = new JsonObject();
-		partJson2.addProperty("pid", forcePlayerId);
-		partJson2.addProperty("code", "100220");
-		partJson2.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson2.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson2.addProperty("__v", 0);
-		partJson2.addProperty("count", 21);
-		partJson2.addProperty("id", "120");
-		rootArrayJson.add(partJson2);
-		
-		JsonObject partJson3 = new JsonObject();
-		partJson3.addProperty("pid", forcePlayerId);
-		partJson3.addProperty("code", "100230");
-		partJson3.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson3.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson3.addProperty("__v", 0);
-		partJson3.addProperty("count", 21);
-		partJson3.addProperty("id", "130");
-		rootArrayJson.add(partJson3);
-		
-		JsonObject partJson4 = new JsonObject();
-		partJson4.addProperty("pid", forcePlayerId);
-		partJson4.addProperty("code", "100240");
-		partJson4.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson4.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson4.addProperty("__v", 0);
-		partJson4.addProperty("count", 21);
-		partJson4.addProperty("id", "140");
-		rootArrayJson.add(partJson4);
-		
-		JsonObject partJson5 = new JsonObject();
-		partJson5.addProperty("pid", forcePlayerId);
-		partJson5.addProperty("code", "100250");
-		partJson5.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson5.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson5.addProperty("__v", 0);
-		partJson5.addProperty("count", 21);
-		partJson5.addProperty("id", "150");
-		rootArrayJson.add(partJson5);
-		
-		JsonObject partJson6 = new JsonObject();
-		partJson6.addProperty("pid", forcePlayerId);
-		partJson6.addProperty("code", "100260");
-		partJson6.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson6.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson6.addProperty("__v", 0);
-		partJson6.addProperty("count", 21);
-		partJson6.addProperty("id", "160");
-		rootArrayJson.add(partJson6);
-		
-		JsonObject partJson7 = new JsonObject();
-		partJson7.addProperty("pid", forcePlayerId);
-		partJson7.addProperty("code", "100270");
-		partJson7.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson7.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson7.addProperty("__v", 0);
-		partJson7.addProperty("count", 21);
-		partJson7.addProperty("id", "170");
-		rootArrayJson.add(partJson7);
-		
-		JsonObject partJson8 = new JsonObject();
-		partJson8.addProperty("pid", forcePlayerId);
-		partJson8.addProperty("code", "100280");
-		partJson8.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson8.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson8.addProperty("__v", 0);
-		partJson8.addProperty("count", 21);
-		partJson8.addProperty("id", "180");
-		rootArrayJson.add(partJson8);
-		
-		JsonObject partJson9 = new JsonObject();
-		partJson9.addProperty("pid", forcePlayerId);
-		partJson9.addProperty("code", "100290");
-		partJson9.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson9.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson9.addProperty("__v", 0);
-		partJson9.addProperty("count", 21);
-		partJson9.addProperty("id", "190");
-		rootArrayJson.add(partJson9);
-		
-		JsonObject partJson10 = new JsonObject();
-		partJson10.addProperty("pid", forcePlayerId);
-		partJson10.addProperty("code", "100300");
-		partJson10.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson10.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson10.addProperty("__v", 0);
-		partJson10.addProperty("count", 21);
-		partJson10.addProperty("id", "200");
-		rootArrayJson.add(partJson10);
-		
+		// Disassembler item
 		JsonObject dismJson = new JsonObject();
 		dismJson.addProperty("pid", forcePlayerId);
 		dismJson.addProperty("code", "90001");
 		dismJson.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
 		dismJson.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
 		dismJson.addProperty("__v", 0);
-		dismJson.addProperty("count", 10000);
+		dismJson.addProperty("count", 20000);
 		dismJson.addProperty("id", "300");
 		rootArrayJson.add(dismJson);
 		
+		// Engine material item
+		JsonObject engineMatJson = new JsonObject();
+		engineMatJson.addProperty("pid", forcePlayerId);
+		engineMatJson.addProperty("code", "10003");
+		engineMatJson.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
+		engineMatJson.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
+		engineMatJson.addProperty("__v", 0);
+		engineMatJson.addProperty("count", 20000);
+		engineMatJson.addProperty("id", "310");
+		rootArrayJson.add(engineMatJson);
+		
 		return rootArrayJson.toString();
+	}
+	
+	/**
+	 * Change performance part of the vehicle, according to part type
+	 */
+	public void changePerformancePart(PlayerVehicleEntity vehicle, String partType, int itemId) {
+		switch(partType) {
+		case "engine":
+			vehicle.setPartEngine(itemId); break;
+		case "transmission":
+			vehicle.setPartTransmission(itemId); break;
+		case "nitroTank":
+			vehicle.setPartNitroTank(itemId); break;
+		case "bumper":
+			vehicle.setPartBumper(itemId); break;
+		case "frame":
+			vehicle.setPartFrame(itemId); break;
+		}
 	}
 	
 	public int getPendingItemId() {

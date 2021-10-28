@@ -9,7 +9,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ATTRSPARTSINFO")
 @NamedQueries({ 
-	@NamedQuery(name = "AttrsPartsInfoEntity.getPartInfo", query = "SELECT obj FROM AttrsPartsInfoEntity obj WHERE obj.partId = :partId") //
+	@NamedQuery(name = "AttrsPartsInfoEntity.getPartInfo", query = "SELECT obj FROM AttrsPartsInfoEntity obj WHERE obj.partId = :partId"), //
+	@NamedQuery(name = "AttrsPartsInfoEntity.findPart", query = "SELECT obj FROM AttrsPartsInfoEntity obj WHERE obj.partType = :partType AND obj.clazz = :clazz AND obj.partLevel = :partLevel") //
 })
 public class AttrsPartsInfoEntity {
 

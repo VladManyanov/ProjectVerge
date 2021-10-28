@@ -12,8 +12,10 @@ import com.pverge.core.be.EdgeInventoryBE;
 import com.pverge.core.be.EdgePlayersBE;
 import com.pverge.core.be.EdgeSocketVehiclesBE;
 import com.pverge.core.be.EdgeVehiclesBE;
+import com.pverge.core.db.AttrsPartsInfoDBLoader;
 import com.pverge.core.db.CarCustomizationDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
+import com.pverge.core.db.dbobjects.AttrsPartsInfoEntity;
 import com.pverge.core.db.dbobjects.CarCustomizationEntity;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 
@@ -36,6 +38,8 @@ public class EdgeInventory {
 	private PlayerVehicleDBLoader playerVehicleDB;
 	@EJB
 	private EdgeVehiclesBE edgeVehiclesBE;
+	@EJB
+	private AttrsPartsInfoDBLoader attrsPartsInfoDBLoader;
 	
 	private static String forcePlayerId = "33";
 	// TODO 
@@ -111,7 +115,7 @@ public class EdgeInventory {
 		String itemId = requestJson.get("partCode").getAsString();
 		
 		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(Integer.parseInt(vehicleId));
-		vehicle.setPartEngine(Integer.parseInt(itemId));
+		edgeInventoryBE.changePerformancePart(vehicle, partType, Integer.parseInt(itemId));
 		playerVehicleDB.update(vehicle);
 		
 		String updatedCar = edgeVehiclesBE.prepareVehicleData(vehicle).toString();
@@ -124,6 +128,49 @@ public class EdgeInventory {
 	}
 	
 	/**
+	 * Upgrade installed performance part on car request
+	 * @return Vehicle data
+	 */
+	@POST
+	@Path("vehicles/{vehicleId}/parts/{partType}/@upgrade")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiPartsUpgrade(String requestBody, @PathParam(value = "vehicleId") String vehicleId,
+			@PathParam(value = "partType") String partType) {
+		// TODO Work with exceptions - wrong part level, un-existing perf part, detect car class
+		//JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
+		//String itemId = requestJson.get("partCode").getAsString();
+		
+		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(Integer.parseInt(vehicleId));
+		AttrsPartsInfoEntity currentPart = null;
+		switch(partType) {
+		case "engine":
+			currentPart = attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartEngine()); break;
+		case "transmission":
+			currentPart = attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartTransmission()); break;
+		case "nitroTank":
+			currentPart = attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartNitroTank()); break;
+		case "bumper":
+			currentPart = attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartBumper()); break;
+		case "frame":
+			currentPart = attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartFrame()); break;
+		}
+		int newPart = attrsPartsInfoDBLoader.findPart(partType, "A", currentPart.getPartLevel() + 1).getPartId();
+		edgeInventoryBE.changePerformancePart(vehicle, partType, newPart);
+		playerVehicleDB.update(vehicle);
+		
+		JsonObject updatedCar = edgeVehiclesBE.prepareVehicleData(vehicle);
+		JsonObject objJson = new JsonObject();
+		objJson.add("vehicle", updatedCar);
+		objJson.addProperty("isSuccess", true);
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
+		// TODO Parts inventory status socket request
+
+		System.out.println("### [Inventory] Upgrade performance part type " + partType + " on Vehicle ID " 
+				+ vehicleId + " request from player ID " + forcePlayerId + ".");
+	    return objJson.toString();
+	}
+	
+	/**
 	 * Uninstall performance part from car request
 	 * @return Vehicle data
 	 */
@@ -132,20 +179,8 @@ public class EdgeInventory {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPartsUninstall(@PathParam(value = "vehicleId") String vehicleId,
 			@PathParam(value = "partType") String partType) {
-		
 		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(Integer.parseInt(vehicleId));
-		switch(partType) {
-		case "engine":
-			vehicle.setPartEngine(0); break;
-		case "transmission":
-			vehicle.setPartTransmission(0); break;
-		case "nitroTank":
-			vehicle.setPartNitroTank(0); break;
-		case "bumper":
-			vehicle.setPartBumper(0); break;
-		case "frame":
-			vehicle.setPartFrame(0); break;
-		}
+		edgeInventoryBE.changePerformancePart(vehicle, partType, 0);
 		playerVehicleDB.update(vehicle);
 		
 		String updatedCar = edgeVehiclesBE.prepareVehicleData(vehicle).toString();

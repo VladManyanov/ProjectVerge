@@ -28,5 +28,15 @@ public class AttrsPartsInfoDBLoader extends DBEntityBase<AttrsPartsInfoEntity> {
 		List<AttrsPartsInfoEntity> resultList = query.getResultList();
 		return !resultList.isEmpty() ? resultList.get(0) : null;
 	}
+	
+	public AttrsPartsInfoEntity findPart(String partType, String clazz, int partLevel) {
+		TypedQuery<AttrsPartsInfoEntity> query = entityManager.createNamedQuery("AttrsPartsInfoEntity.findPart", AttrsPartsInfoEntity.class);
+		query.setParameter("partType", partType);
+		query.setParameter("clazz", clazz);
+		query.setParameter("partLevel", partLevel);
+		
+		List<AttrsPartsInfoEntity> resultList = query.getResultList();
+		return !resultList.isEmpty() ? resultList.get(0) : null;
+	}
 
 }

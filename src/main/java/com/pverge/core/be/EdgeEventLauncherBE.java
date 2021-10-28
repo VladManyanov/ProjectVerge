@@ -79,9 +79,9 @@ public class EdgeEventLauncherBE {
 	 */
 	public int getLapsAmount(String level) {
 		int laps = 1;
-		if (level.contentEquals("EDGE_CampingGround") || level.contentEquals("EDGE_ShanghaiTrack") || level.contentEquals("EDGE_DuskCoast") || 
+		if (level.contentEquals("EDGE_CampingGround") || level.contentEquals("EDGE_ShanghaiTrack") ||
 				level.contentEquals("EDGE_Moebius") || level.contentEquals("EDGE_DesertCircuit") || 
-				level.contentEquals("EDGE_WesternTown") || level.contentEquals("EDGE_DowntownCircuit")
+				level.contentEquals("EDGE_WesternTown") || level.contentEquals("EDGE_DuskCoast")
 				|| level.contentEquals("EDGE_DriftMode") || level.contentEquals("EDGE_BaysideHills")) {
 			laps = 2;
 		}

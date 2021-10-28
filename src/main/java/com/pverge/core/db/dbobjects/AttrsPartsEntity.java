@@ -12,7 +12,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ATTRSPARTS")
 @NamedQueries({ 
-	@NamedQuery(name = "AttrsPartsEntity.getPart", query = "SELECT obj FROM AttrsPartsEntity obj WHERE obj.partId = :partId") //
+	@NamedQuery(name = "AttrsPartsEntity.getPart", query = "SELECT obj FROM AttrsPartsEntity obj WHERE obj.partId = :partId"), //
+	@NamedQuery(name = "AttrsPartsEntity.loadAll", query = "SELECT obj FROM AttrsPartsEntity obj") //
 })
 public class AttrsPartsEntity {
 
@@ -25,7 +26,7 @@ public class AttrsPartsEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "INFOID", referencedColumnName = "PARTID", foreignKey = @ForeignKey(name = "INFO_FK"))
-	private AttrsPartsInfoEntity attrsPartsInfoTorque;
+	private AttrsPartsInfoEntity attrsPartsInfo;
 	
 	// Top Speed
 	private float speedLimiter;
@@ -59,6 +60,13 @@ public class AttrsPartsEntity {
 	}
 	public void setAttrsPartsTorque(AttrsPartsTorqueEntity attrsPartsTorque) {
 		this.attrsPartsTorque = attrsPartsTorque;
+	}
+	
+	public AttrsPartsInfoEntity getAttrsPartsInfo() {
+		return attrsPartsInfo;
+	}
+	public void setAttrsPartsTorque(AttrsPartsInfoEntity attrsPartsInfo) {
+		this.attrsPartsInfo = attrsPartsInfo;
 	}
 	
 	public float getSpeedLimiter() {

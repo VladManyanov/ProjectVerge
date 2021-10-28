@@ -28,5 +28,10 @@ public class AttrsPartsDBLoader extends DBEntityBase<AttrsPartsEntity> {
 		List<AttrsPartsEntity> resultList = query.getResultList();
 		return !resultList.isEmpty() ? resultList.get(0) : null;
 	}
+	
+	public List<AttrsPartsEntity> loadAll() {
+		TypedQuery<AttrsPartsEntity> query = entityManager.createNamedQuery("AttrsPartsEntity.loadAll", AttrsPartsEntity.class);
+		return query.getResultList();
+	}
 
 }
