@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgePresenceBE;
+import com.pverge.core.be.EdgeVehiclesBE;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerEntity;
@@ -27,6 +28,8 @@ public class EdgeRoom2 {
 	private PlayerVehicleDBLoader playerVehicleDB;
 	@EJB
 	private EdgePresenceBE edgePresenceBE;
+	@EJB
+	private EdgeVehiclesBE edgeVehiclesBE;
 	
 	private static String forcePlayerId = "33";
 	// TODO Learn more about room2summaries
@@ -43,7 +46,6 @@ public class EdgeRoom2 {
 		String gameModeMeta = requestJson.get("gameMode").getAsString();
 		
 		PlayerEntity playerEntity = playerDB.getPlayer(forcePlayerId);
-		PlayerVehicleEntity playerVehicleEntity = playerVehicleDB.getVehicleByVid(playerEntity.getVid());
 		edgePresenceBE.changeRoomProperties(requestJson.get("maxPlayer").getAsInt(), gameModeMeta);
 		edgePresenceBE.setPlayerActivity("room2superpeer", 30, forcePlayerId);
 		
@@ -83,44 +85,8 @@ public class EdgeRoom2 {
 		playersArray.add(p1Json);
 		rootJson.add("players", playersArray);
 		
-		JsonObject carJson = new JsonObject();
-		carJson.addProperty("id", String.valueOf(playerVehicleEntity.getId())); // vehicle id
-		carJson.addProperty("code", playerVehicleEntity.getVcode());
-		carJson.addProperty("grade", playerVehicleEntity.getGrade());
-		carJson.addProperty("ovr", 573);
-		
-		JsonObject carParts = new JsonObject();
-		carParts.addProperty("frame", playerVehicleEntity.getPartFrame());
-		carParts.addProperty("bumper", playerVehicleEntity.getPartBumper());
-		carParts.addProperty("nitroTank", playerVehicleEntity.getPartNitroTank());
-		carParts.addProperty("transmission", playerVehicleEntity.getPartTransmission());
-		carParts.addProperty("engine", playerVehicleEntity.getPartEngine());
-		carJson.add("parts", carParts);
-		
-		carJson.addProperty("createdat", "2017-11-12T18:42:19.874Z");
-		carJson.addProperty("updatedat", "2020-08-12T20:42:53.861Z");
-		carJson.addProperty("__v", 1);
-		JsonArray arraySteering = new JsonArray();
-		carJson.add("steering", arraySteering);
-		carJson.addProperty("depotStatus", 1);
-		
-		JsonObject carPaint = new JsonObject();
-		carPaint.addProperty("wheelCode", playerVehicleEntity.getWheelColor());
-		carPaint.addProperty("wrapCode", playerVehicleEntity.getWrapCode());
-		carPaint.addProperty("colorCode", playerVehicleEntity.getColorCode());
-		carJson.add("paint", carPaint);
-		
-		JsonObject carStatus = new JsonObject();
-		carStatus.addProperty("topSpeed", 562);
-		carStatus.addProperty("acceleration", 569);
-		carStatus.addProperty("nitroCapacity", 559);
-		carStatus.addProperty("strength", 409);
-		carStatus.addProperty("durability", 397);
-		carJson.add("status", carStatus);
-		
-		carJson.addProperty("igr", false);
-		p1Json.add("vehicle", carJson);
-		
+		p1Json.add("vehicle", edgeVehiclesBE.prepareVehicleData(
+				playerVehicleDB.getVehicleByVid(playerEntity.getVid())));
 		p1Json.addProperty("status", "JOIN");
 		p1Json.addProperty("team", 0);
 		p1Json.addProperty("clientVersion", 0);

@@ -21,6 +21,8 @@ public class EdgeVehiclesBE {
 	@EJB
 	private PlayerVehicleDBLoader playerVehicleDB;
 	
+	private static String forcePlayerId = "33";
+	
 	/**
 	 * Common player data, same on several requests
 	 * @return Player data
@@ -30,51 +32,60 @@ public class EdgeVehiclesBE {
 		
 		List<PlayerVehicleEntity> dbVehicles = playerVehicleDB.getPlayerVehicles(pid);
 		for (PlayerVehicleEntity vehicle : dbVehicles) {
-			JsonObject carJson = new JsonObject();
-			rootArrayJson.add(carJson);
-			
-			carJson.addProperty("embededId", String.valueOf(vehicle.getId())); // on 1 more than Id value for some reason
-			carJson.addProperty("pid", pid);
-			carJson.addProperty("code", vehicle.getVcode()); 
-			carJson.addProperty("createdat", "2017-11-12T18:42:19.874Z");
-			carJson.addProperty("updatedat", "2020-08-12T20:42:53.861Z");
-			carJson.addProperty("__v", 1); // Unknown parameter
-			JsonArray arraySteering = new JsonArray();
-			carJson.add("steering", arraySteering);
-			carJson.addProperty("depotStatus", 1);
-			
-			JsonObject carPaint = new JsonObject();
-			carPaint.addProperty("wheelCode", vehicle.getWheelColor());
-			carPaint.addProperty("wrapCode", vehicle.getWrapCode());
-			carPaint.addProperty("colorCode", vehicle.getColorCode());
-			carJson.add("paint", carPaint);
-			
-			JsonObject carParts = new JsonObject();
-			carParts.addProperty("frame", vehicle.getPartFrame());
-			carParts.addProperty("bumper", vehicle.getPartBumper());
-			carParts.addProperty("nitroTank", vehicle.getPartNitroTank());
-			carParts.addProperty("transmission", vehicle.getPartTransmission());
-			carParts.addProperty("engine", vehicle.getPartEngine());
-			carJson.add("parts", carParts);
-			
-			carJson.addProperty("favorite", false);
-			carJson.addProperty("grade", vehicle.getGrade());
-			carJson.addProperty("__v", 1);
-			carJson.addProperty("id", String.valueOf(vehicle.getId())); // vehicle id
-			
-			JsonObject carStatus = new JsonObject();
-			carStatus.addProperty("topSpeed", 562);
-			carStatus.addProperty("acceleration", 569);
-			carStatus.addProperty("nitroCapacity", 559);
-			carStatus.addProperty("strength", 409);
-			carStatus.addProperty("durability", 397);
-			carJson.add("status", carStatus);
-			
-			carJson.addProperty("ovr", 573);
-			carJson.addProperty("clazz", "A");
+			rootArrayJson.add(prepareVehicleData(vehicle));
 		}
-		
 		return rootArrayJson.toString();
+	}
+	
+	/**
+	 * Prepare common vehicle data format
+	 * @return Vehicle data
+	 */
+	public JsonObject prepareVehicleData(PlayerVehicleEntity vehicle) {
+		JsonObject carJson = new JsonObject();
+			
+		carJson.addProperty("embededId", String.valueOf(vehicle.getId())); // on 1 more than Id value for some reason
+		carJson.addProperty("pid", forcePlayerId);
+		carJson.addProperty("code", vehicle.getVcode()); 
+		carJson.addProperty("createdat", "2017-11-12T18:42:19.874Z");
+		carJson.addProperty("updatedat", "2020-08-12T20:42:53.861Z");
+		carJson.addProperty("__v", 1); // Unknown parameter
+		JsonArray arraySteering = new JsonArray();
+		carJson.add("steering", arraySteering);
+		carJson.addProperty("depotStatus", 1);
+			
+		JsonObject carPaint = new JsonObject();
+		carPaint.addProperty("wheelCode", vehicle.getWheelColor());
+		carPaint.addProperty("wrapCode", vehicle.getWrapCode());
+		carPaint.addProperty("colorCode", vehicle.getColorCode());
+		carJson.add("paint", carPaint);
+			
+		JsonObject carParts = new JsonObject();
+		carParts.addProperty("frame", vehicle.getPartFrame());
+		carParts.addProperty("bumper", vehicle.getPartBumper());
+		carParts.addProperty("nitroTank", vehicle.getPartNitroTank());
+		carParts.addProperty("transmission", vehicle.getPartTransmission());
+		carParts.addProperty("engine", vehicle.getPartEngine());
+		carJson.add("parts", carParts);
+			
+		carJson.addProperty("favorite", false);
+		carJson.addProperty("grade", vehicle.getGrade());
+		carJson.addProperty("__v", 1);
+		carJson.addProperty("id", String.valueOf(vehicle.getId())); // vehicle id
+			
+		JsonObject carStatus = new JsonObject();
+		carStatus.addProperty("topSpeed", 562);
+		carStatus.addProperty("acceleration", 569);
+		carStatus.addProperty("nitroCapacity", 559);
+		carStatus.addProperty("strength", 409);
+		carStatus.addProperty("durability", 397);
+		carJson.add("status", carStatus);
+			
+		carJson.addProperty("ovr", 573);
+		carJson.addProperty("igr", false);
+		carJson.addProperty("clazz", "A");
+		
+		return carJson;
 	}
 	
 	/**

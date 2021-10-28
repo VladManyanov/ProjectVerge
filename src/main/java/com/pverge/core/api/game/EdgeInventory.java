@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgeInventoryBE;
 import com.pverge.core.be.EdgePlayersBE;
 import com.pverge.core.be.EdgeSocketVehiclesBE;
+import com.pverge.core.be.EdgeVehiclesBE;
 import com.pverge.core.db.CarCustomizationDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.CarCustomizationEntity;
@@ -33,6 +34,8 @@ public class EdgeInventory {
 	private CarCustomizationDBLoader carCustomizationDB;
 	@EJB
 	private PlayerVehicleDBLoader playerVehicleDB;
+	@EJB
+	private EdgeVehiclesBE edgeVehiclesBE;
 	
 	private static String forcePlayerId = "33";
 	// TODO 
@@ -45,20 +48,8 @@ public class EdgeInventory {
 	@Path("parts")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiInventoryParts(@HeaderParam("_") String someValue) {
-		JsonArray rootArrayJson = new JsonArray();
-		JsonObject partJson = new JsonObject();
-		rootArrayJson.add(partJson);
-		
-		partJson.addProperty("pid", forcePlayerId);
-		partJson.addProperty("code", "10003");
-		partJson.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
-		partJson.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
-		partJson.addProperty("__v", 0);
-		partJson.addProperty("count", 1627);
-		partJson.addProperty("id", "5a0898351b50460006a4fcb5");
-		
 		System.out.println("### [Inventory] Player Parts request from player ID " + forcePlayerId + ".");
-	    return rootArrayJson.toString();
+	    return edgeInventoryBE.fetchFakePerformanceInventory();
 	}
 	
 	/**
@@ -105,6 +96,65 @@ public class EdgeInventory {
 		
 		System.out.println("### [Inventory] Blueprints request from player ID " + forcePlayerId + ".");
 	    return jsonStr;
+	}
+	
+	/**
+	 * Install performance part from inventory request
+	 * @return Vehicle data
+	 */
+	@POST
+	@Path("vehicles/{vehicleId}/parts/{partType}/@install")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiPartsInstall(String requestBody, @PathParam(value = "vehicleId") String vehicleId,
+			@PathParam(value = "partType") String partType) {
+		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
+		String itemId = requestJson.get("partCode").getAsString();
+		
+		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(Integer.parseInt(vehicleId));
+		vehicle.setPartEngine(Integer.parseInt(itemId));
+		playerVehicleDB.update(vehicle);
+		
+		String updatedCar = edgeVehiclesBE.prepareVehicleData(vehicle).toString();
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
+		// TODO Parts inventory status socket request
+
+		System.out.println("### [Inventory] Install performance part ID " + itemId + " on Vehicle ID " 
+				+ vehicleId + " request from player ID " + forcePlayerId + ".");
+	    return updatedCar;
+	}
+	
+	/**
+	 * Uninstall performance part from car request
+	 * @return Vehicle data
+	 */
+	@POST
+	@Path("vehicles/{vehicleId}/parts/{partType}/@uninstall")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiPartsUninstall(@PathParam(value = "vehicleId") String vehicleId,
+			@PathParam(value = "partType") String partType) {
+		
+		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(Integer.parseInt(vehicleId));
+		switch(partType) {
+		case "engine":
+			vehicle.setPartEngine(0); break;
+		case "transmission":
+			vehicle.setPartTransmission(0); break;
+		case "nitroTank":
+			vehicle.setPartNitroTank(0); break;
+		case "bumper":
+			vehicle.setPartBumper(0); break;
+		case "frame":
+			vehicle.setPartFrame(0); break;
+		}
+		playerVehicleDB.update(vehicle);
+		
+		String updatedCar = edgeVehiclesBE.prepareVehicleData(vehicle).toString();
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
+		// TODO Parts inventory status socket request
+
+		System.out.println("### [Inventory] Uninstall performance part " + partType + " from Vehicle ID " 
+				+ vehicleId + " request from player ID " + forcePlayerId + ".");
+	    return updatedCar;
 	}
 	
 	/**
