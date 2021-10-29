@@ -44,5 +44,36 @@ public class EdgeRanked {
 		System.out.println("### [Ranked] Current Season information request from player ID " + forcePlayerId + ".");
 	    return rootJson.toString();
 	}
+	
+	/**
+	 * Get current season tier ranks request
+	 */
+	@GET
+	@Path("ranked2/seasons/current/{gameModeMeta}/tierrankinfo")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiRankedTierInfo(@PathParam(value = "gameModeMeta") String gameModeMeta) {
+		JsonObject rootJson = new JsonObject();
+		JsonObject tierPlayerJson = new JsonObject();
+		rootJson.add("tierPlayerCount", tierPlayerJson);
+		rootJson.addProperty("totalPlayerCount", 0);
+		
+		System.out.println("### [Ranked] Current Season tier ranks request from player ID " + forcePlayerId + ".");
+	    return rootJson.toString();
+	}
+	
+	/**
+	 * Get current season top players request
+	 */
+	@GET
+	@Path("ranked2/seasons/current/{gameModeMeta}/topplayerinfo")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiRankedTopPlayers(@PathParam(value = "gameModeMeta") String gameModeMeta) {
+		JsonObject rootJson = new JsonObject();
+		JsonObject topPlayersJson = new JsonObject();
+		rootJson.add("top5", topPlayersJson);
+		
+		System.out.println("### [Ranked] Current Season top players request from player ID " + forcePlayerId + ".");
+	    return rootJson.toString();
+	}
     
 }

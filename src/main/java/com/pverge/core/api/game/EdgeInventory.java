@@ -57,22 +57,56 @@ public class EdgeInventory {
 	}
 	
 	/**
+	 * Player inventory request
+	 * @return Inventory
+	 */
+	@GET
+	@Path("inventories/{playerId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiInventories(@HeaderParam("_") String someValue, @PathParam(value = "playerId") String playerId) {
+		JsonObject rootJson = new JsonObject();
+		rootJson.addProperty("__v", 8);
+		
+		JsonArray itemsArrayJson = new JsonArray();
+		rootJson.add("items", itemsArrayJson);
+		rootJson.addProperty("id", playerId);
+		
+		System.out.println("### [Inventory] Main inventory request from player ID " + playerId + ".");
+	    return rootJson.toString();
+	}
+	
+	/**
+	 * Player inbox items request
+	 * @return Inbox
+	 */
+	@GET
+	@Path("inboxes/{playerId}/packages")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiInbox(@HeaderParam("_") String someValue, @PathParam(value = "playerId") String playerId) {
+		JsonArray rootArray = new JsonArray();;
+		
+		System.out.println("### [Inventory] Main inbox request from player ID " + playerId + ".");
+	    return rootArray.toString();
+	}
+	
+	/**
 	 * Player customization inventory request
 	 * @return Inventory
 	 */
 	@GET
 	@Path("tuning/inventories/{playerId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String apiTuningInventories(@HeaderParam("_") String someValue) {
+	public String apiTuningInventories(@HeaderParam("_") String someValue, 
+			@PathParam(value = "playerId") String playerId) {
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("__v", 8);
 		rootJson.addProperty("checkedat", "2021-10-05T02:36:43.446Z");
 		
 		JsonArray itemsArrayJson = new JsonArray();
 		rootJson.add("items", itemsArrayJson);
-		rootJson.addProperty("id", forcePlayerId);
+		rootJson.addProperty("id", playerId);
 		
-		System.out.println("### [Inventory] Visual customization inventory request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Inventory] Visual customization inventory request from player ID " + playerId + ".");
 	    return rootJson.toString();
 	}
 	

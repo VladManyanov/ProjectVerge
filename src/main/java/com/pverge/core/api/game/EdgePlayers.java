@@ -129,10 +129,53 @@ public class EdgePlayers {
 	@POST
 	@Path("snippets/players")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String apiPlayerSnippet() {
+	public String apiPlayerSnippet(String requestBody) {
+		JsonArray requestJson = new Gson().fromJson(requestBody, JsonArray.class);
 		PlayerEntity playerEntity = playerDB.getPlayer(forcePlayerId);
 		
 		JsonArray rootArrayJson = new JsonArray();
+		if (!requestJson.get(0).getAsString().contentEquals("33")) {
+			for (int i = 1; i < 6; i++) { // Attempt to set AI cars for freeroam races, not working yet
+				JsonObject aiJson = new JsonObject();
+				rootArrayJson.add(aiJson);
+				
+				aiJson.addProperty("pid", "RACEAI_1_" + String.valueOf(i));
+				aiJson.addProperty("name", "AIguy");
+				aiJson.addProperty("level", 63);
+				aiJson.addProperty("avatar", "");
+				aiJson.addProperty("igr", false);
+				aiJson.addProperty("vip", false);
+				aiJson.addProperty("isAi", true);
+				aiJson.addProperty("vid", String.valueOf(playerEntity.getVid()));
+				aiJson.addProperty("vCode", playerVehicleDB.getVehicleByVid(playerEntity.getVid()).getVcode()); // vehicle model code
+				aiJson.addProperty("ovr", 707);
+				aiJson.addProperty("loginDate", "2021-09-19T12:15:03.597Z");
+				aiJson.addProperty("online", true);
+				aiJson.addProperty("clanId", "");
+				
+				JsonObject rankedJson = new JsonObject();
+				aiJson.add("ranked", rankedJson);
+				
+				JsonObject gm1Json = new JsonObject();
+				gm1Json.addProperty("fp", 1219);
+				gm1Json.addProperty("currSeasonId", "60fe8dc1d512c69eea50797c");
+				rankedJson.add("SPEED1ON1", gm1Json);
+				
+				JsonObject gm2Json = new JsonObject();
+				gm2Json.addProperty("medalTier", 11);
+				gm2Json.addProperty("medalSeasonId", "600fcc2fe50540f3c5c8d151");
+				gm2Json.addProperty("fp", 2142);
+				gm2Json.addProperty("currSeasonId", "60fe8dc1d512c69eea50797c");
+				rankedJson.add("SPEEDINDIVIDUAL", gm2Json);
+				
+				rankedJson.addProperty("currSeasonId", "59c8b6325d72a200075de6a1");
+				rankedJson.addProperty("fp", 600);
+				rankedJson.addProperty("medalTier", 0);
+				
+				aiJson.addProperty("updatedAt", "2021-09-19T12:15:03.599Z");
+			}
+		}
+		
 		JsonObject playerJson = new JsonObject();
 		rootArrayJson.add(playerJson);
 		

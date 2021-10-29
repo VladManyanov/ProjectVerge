@@ -123,15 +123,10 @@ public class EdgeRoom2 {
 	@POST
 	@Path("match2/superpeer/@start")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String apiRoom2SuperPeerStart() {
-		JsonObject rootJson = new JsonObject();
-		rootJson.addProperty("host", "");
-		rootJson.addProperty("port", 25200);
-		rootJson.addProperty("securityKey", "");
-		rootJson.addProperty("matchId", 1);
-		
-		System.out.println("### [Room] Room ID start (Super Peer) request from player ID " + forcePlayerId + ".");
-	    return rootJson.toString();
+	public Response apiRoom2SuperPeerStart(String requestBody) {
+		System.out.println("### [Room] Room ID start (Super Peer) request (Data: " + requestBody + 
+				") from player ID " + forcePlayerId + ".");
+	    return Response.ok().build();
 	}
 	
 	/**

@@ -43,14 +43,19 @@ public class EdgeShop {
 	// TODO 
 	
 	/**
-	 * Shop content by category request
+	 * Shop content by Selling Shop request
 	 * @return Items array
 	 */
 	@GET
 	@Path("shop/products")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String apiShopProducts(@QueryParam("sellingShop") String sellingShop) {
+	public String apiShopProductsTuning(@QueryParam("sellingShop") String sellingShop,
+			@QueryParam("category") String category) {
 		JsonArray rootArrayJson = new JsonArray();
+		if (category != null) { // Another shop request
+			System.out.println("### [Shop] Shop (category: " + category + ") request from player ID " + forcePlayerId + ".");
+		    return rootArrayJson.toString();
+		}
 		List<CarCustomizationEntity> loadAllItems = carCustomizationDB.loadAllItems();
 		
 		int order = 0;
@@ -97,7 +102,21 @@ public class EdgeShop {
 			order++;
 		}
 		
-		System.out.println("### [Shop] Shop (category: " + sellingShop + ") request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Shop] Shop (Selling Shop: " + sellingShop + ") request from player ID " + forcePlayerId + ".");
+	    return rootArrayJson.toString();
+	}
+	
+	/**
+	 * Shop content ("best" category) request
+	 * @return Items array
+	 */
+	@GET
+	@Path("shop/bestproducts")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiShopBestProducts() {
+		JsonArray rootArrayJson = new JsonArray();
+		
+		System.out.println("### [Shop] Shop best products request from player ID " + forcePlayerId + ".");
 	    return rootArrayJson.toString();
 	}
 	

@@ -274,7 +274,7 @@ public class EdgeEventLauncherBE {
 	}
 	
 	/**
-	 * Get correct track level resource name
+	 * Send updated current player vehicle request
 	 */
 	public void changeRecentVehicleSIO(String pid, String vid) {
 		ResourceListDataObject recentRootData = new ResourceListDataObject();

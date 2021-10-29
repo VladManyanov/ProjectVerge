@@ -59,5 +59,18 @@ public class EdgeMarket {
 		System.out.println("### [Market] Get vehicle values request from player ID " + forcePlayerId + ".");
 	    return rootArrayJson.toString();
 	}
+	
+	/**
+	 * Market offers request, empty on real server
+	 */
+	@GET
+	@Path("market2/offers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiMarketOffers() {
+		JsonArray rootArrayJson = new JsonArray();
+		
+		System.out.println("### [Market] Get offers request from player ID " + forcePlayerId + ".");
+	    return rootArrayJson.toString();
+	}
     
 }

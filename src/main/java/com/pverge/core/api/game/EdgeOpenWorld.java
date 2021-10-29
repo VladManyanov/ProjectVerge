@@ -64,6 +64,18 @@ public class EdgeOpenWorld {
 	}
 	
 	/**
+	 * Stop current mission request
+	 */
+	@POST
+	@Path("openworld/missions/{playerId}/@end")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response apiOWEndMission(@PathParam(value = "playerId") String playerId) {
+		// TODO Request sends the code and isAbandoned status
+		System.out.println("### [Open World] Stop current mission request from player ID " + playerId + ".");
+	    return Response.ok().build();
+	}
+	
+	/**
 	 * Player OW campaign status request. Code 70 means Level of campaign progress (which is finished)
 	 */
 	@GET
