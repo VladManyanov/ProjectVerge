@@ -1,9 +1,12 @@
 package com.pverge.core.db.dbobjects;
 
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -20,6 +23,10 @@ public class PlayerVehicleEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
+	@ManyToOne
+	@JoinColumn(name = "STEERING", referencedColumnName = "VID", foreignKey = @ForeignKey(name = "STEERING_FK"))
+	private VehicleSteeringEntity vehicleSteering;
 
 	private String pid;
 	private int vcode;
@@ -39,6 +46,13 @@ public class PlayerVehicleEntity {
 	}
 	public void setId(String id) {
 		this.id = Integer.parseInt(id);
+	}
+	
+	public VehicleSteeringEntity getSteering() {
+		return vehicleSteering;
+	}
+	public void setSteering(VehicleSteeringEntity vehicleSteering) {
+		this.vehicleSteering = vehicleSteering;
 	}
 
 	public String getPid() {

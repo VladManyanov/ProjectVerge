@@ -153,7 +153,7 @@ public class EdgeInventory {
 		playerVehicleDB.update(vehicle);
 		
 		String updatedCar = edgeVehiclesBE.prepareVehicleData(vehicle).toString();
-		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId, "/asset/vehicles/update");
 		// TODO Parts inventory status socket request
 
 		System.out.println("### [Inventory] Install performance part ID " + itemId + " on Vehicle ID " 
@@ -196,7 +196,7 @@ public class EdgeInventory {
 		JsonObject objJson = new JsonObject();
 		objJson.add("vehicle", updatedCar);
 		objJson.addProperty("isSuccess", true);
-		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId, "/asset/vehicles/update");
 		// TODO Parts inventory status socket request
 
 		System.out.println("### [Inventory] Upgrade performance part type " + partType + " on Vehicle ID " 
@@ -218,7 +218,7 @@ public class EdgeInventory {
 		playerVehicleDB.update(vehicle);
 		
 		String updatedCar = edgeVehiclesBE.prepareVehicleData(vehicle).toString();
-		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId, "/asset/vehicles/update");
 		// TODO Parts inventory status socket request
 
 		System.out.println("### [Inventory] Uninstall performance part " + partType + " from Vehicle ID " 
@@ -339,7 +339,7 @@ public class EdgeInventory {
 		
 		mainObject.addProperty("id", "615bbfe64bc9a149bf38b8db");
 		edgeInventoryBE.prepareInboxItemChangeSIO(playerId, itemId);
-		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId);
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId, "/asset/vehicles/update");
 		
 		System.out.println("### [Inventory] Use inbox item request from player ID " + playerId + ".");
 	    return rootArray.toString();
@@ -369,7 +369,7 @@ public class EdgeInventory {
 			wrapCode = 0; break;
 		}
 		playerVehicleDB.setCustomization(vid, colorCode, wheelColor, wrapCode);
-		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(playerId);
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(playerId, "/asset/vehicles/update");
 		
 		System.out.println("### [Inventory] Remove customization item ID " + itemId + " request from player ID " + playerId + ".");
 	    return Response.ok().build();

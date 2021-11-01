@@ -4,9 +4,17 @@ import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgePlayersBE;
+import com.pverge.core.be.EdgeSocketVehiclesBE;
 import com.pverge.core.be.EdgeVehiclesBE;
+import com.pverge.core.db.PlayerVehicleDBLoader;
+import com.pverge.core.db.VehicleSteeringDBLoader;
+import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
+import com.pverge.core.db.dbobjects.VehicleSteeringEntity;
+import com.pverge.core.socket.dataobjects.SIOAssetVehicleObjects.SteeringOpts;
 
 /**
  * Edge - Vehicles requests & management
@@ -19,6 +27,12 @@ public class EdgeVehicles {
 	private EdgeVehiclesBE edgeVehiclesBE;
 	@EJB
 	private EdgePlayersBE edgePlayersBE;
+	@EJB
+	private EdgeSocketVehiclesBE edgeSocketVehiclesBE;
+	@EJB
+	private PlayerVehicleDBLoader playerVehicleDB;
+	@EJB
+	private VehicleSteeringDBLoader vehicleSteeringDB;
 	
 	private static String forcePlayerId = "33";
 	// TODO 
@@ -60,6 +74,30 @@ public class EdgeVehicles {
 		
 		System.out.println("### [Vehicles] TT exclusive vehicles request from player ID " + forcePlayerId + ".");
 	    return rootArrayJson.toString();
+	}
+	
+	/**
+	 * Save the custom steering vehicle settings
+	 * @return Current updated vehicle
+	 */
+	@PUT
+	@Path("vehicles/{vehicleId}/steering")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String apiVehiclesSteering(String requestBody, @HeaderParam("_") String someValue, 
+			@PathParam(value = "vehicleId") String vehicleId) {
+		SteeringOpts newSteering = new Gson().fromJson(requestBody, SteeringOpts.class);
+		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(vehicleId);
+		
+		if (vehicleSteeringDB.findByVid(vehicleId) == null) {
+			edgeVehiclesBE.createDefaultSteering(vehicleId, vehicle);
+		}
+		vehicleSteeringDB.updateSteering(vehicleId, newSteering);
+		JsonObject carJson = edgeVehiclesBE.prepareVehicleData(vehicle);
+		edgeSocketVehiclesBE.prepareAssetVehicleUpdate(forcePlayerId, "/asset/vehicles/steering");
+		
+		System.out.println("### [Vehicles] Vehicle ID " + vehicleId + 
+				" new steering settings request from player ID " + forcePlayerId + ".");
+	    return carJson.toString();
 	}
 	
 }

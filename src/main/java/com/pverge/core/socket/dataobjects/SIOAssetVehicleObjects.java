@@ -2,13 +2,43 @@ package com.pverge.core.socket.dataobjects;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Socket-IO - Collection of various data objects (Vehicle asset)
  * @author Hypernucle
  */
 public class SIOAssetVehicleObjects {
 	
-	public static class Steering {}
+	public static class Steering {
+		private int code; 
+		private int val; 
+
+		public int getCode(){
+			return code; 
+		}
+		public void setCode(int input){
+			this.code = input;
+		}
+		public int getVal(){
+			return val; 
+		}
+		public void setVal(int input){
+			this.val = input;
+		}
+	}
+	
+	public static class SteeringOpts {
+		private List<Steering> steering; 
+
+		@JsonProperty("steering")
+		public List<Steering> getSteering(){
+			return steering; 
+		}
+		public void setSteering(List<Steering> input){
+			this.steering = input;
+		}
+	}
 	
 	public static class Paint {
 		private int wheelCode; 
