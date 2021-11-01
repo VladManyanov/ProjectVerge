@@ -3,10 +3,14 @@ package com.pverge.core.be;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import javax.ejb.EJB;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.google.gson.JsonObject;
+import com.pverge.core.db.PlayerDBLoader;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Initial authorization, session & token management.
@@ -15,20 +19,27 @@ import com.google.gson.JsonObject;
  */
 public class EdgeAuthorizationBE {
 
-	private static String forcePlayerId = "33";
+	@EJB
+	private PlayerDBLoader playerDB;
+	@EJB
+	private EdgeTokensBE tokensBE;
 	
 	/**
 	 * Validate player token and assign Access token.
 	 * Note: Auth methods have a difference on the initial token contents
 	 * @return Access token & Request token
 	 */
-	public String getAuthTokenParams() {
+	public String getAuthTokenParams(String username) {
 		// Token example (fake data)
 		//"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaXNoZXIiOjIsInFxaWQiOjEyMzQ1Njc" +
 		//"4OSwidHlwZXMiOlsicGMiLCJpZ3IiLCJ0ZW5jZW50Il0sInNpZCI6IjA5ODc2NTQzMjEiLCJhaWQiOiIzMyIsImNsaWVudElkIjoiMD" +
 		//"A5OTg4Nzc2NjU1NDQzMzIyMTEiLCJsdmwiOjcsImp0aSI6IjExMjIzMzQ0NTU2Njc3ODg5OSIsImV4cCI6MTYzNDY4MjUxOH0" +
 		//".os8E0L4HrRex-hieoCepNTG3o4P1HXPmEBNYM-uvRyY"
 		// last part from official server example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+//		PlayerEntity player = playerDB.findUsername(username);
+//		if (player == null) { // Create new player
+//			player = tokensBE.createNewUser(username);
+//		}
 		String token = "";
 		LocalDateTime ldt = LocalDateTime.now().plusDays(7); // Expiration date
 		try {
@@ -38,7 +49,7 @@ public class EdgeAuthorizationBE {
 		    		.withClaim("qqid", 123456789)
 		    		.withArrayClaim("types", new String[]{"pc","igr","tc"})
 		    		.withClaim("sid", "0987654321")
-		    		.withClaim("aid", forcePlayerId)
+		    		.withClaim("aid", "33")
 		    		.withClaim("clientId", "00998877665544332211")
 		    		.withClaim("lvl", 7)
 		    		.withClaim("jti", "112233445566778899")
@@ -52,6 +63,7 @@ public class EdgeAuthorizationBE {
     	rootJson.addProperty("refresh_token", token); 
     	rootJson.addProperty("token_type", "Bearer"); 
     	
+//    	tokensBE.savePlayerToken(token, player.getPid());
     	return rootJson.toString();
 	}
 }

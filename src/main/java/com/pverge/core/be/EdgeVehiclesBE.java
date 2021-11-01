@@ -44,7 +44,7 @@ public class EdgeVehiclesBE {
 	public JsonObject prepareVehicleData(PlayerVehicleEntity vehicle) {
 		JsonObject carJson = new JsonObject();
 			
-		carJson.addProperty("embededId", String.valueOf(vehicle.getId())); // on 1 more than Id value for some reason
+		carJson.addProperty("embededId", vehicle.getId()); // on 1 more than Id value for some reason
 		carJson.addProperty("pid", forcePlayerId);
 		carJson.addProperty("code", vehicle.getVcode()); 
 		carJson.addProperty("createdat", "2017-11-12T18:42:19.874Z");
@@ -71,7 +71,7 @@ public class EdgeVehiclesBE {
 		carJson.addProperty("favorite", false);
 		carJson.addProperty("grade", vehicle.getGrade());
 		carJson.addProperty("__v", 1);
-		carJson.addProperty("id", String.valueOf(vehicle.getId())); // vehicle id
+		carJson.addProperty("id", vehicle.getId()); // vehicle id
 			
 		JsonObject carStatus = new JsonObject();
 		carStatus.addProperty("topSpeed", 562);

@@ -30,17 +30,17 @@ public class PlayerVehicleDBLoader extends DBEntityBase<PlayerVehicleEntity> {
 		return !resultList.isEmpty() ? query.getResultList() : null;
 	}
 	
-	public PlayerVehicleEntity getVehicleByVid(int vid) {
+	public PlayerVehicleEntity getVehicleByVid(String vid) {
 		TypedQuery<PlayerVehicleEntity> query = entityManager.createNamedQuery("PlayerVehicleEntity.getVehicleByVid", PlayerVehicleEntity.class);
-		query.setParameter("id", vid);
+		query.setParameter("id", Integer.parseInt(vid));
 		
 		List<PlayerVehicleEntity> resultList = query.getResultList();
 		return !resultList.isEmpty() ? resultList.get(0) : null;
 	}
 	
-	public void setCustomization(int vid, int colorCode, int wheelColor, int wrapCode) {
+	public void setCustomization(String vid, int colorCode, int wheelColor, int wrapCode) {
 		Query query = entityManager.createNamedQuery("PlayerVehicleEntity.setCustomization");
-		query.setParameter("id", vid);
+		query.setParameter("id", Integer.parseInt(vid));
 		query.setParameter("colorCode", colorCode);
 		query.setParameter("wrapCode", wrapCode);
 		query.setParameter("wheelColor", wheelColor);

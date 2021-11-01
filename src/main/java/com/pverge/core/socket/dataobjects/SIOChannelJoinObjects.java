@@ -6,6 +6,17 @@ package com.pverge.core.socket.dataobjects;
  */
 public class SIOChannelJoinObjects {
 	
+	public static class OWJoinChatOtherChannelObj {
+		private String pid; 
+
+		public String getPID() {
+			return pid; 
+		}
+		public void setPID(String input) {
+			this.pid = input;
+		}
+	}
+	
 	public static class OWJoinChatChannelObj {
 		private int channelCode; 
 

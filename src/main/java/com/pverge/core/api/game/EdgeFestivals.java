@@ -23,7 +23,7 @@ public class EdgeFestivals {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiFestivalsPlayer(@PathParam(value = "playerId") String playerId) {
 		// TODO Lazy
-		String json = "[{\"pid\":\"33\",\"fid\":\"610b8325735d154895a3b796\",\"miniFestivals\":{\"5c51b005c68d8ee9ce22bd50\":{\"miniId\":\"5c51b005c68d8ee9ce22bd50\",\"point\":3,\"rewardStep\":-1,\"playCount\":3}},\"__v\":0,\"updatedAt\":\"2019-02-08T06:26:35.445Z\",\"rewardStep\":-1,\"id\":\"5c5d1ce0c30e7ea5060d3ec6\"},{\"pid\":\"33\",\"fid\":\"610b8325735d154895a3b796\",\"miniFestivals\":{\"5f0c1deacb024833dadc382e\":{\"miniId\":\"5f0c1deacb024833dadc382e\",\"point\":1,\"rewardStep\":-1,\"playCount\":1}},\"__v\":0,\"updatedAt\":\"2020-07-20T10:58:22.838Z\",\"rewardStep\":-1,\"id\":\"5f1578ce2e0ff2d2fba86a30\"}]";
+		String json = "[{\"pid\":\"" + playerId + "\",\"fid\":\"610b8325735d154895a3b796\",\"miniFestivals\":{\"5c51b005c68d8ee9ce22bd50\":{\"miniId\":\"5c51b005c68d8ee9ce22bd50\",\"point\":3,\"rewardStep\":-1,\"playCount\":3}},\"__v\":0,\"updatedAt\":\"2019-02-08T06:26:35.445Z\",\"rewardStep\":-1,\"id\":\"5c5d1ce0c30e7ea5060d3ec6\"},{\"pid\":\"33\",\"fid\":\"610b8325735d154895a3b796\",\"miniFestivals\":{\"5f0c1deacb024833dadc382e\":{\"miniId\":\"5f0c1deacb024833dadc382e\",\"point\":1,\"rewardStep\":-1,\"playCount\":1}},\"__v\":0,\"updatedAt\":\"2020-07-20T10:58:22.838Z\",\"rewardStep\":-1,\"id\":\"5f1578ce2e0ff2d2fba86a30\"}]";
 		
 		System.out.println("### [Festivals] Player results request from player ID " + playerId + ".");
 	    return json;

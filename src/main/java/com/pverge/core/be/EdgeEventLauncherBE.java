@@ -1,5 +1,7 @@
 package com.pverge.core.be;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,6 @@ import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 import com.pverge.core.socket.NettySocketIO;
 import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinChatChannelObj;
-import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinChannelObj;
 import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinOpts;
 import com.pverge.core.socket.dataobjects.SIODataObjects.*;
 import com.pverge.core.socket.dataobjects.SIOMatch2Objects.End;
@@ -178,7 +179,7 @@ public class EdgeEventLauncherBE {
 		Vehicle vehicle = new Vehicle();
 		vehicle.setCode(currentVehicle.getVcode());
 		vehicle.setGrade(currentVehicle.getGrade());
-		vehicle.setId(String.valueOf(currentVehicle.getId()));
+		vehicle.setId(currentVehicle.getId());
 		vehicle.setIGR(false);
 		vehicle.setOvr(549);
 		
@@ -290,41 +291,20 @@ public class EdgeEventLauncherBE {
 	}
 	
 	/**
-	 * Open World chat connection message
+	 * Server time sync message
 	 */
-	public void chatOWChatJoinSIO(int channelId) {
-		ResourceListDataObject owJoinRootData = new ResourceListDataObject();
+	public void syncServerTimeSIO(String nowTime) {
+		ResourceListDataObject timeRootData = new ResourceListDataObject();
 		List<Object> optsList = new ArrayList<>();
-		OWJoinOpts owJoinOpts = new OWJoinOpts();
-		owJoinOpts.setUri("chat.channel.joined");
-		OWJoinChatChannelObj owJoinChatChannelObj = new OWJoinChatChannelObj();
-		owJoinChatChannelObj.setChannelCode(channelId);
+		OWJoinOpts timeOpts = new OWJoinOpts();
+		timeOpts.setUri("/sync/servertime");
 		
-		owJoinOpts.setBody(owJoinChatChannelObj);
-		optsList.add(owJoinOpts);
-		owJoinRootData.setCmd("resources");
-		owJoinRootData.setOpts(optsList);
+		timeOpts.setBody(nowTime);
+		optsList.add(timeOpts);
+		timeRootData.setCmd("resources");
+		timeRootData.setOpts(optsList);
 		
-		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd());
-	}
-	
-	/**
-	 * Open World channel connection message
-	 */
-	public void chatOWJoinSIO(int channelId) {
-		ResourceListDataObject owJoinRootData = new ResourceListDataObject();
-		List<Object> optsList = new ArrayList<>();
-		OWJoinOpts owJoinOpts = new OWJoinOpts();
-		owJoinOpts.setUri("chat.ow.joined");
-		OWJoinChannelObj owJoinChannelObj = new OWJoinChannelObj();
-		owJoinChannelObj.setOpenworldId(channelId);
-		
-		owJoinOpts.setBody(owJoinChannelObj);
-		optsList.add(owJoinOpts);
-		owJoinRootData.setCmd("resources");
-		owJoinRootData.setOpts(optsList);
-		
-		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd());
+		socketIO.sendEvent("msg", timeRootData, timeRootData.getCmd());
 	}
 	
 	/**

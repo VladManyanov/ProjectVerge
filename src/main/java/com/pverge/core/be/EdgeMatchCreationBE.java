@@ -62,7 +62,7 @@ public class EdgeMatchCreationBE {
 		client.setAI(isAI);
 		client.setTeam(0);
 		client.setPositionOnStartingGrid(0);
-		client.setVid(String.valueOf(currentVehicle.getId()));
+		client.setVid(currentVehicle.getId());
 		client.setAttrs(getCarAttrs(currentVehicle));
 		
 		AppearanceInfo appearanceInfo = new AppearanceInfo();

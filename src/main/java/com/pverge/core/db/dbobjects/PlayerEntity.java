@@ -12,6 +12,7 @@ import javax.persistence.Table;
 @Table(name = "PLAYERS")
 @NamedQueries({ 
 	@NamedQuery(name = "PlayerEntity.getPlayer", query = "SELECT obj FROM PlayerEntity obj WHERE obj.pid = :pid"), //
+	@NamedQuery(name = "PlayerEntity.findUsername", query = "SELECT obj FROM PlayerEntity obj WHERE obj.username = :username"), //
 	@NamedQuery(name = "PlayerEntity.changeRecentVehicle", query = "UPDATE PlayerEntity obj SET obj.vid = :vid WHERE obj.pid = :pid"), //
 	@NamedQuery(name = "PlayerEntity.setCampaignCode", query = "UPDATE PlayerEntity obj SET obj.campaignCode = :campaignCode WHERE obj.pid = :pid") //
 })
@@ -19,23 +20,24 @@ public class PlayerEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int pid;
+	private int pid; // Game stores it as String
 
-	private int vid;
+	private int vid; // Game stores it as String
 	private int campaignCode;
-
-	public int getPid() {
-		return pid;
+	private String username;
+	
+	public String getPid() {
+		return String.valueOf(pid);
 	}
-	public void setPid(int pid) {
-		this.pid = pid;
+	public void setPid(String pid) {
+		this.pid = Integer.parseInt(pid);
 	}
 	
-	public int getVid() {
-		return vid;
+	public String getVid() {
+		return String.valueOf(vid);
 	}
-	public void setVid(int vid) {
-		this.vid = vid;
+	public void setVid(String vid) {
+		this.vid = Integer.parseInt(vid);
 	}
 	
 	public int getCampaignCode() {
@@ -43,6 +45,13 @@ public class PlayerEntity {
 	}
 	public void setCampaignCode(int campaignCode) {
 		this.campaignCode = campaignCode;
+	}
+	
+	public String getUserName() {
+		return username;
+	}
+	public void setUserName(String username) {
+		this.username = username;
 	}
 
 }

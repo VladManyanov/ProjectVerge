@@ -148,7 +148,7 @@ public class EdgeInventory {
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		String itemId = requestJson.get("partCode").getAsString();
 		
-		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(Integer.parseInt(vehicleId));
+		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(vehicleId);
 		edgeInventoryBE.changePerformancePart(vehicle, partType, Integer.parseInt(itemId));
 		playerVehicleDB.update(vehicle);
 		
@@ -174,7 +174,7 @@ public class EdgeInventory {
 		//JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		//String itemId = requestJson.get("partCode").getAsString();
 		
-		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(Integer.parseInt(vehicleId));
+		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(vehicleId);
 		AttrsPartsInfoEntity currentPart = null;
 		switch(partType) {
 		case "engine":
@@ -213,7 +213,7 @@ public class EdgeInventory {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPartsUninstall(@PathParam(value = "vehicleId") String vehicleId,
 			@PathParam(value = "partType") String partType) {
-		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(Integer.parseInt(vehicleId));
+		PlayerVehicleEntity vehicle = playerVehicleDB.getVehicleByVid(vehicleId);
 		edgeInventoryBE.changePerformancePart(vehicle, partType, 0);
 		playerVehicleDB.update(vehicle);
 		
@@ -355,7 +355,7 @@ public class EdgeInventory {
 	public Response apiRemoveItem(String requestBody, @PathParam(value = "playerId") String playerId, 
 			@PathParam(value = "itemId") String itemId) {
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
-		int vid = requestJson.get("vid").getAsInt();
+		String vid = requestJson.get("vid").getAsString();
 		
 		PlayerVehicleEntity playerVehicleEntity = playerVehicleDB.getVehicleByVid(vid);
 		CarCustomizationEntity customizationItem = carCustomizationDB.getItemProperties(Integer.parseInt(itemId));

@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.pverge.core.be.EdgeEventLauncherBE;
+import com.pverge.core.be.EdgeChatEventsBE;
 
 /**
  * Edge - Open World channels requests
@@ -19,7 +19,7 @@ import com.pverge.core.be.EdgeEventLauncherBE;
 public class EdgeOWChannels {
 	
 	@EJB
-	private EdgeEventLauncherBE eventLauncher;
+	private EdgeChatEventsBE chatEvents;
 	
 	private static String forcePlayerId = "33";
 	private static int forceChannelId = 94;
@@ -39,8 +39,9 @@ public class EdgeOWChannels {
 		rootJson.addProperty("host", "http://localhost");
 		rootJson.addProperty("port", 9999);
 		rootJson.addProperty("securityKey", "NMtEu3CAgpk22OIMIC4fBQ==");
-		eventLauncher.chatOWChatJoinSIO(forceChannelId);
-		eventLauncher.chatOWJoinSIO(forceChannelId);
+		chatEvents.chatOWChatJoinSIO(forceChannelId);
+		chatEvents.chatOWJoinSIO(forceChannelId);
+		chatEvents.chatOWOtherJoinSIO(forcePlayerId);
 		
 		System.out.println("### [OW Channels] Open World Channel reserve request from player ID " + forcePlayerId + ", channelId: " + forceChannelId + ".");
 	    return rootJson.toString();

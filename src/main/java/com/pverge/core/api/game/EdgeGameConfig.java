@@ -1,6 +1,9 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -13,6 +16,9 @@ import com.google.gson.JsonObject;
  */
 @Path("/v2")
 public class EdgeGameConfig {
+
+	@Context
+	private HttpServletRequest sr;
 	
 	private static String forcePlayerId = "33";
 	// TODO Load Push address from some config file
@@ -57,9 +63,10 @@ public class EdgeGameConfig {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiRemoteAddress(@HeaderParam("_") String someValue) {
 		JsonObject rootJson = new JsonObject();
-		rootJson.addProperty("remoteAddress", "192.168.0.10");
+		rootJson.addProperty("remoteAddress", sr.getRemoteAddr());
 
-		System.out.println("### [GameConfig] Player remote address request from player ID " + forcePlayerId + ".");
+		System.out.println("### [GameConfig] Player remote address (IP: " + sr.getRemoteAddr() + 
+				") request from player ID " + forcePlayerId + ".");
 		return rootJson.toString();
 	}
 	

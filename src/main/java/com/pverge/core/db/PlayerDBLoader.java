@@ -21,10 +21,22 @@ public class PlayerDBLoader extends DBEntityBase<PlayerEntity> {
 	protected void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
+	
+	public PlayerEntity findById(int id) {
+		return entityManager.find(PlayerEntity.class, id);
+	}
 
 	public PlayerEntity getPlayer(String pid) {
 		TypedQuery<PlayerEntity> query = entityManager.createNamedQuery("PlayerEntity.getPlayer", PlayerEntity.class);
 		query.setParameter("pid", Integer.parseInt(pid));
+		
+		List<PlayerEntity> resultList = query.getResultList();
+		return !resultList.isEmpty() ? resultList.get(0) : null;
+	}
+	
+	public PlayerEntity findUsername(String username) {
+		TypedQuery<PlayerEntity> query = entityManager.createNamedQuery("PlayerEntity.findUsername", PlayerEntity.class);
+		query.setParameter("username", username);
 		
 		List<PlayerEntity> resultList = query.getResultList();
 		return !resultList.isEmpty() ? resultList.get(0) : null;

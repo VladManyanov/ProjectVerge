@@ -1,5 +1,8 @@
 package com.pverge.core.api.game;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -8,6 +11,7 @@ import javax.ws.rs.core.Response;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeEventLauncherBE;
 import com.pverge.core.be.EdgePlayersBE;
 import com.pverge.core.be.EdgePresenceBE;
 import com.pverge.core.db.PlayerDBLoader;
@@ -30,6 +34,8 @@ public class EdgePlayers {
 	private EdgePlayersBE edgePlayersBE;
 	@EJB
 	private EdgePresenceBE edgePresenceBE;
+	@EJB
+	private EdgeEventLauncherBE edgeEventLauncherBE;
 	
 	private static String forcePlayerId = "33";
 	private static String forceAccountId = "11";
@@ -64,8 +70,12 @@ public class EdgePlayers {
 		lastPlayedJson.addProperty("time", "1970-01-01T00:00:00.000Z");
 		accountJson.add("lastplayed", lastPlayedJson);
 		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		String nowTime = LocalDateTime.now().format(formatter);
+		
 		accountJson.addProperty("id", forcePlayerId);
-		accountJson.addProperty("serverTime", "2021-09-18T19:12:15.467Z");
+		accountJson.addProperty("serverTime", nowTime);
+		edgeEventLauncherBE.syncServerTimeSIO(nowTime);
 		
 		System.out.println("### [Players] Account player request from player ID " + forcePlayerId + ".");
 	    return rootArrayJson.toString();
@@ -146,7 +156,7 @@ public class EdgePlayers {
 				aiJson.addProperty("igr", false);
 				aiJson.addProperty("vip", false);
 				aiJson.addProperty("isAi", true);
-				aiJson.addProperty("vid", String.valueOf(playerEntity.getVid()));
+				aiJson.addProperty("vid", playerEntity.getVid());
 				aiJson.addProperty("vCode", playerVehicleDB.getVehicleByVid(playerEntity.getVid()).getVcode()); // vehicle model code
 				aiJson.addProperty("ovr", 707);
 				aiJson.addProperty("loginDate", "2021-09-19T12:15:03.597Z");
@@ -185,7 +195,7 @@ public class EdgePlayers {
 		playerJson.addProperty("avatar", "");
 		playerJson.addProperty("igr", false);
 		playerJson.addProperty("vip", false);
-		playerJson.addProperty("vid", String.valueOf(playerEntity.getVid()));
+		playerJson.addProperty("vid", playerEntity.getVid());
 		playerJson.addProperty("vCode", playerVehicleDB.getVehicleByVid(playerEntity.getVid()).getVcode()); // vehicle model code
 		playerJson.addProperty("ovr", 707);
 		playerJson.addProperty("loginDate", "2021-09-19T12:15:03.597Z");

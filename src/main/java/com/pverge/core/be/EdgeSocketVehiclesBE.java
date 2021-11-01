@@ -72,7 +72,7 @@ public class EdgeSocketVehiclesBE {
 		
 		assetBody.setFavorite(false);
 		assetBody.setGrade(currentVehicle.getGrade());
-		assetBody.setId(String.valueOf(currentVehicle.getId()));
+		assetBody.setId(currentVehicle.getId());
 		
 		Status assetStatus = new Status();
 		assetStatus.setTopSpeed(700);

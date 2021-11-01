@@ -31,6 +31,13 @@ public class EdgePresenceBE {
 	}
 	
 	/**
+	 * Get current player state
+	 */
+	public String getPlayerState() {
+		return playerState;
+	}
+	
+	/**
 	 * Send appropriate socket request to initiate event
 	 */
 	public void initRaceEvent() {

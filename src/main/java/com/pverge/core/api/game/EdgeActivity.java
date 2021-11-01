@@ -1,10 +1,15 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Various in-game activities
@@ -13,8 +18,10 @@ import com.google.gson.JsonObject;
 @Path("/v2")
 public class EdgeActivity {
 	
-	private static String forcePlayerId = "33";
-	// TODO 
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	
 	/**
 	 * Daily quests request, up to 5 quests. All quests properties is taken by ID from client Static Data list
@@ -24,8 +31,11 @@ public class EdgeActivity {
 	@Path("quests")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiQuests(@HeaderParam("_") String someValue) {
+		//PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
 		JsonObject rootJson = new JsonObject();
-		rootJson.addProperty("id", forcePlayerId);
+		//rootJson.addProperty("id", String.valueOf(player.getPid()));
+		rootJson.addProperty("id", "33");
 		rootJson.addProperty("qp", 290);
 		rootJson.addProperty("qpResetTime", "2022-09-30T16:00:00.000Z");
 		rootJson.addProperty("qpResetType", "MONTHLY");
@@ -41,7 +51,9 @@ public class EdgeActivity {
 		rootJson.addProperty("questResetTime", "2022-09-19T16:00:00.000Z");
 		rootJson.addProperty("questResetType", "DAILY");
 		
-		System.out.println("### [Activity] Quests list request from player ID " + forcePlayerId + ".");
+		//System.out.println("### [Activity] Quests list request from player ID " + 
+		//		String.valueOf(player.getPid()) + ".");
+		System.out.println("### [Activity] Quests list request from player ID 33.");
 	    return rootJson.toString();
 	}
 	
@@ -74,9 +86,12 @@ public class EdgeActivity {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiMatchVehicleAttrs(@QueryParam("code") String code, @QueryParam("grade") String grade) {
 		// TODO Load actual Attrs from DB
+		//PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray rootArray = new JsonArray();
 		
-		System.out.println("### [Activity] Match vehicle attrib request from player ID " + forcePlayerId + ", vehicle code: " + code + ".");
+		//System.out.println("### [Activity] Match vehicle attrib request from player ID " + player.getPid() + 
+		//		", vehicle code: " + code + ".");
+		System.out.println("### [Activity] Match vehicle attrib request from player ID 33, vehicle code: " + code + ".");
 	    return rootArray.toString();
 	}
     

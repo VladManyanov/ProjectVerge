@@ -28,6 +28,10 @@ public class EdgePlayersBE {
 
 	@EJB
 	private PlayerDBLoader playerDB;
+	@EJB
+	private EdgeChatEventsBE chatEventsBE;
+	@EJB
+	private EdgePresenceBE presenceBE;
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	private static String forcePlayerId = "33";
@@ -69,7 +73,7 @@ public class EdgePlayersBE {
 		playerJson.add("checkedat", checkedAtJson);
 		
 		JsonObject recentJson = new JsonObject();
-		recentJson.addProperty("vid", String.valueOf(playerEntity.getVid())); // player recent vehicle ID
+		recentJson.addProperty("vid", playerEntity.getVid()); // player recent vehicle ID
 		playerJson.add("recent", recentJson);
 		
 		playerJson.addProperty("challengepoint", 1400);
@@ -82,7 +86,10 @@ public class EdgePlayersBE {
 		mileageJson.addProperty("balance", 0); 
 		mileageJson.addProperty("nextResetAt", "2021-09-30T16:00:00.000Z"); 
 		playerJson.add("mileage", mileageJson);
-    	
+		
+		if (presenceBE.getPlayerState().contentEquals("idle")) {
+			chatEventsBE.owPlayerSnippetUpdateSIO(forcePlayerId);
+		}
 		if (isArray) { // "players" and "checkedat" have different JSON output
 			return rootArrayJson.toString();}
 		else {
