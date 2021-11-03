@@ -10,10 +10,15 @@ import javax.persistence.Table;
 @Table(name = "PLAYERSETTINGS")
 @NamedQueries({ 
 	@NamedQuery(name = "PlayerSettingsEntity.findByPid", query = "SELECT obj FROM PlayerSettingsEntity obj WHERE obj.pid = :pid"), //
-	@NamedQuery(name = "VehicleSteeringEntity.setSteering", query = "UPDATE VehicleSteeringEntity obj SET "
-			+ "obj.v0 = :v0, obj.v1 = :v1, obj.v2 = :v2, obj.v3 = :v3, obj.v4 = :v4, obj.v5 = :v5, obj.v6 = :v6, "
-			+ "obj.v7 = :v7, obj.v8 = :v8, obj.v9 = :v9, obj.v10 = :v10, obj.v11 = :v11, obj.v12 = :v12, "
-			+ "obj.v13 = :v13 WHERE obj.vid = :vid"), //
+	@NamedQuery(name = "PlayerSettingsEntity.setSettings", query = "UPDATE PlayerSettingsEntity obj SET "
+			+ "obj.minimapPosition = :minimapPosition, obj.roomMirrorOff = :roomMirrorOff, obj.useHcs = :useHcs, "
+			+ "obj.useEsc = :useEsc, obj.useAbs = :useAbs, obj.actionFeedbackOn = :actionFeedbackOn, obj.keyGuideOn = :keyGuideOn, "
+			+ "obj.vehicleCameraMode = :vehicleCameraMode, obj.chatOn = :chatOn, obj.flevron = :flevron, "
+			+ "obj.toggleWorldmap = :toggleWorldmap, obj.useItem2 = :useItem2, obj.secondBrake = :secondBrake, "
+			+ "obj.throttle = :throttle, obj.brake = :brake, obj.steeringLeft = :steeringLeft, obj.steeringRight = :steeringRight, "
+			+ "obj.nitro = :nitro, obj.handBrake = :handBrake, obj.useItem = :useItem, obj.reset = :reset, "
+			+ "obj.rearView = :rearView, obj.leftView = :leftView, obj.rightView = :rightView, obj.horn = :horn, "
+			+ "obj.toggleCamera = :toggleCamera, obj.toggleMinimap = :toggleMinimap WHERE obj.pid = :pid"), //
 })
 public class PlayerSettingsEntity {
 

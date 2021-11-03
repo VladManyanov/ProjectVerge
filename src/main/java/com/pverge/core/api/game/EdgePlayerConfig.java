@@ -11,7 +11,9 @@ import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgePlayersBE;
 import com.pverge.core.be.EdgePresenceBE;
 import com.pverge.core.db.PlayerSettingsDBLoader;
-import com.pverge.core.db.dbobjects.PlayerSettingsEntity;
+import com.pverge.core.socket.dataobjects.SIOPlayerObjects.GameSetting;
+import com.pverge.core.socket.dataobjects.SIOPlayerObjects.InputKey;
+import com.pverge.core.socket.dataobjects.SIOPlayerObjects.PlayerConfig;
 
 /**
  * Edge - Player configuration requests
@@ -67,29 +69,37 @@ public class EdgePlayerConfig {
 	
 	/**
 	 * Player config (Input keys) request, saves the player input config on the server.
-	 * Note: not sure if really used by the game, since GameSetting request sends the Inputs data too
+	 * @return Full config
 	 */
 	@PUT
-	@Path("playerconfig/{accountId}/inputkey")
+	@Path("playerconfig/{playerId}/inputkey")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response apiPlayerConfigInputs(@PathParam(value = "playerId") String playerId) {
+	public String apiPlayerConfigInputs(String requestBody, @PathParam(value = "playerId") String playerId) {
+		InputKey newInputs = new Gson().fromJson(requestBody, InputKey.class);
+		PlayerConfig playerConfig = new Gson().fromJson(playersBE.preparePlayerSettings(playerId), PlayerConfig.class);
+		playerConfig.setInputKey(newInputs);
+		playerSettingsDB.updateSettings(playerId, playerConfig);
+		
 		System.out.println("### [PlayerConfig] Player config (Input keys) request from player ID " + playerId + ".");
-	    return Response.ok().build();
+	    return playersBE.preparePlayerSettings(playerId);
 	}
 	
 	/**
-	 * Player config (Game Settings) request, saves the player input & game settings config on the server.
-	 * @return Game Setting config which was sent by player
+	 * Player config (Game Settings) request, saves the game settings config on the server.
+	 * @return Full config
 	 */
 	@PUT
 	@Path("playerconfig/{playerId}/gamesetting")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String apiPlayerConfigGameSettings(@PathParam(value = "playerId") String playerId, @HeaderParam("_") String someValue) {
-		// TODO Lazy
-		String rootStr = "{\"version\":2,\"inputKey\":{\"toggleWorldmap\":[77,23],\"useItem2\":[18,15],\"secondBrake\":[0,20],\"throttle\":[38,21],\"brake\":[40,20],\"steeringLeft\":[37,0],\"steeringRight\":[39,0],\"nitro\":[78,12],\"handBrake\":[32,14],\"useItem\":[17,13],\"reset\":[82,19],\"rearView\":[87,0],\"leftView\":[68,0],\"rightView\":[65,0],\"horn\":[72,18],\"toggleCamera\":[67,9],\"toggleMinimap\":[88,23]},\"gameSetting\":{\"minimapPosition\":0,\"roomMirrorOff\":false,\"useHcs\":false,\"useEsc\":false,\"useAbs\":false,\"actionFeedbackOn\":true,\"keyGuideOn\":true,\"vehicleCameraMode\":0,\"chatOn\":true,\"flevron\":true},\"__v\":0,\"id\":\"5a0891771f40bf0007f512bb\"}";
+	public String apiPlayerConfigGameSettings(String requestBody, @PathParam(value = "playerId") String playerId, 
+			@HeaderParam("_") String someValue) {
+		GameSetting newSettings = new Gson().fromJson(requestBody, GameSetting.class);
+		PlayerConfig playerConfig = new Gson().fromJson(playersBE.preparePlayerSettings(playerId), PlayerConfig.class);
+		playerConfig.setGameSetting(newSettings);
+		playerSettingsDB.updateSettings(playerId, playerConfig);
 		
-		System.out.println("### [PlayerConfig] Player config (Game Settings) request from player ID " + playerId + ".");
-	    return rootStr;
+		System.out.println("### [PlayerConfig] Player config (Game Settings) save request from player ID " + playerId + ".");
+	    return playersBE.preparePlayerSettings(playerId);
 	}
 	
 	/**

@@ -275,6 +275,7 @@ public class EdgePlayersBE {
 		defaultSettings.setChatOn(true);
 		defaultSettings.setFlevron(true);
 		
+		playerSettingsDB.insert(defaultSettings);
 		player.setPlayerSettings(defaultSettings);
 		playerDB.update(player);
 		
