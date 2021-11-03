@@ -203,6 +203,11 @@ public class EdgeVehiclesBE {
 	public void createDefaultSteering(String vid, PlayerVehicleEntity vehicle) {
 		VehicleSteeringEntity defaultSteering = new VehicleSteeringEntity();
 		defaultSteering.setVid(vid);
+		defaultSteering.setV0(50); defaultSteering.setV1(50); defaultSteering.setV2(50);
+		defaultSteering.setV3(50); defaultSteering.setV4(50); defaultSteering.setV5(50);
+		defaultSteering.setV6(50); defaultSteering.setV7(50); defaultSteering.setV8(50);
+		defaultSteering.setV9(50); defaultSteering.setV10(50); defaultSteering.setV11(50);
+		defaultSteering.setV12(50); defaultSteering.setV13(50);
 		vehicleSteeringDB.insert(defaultSteering);
 		
 		vehicle.setSteering(defaultSteering);

@@ -1,0 +1,249 @@
+package com.pverge.core.db.dbobjects;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "PLAYERSETTINGS")
+@NamedQueries({ 
+	@NamedQuery(name = "PlayerSettingsEntity.findByPid", query = "SELECT obj FROM PlayerSettingsEntity obj WHERE obj.pid = :pid"), //
+	@NamedQuery(name = "VehicleSteeringEntity.setSteering", query = "UPDATE VehicleSteeringEntity obj SET "
+			+ "obj.v0 = :v0, obj.v1 = :v1, obj.v2 = :v2, obj.v3 = :v3, obj.v4 = :v4, obj.v5 = :v5, obj.v6 = :v6, "
+			+ "obj.v7 = :v7, obj.v8 = :v8, obj.v9 = :v9, obj.v10 = :v10, obj.v11 = :v11, obj.v12 = :v12, "
+			+ "obj.v13 = :v13 WHERE obj.vid = :vid"), //
+})
+public class PlayerSettingsEntity {
+
+	@Id
+	private int pid;
+
+	// Input
+	private String toggleMinimap;
+	private String toggleCamera;
+	private String horn;
+	private String rightView;
+	private String leftView;
+	private String rearView;
+	private String reset;
+	private String useItem;
+	private String handBrake;
+	private String nitro;
+	private String steeringRight;
+	private String steeringLeft;
+	private String brake;
+	private String throttle;
+	private String secondBrake;
+	private String useItem2;
+	private String toggleWorldmap;
+	// Settings
+	private int minimapPosition;
+	private boolean roomMirrorOff;
+	private boolean useHcs;
+	private boolean useEsc;
+	private boolean useAbs;
+	private boolean actionFeedbackOn;
+	private boolean keyGuideOn;
+	private int vehicleCameraMode;
+	private boolean chatOn;
+	private boolean flevron;
+
+	public String getPid() {
+		return String.valueOf(pid);
+	}
+	public void setPid(String pid) {
+		this.pid = Integer.parseInt(pid);
+	}
+	
+	public String[] getToggleMinimap() {
+		return toggleMinimap.split(",");
+	}
+	public void setToggleMinimap(String toggleMinimap) {
+		this.toggleMinimap = String.join(",", toggleMinimap);
+	}
+	
+	public String[] getToggleCamera() {
+		return toggleCamera.split(",");
+	}
+	public void setToggleCamera(String toggleCamera) {
+		this.toggleCamera = String.join(",", toggleCamera);
+	}
+	
+	public String[] getHorn() {
+		return horn.split(",");
+	}
+	public void setHorn(String horn) {
+		this.horn = String.join(",", horn);
+	}
+	
+	public String[] getRightView() {
+		return rightView.split(",");
+	}
+	public void setRightView(String rightView) {
+		this.rightView = String.join(",", rightView);
+	}
+	
+	public String[] getLeftView() {
+		return leftView.split(",");
+	}
+	public void setLeftView(String leftView) {
+		this.leftView = String.join(",", leftView);
+	}
+	
+	public String[] getRearView() {
+		return rearView.split(",");
+	}
+	public void setRearView(String rearView) {
+		this.rearView = String.join(",", rearView);
+	}
+	
+	public String[] getReset() {
+		return reset.split(",");
+	}
+	public void setReset(String reset) {
+		this.reset = String.join(",", reset);
+	}
+	
+	public String[] getUseItem() {
+		return useItem.split(",");
+	}
+	public void setUseItem(String useItem) {
+		this.useItem = String.join(",", useItem);
+	}
+	
+	public String[] getHandBrake() {
+		return handBrake.split(",");
+	}
+	public void setHandBrake(String handBrake) {
+		this.handBrake = String.join(",", handBrake);
+	}
+	
+	public String[] getNitro() {
+		return nitro.split(",");
+	}
+	public void setNitro(String nitro) {
+		this.nitro = String.join(",", nitro);
+	}
+	
+	public String[] getSteeringRight() {
+		return steeringRight.split(",");
+	}
+	public void setSteeringRight(String steeringRight) {
+		this.steeringRight = String.join(",", steeringRight);
+	}
+	
+	public String[] getSteeringLeft() {
+		return steeringLeft.split(",");
+	}
+	public void setSteeringLeft(String steeringLeft) {
+		this.steeringLeft = String.join(",", steeringLeft);
+	}
+	
+	public String[] getBrake() {
+		return brake.split(",");
+	}
+	public void setBrake(String brake) {
+		this.brake = String.join(",", brake);
+	}
+	
+	public String[] getThrottle() {
+		return throttle.split(",");
+	}
+	public void setThrottle(String throttle) {
+		this.throttle = String.join(",", throttle);
+	}
+	
+	public String[] getSecondBrake() {
+		return secondBrake.split(",");
+	}
+	public void setSecondBrake(String secondBrake) {
+		this.secondBrake = String.join(",", secondBrake);
+	}
+	
+	public String[] getUseItem2() {
+		return useItem2.split(",");
+	}
+	public void setUseItem2(String useItem2) {
+		this.useItem2 = String.join(",", useItem2);
+	}
+	
+	public String[] getToggleWorldmap() {
+		return toggleWorldmap.split(",");
+	}
+	public void setToggleWorldmap(String toggleWorldmap) {
+		this.toggleWorldmap = String.join(",", toggleWorldmap);
+	}
+	
+	public int getMinimapPosition() {
+		return minimapPosition;
+	}
+	public void setMinimapPosition(int minimapPosition) {
+		this.minimapPosition = minimapPosition;
+	}
+	
+	public boolean isRoomMirrorOff() {
+		return roomMirrorOff;
+	}
+	public void setRoomMirrorOff(boolean roomMirrorOff) {
+		this.roomMirrorOff = roomMirrorOff;
+	}
+	
+	public boolean isUseHcs() {
+		return useHcs;
+	}
+	public void setUseHcs(boolean useHcs) {
+		this.useHcs = useHcs;
+	}
+	
+	public boolean isUseEsc() {
+		return useEsc;
+	}
+	public void setUseEsc(boolean useEsc) {
+		this.useEsc = useEsc;
+	}
+	
+	public boolean isUseAbs() {
+		return useAbs;
+	}
+	public void setUseAbs(boolean useAbs) {
+		this.useAbs = useAbs;
+	}
+	
+	public boolean isActionFeedbackOn() {
+		return actionFeedbackOn;
+	}
+	public void setActionFeedbackOn(boolean actionFeedbackOn) {
+		this.actionFeedbackOn = actionFeedbackOn;
+	}
+	
+	public boolean isKeyGuideOn() {
+		return keyGuideOn;
+	}
+	public void setKeyGuideOn(boolean keyGuideOn) {
+		this.keyGuideOn = keyGuideOn;
+	}
+	
+	public int getVehicleCameraMode() {
+		return vehicleCameraMode;
+	}
+	public void setVehicleCameraMode(int vehicleCameraMode) {
+		this.vehicleCameraMode = vehicleCameraMode;
+	}
+	
+	public boolean isChatOn() {
+		return chatOn;
+	}
+	public void setChatOn(boolean chatOn) {
+		this.chatOn = chatOn;
+	}
+	
+	public boolean isFlevron() {
+		return flevron;
+	}
+	public void setFlevron(boolean flevron) {
+		this.flevron = flevron;
+	}
+
+}

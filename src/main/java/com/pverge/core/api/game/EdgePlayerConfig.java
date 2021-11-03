@@ -8,7 +8,10 @@ import javax.ws.rs.core.Response;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgePlayersBE;
 import com.pverge.core.be.EdgePresenceBE;
+import com.pverge.core.db.PlayerSettingsDBLoader;
+import com.pverge.core.db.dbobjects.PlayerSettingsEntity;
 
 /**
  * Edge - Player configuration requests
@@ -20,10 +23,13 @@ public class EdgePlayerConfig {
 	
 	@EJB
 	private EdgePresenceBE presence;
+	@EJB
+	private EdgePlayersBE playersBE;
+	@EJB
+	private PlayerSettingsDBLoader playerSettingsDB;
 	
 	private static String forcePlayerId = "33";
 	// TODO Store Client Feature config somewhere
-	// TODO Send proper full Player config, according to the original request
     
     /**
 	 * Client Features request, controls some of the game sections availability
@@ -55,14 +61,8 @@ public class EdgePlayerConfig {
 	@Path("playerconfig/{playerId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPlayerConfig(@PathParam(value = "playerId") String playerId, @HeaderParam("_") String someValue) {
-		JsonObject rootJson = new JsonObject();
-		JsonObject inputJson = new JsonObject();
-		
-		rootJson.add("inputKey", inputJson);
-		inputJson.addProperty("secondBrake", "S");
-		
 		System.out.println("### [PlayerConfig] Player Config request from player ID " + playerId + ".");
-	    return rootJson.toString();
+	    return playersBE.preparePlayerSettings(playerId);
 	}
 	
 	/**
