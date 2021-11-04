@@ -6,6 +6,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.pverge.core.be.util.MiscUtils;
+
 @Entity
 @Table(name = "PLAYERSETTINGS")
 @NamedQueries({ 
@@ -62,120 +64,120 @@ public class PlayerSettingsEntity {
 		this.pid = Integer.parseInt(pid);
 	}
 	
-	public String[] getToggleMinimap() {
-		return toggleMinimap.split(",");
+	public int[] getToggleMinimap() {
+		return MiscUtils.strArrayToIntArray(toggleMinimap.split(","));
 	}
 	public void setToggleMinimap(String toggleMinimap) {
 		this.toggleMinimap = String.join(",", toggleMinimap);
 	}
 	
-	public String[] getToggleCamera() {
-		return toggleCamera.split(",");
+	public int[] getToggleCamera() {
+		return MiscUtils.strArrayToIntArray(toggleCamera.split(","));
 	}
 	public void setToggleCamera(String toggleCamera) {
 		this.toggleCamera = String.join(",", toggleCamera);
 	}
 	
-	public String[] getHorn() {
-		return horn.split(",");
+	public int[] getHorn() {
+		return MiscUtils.strArrayToIntArray(horn.split(","));
 	}
 	public void setHorn(String horn) {
 		this.horn = String.join(",", horn);
 	}
 	
-	public String[] getRightView() {
-		return rightView.split(",");
+	public int[] getRightView() {
+		return MiscUtils.strArrayToIntArray(rightView.split(","));
 	}
 	public void setRightView(String rightView) {
 		this.rightView = String.join(",", rightView);
 	}
 	
-	public String[] getLeftView() {
-		return leftView.split(",");
+	public int[] getLeftView() {
+		return MiscUtils.strArrayToIntArray(leftView.split(","));
 	}
 	public void setLeftView(String leftView) {
 		this.leftView = String.join(",", leftView);
 	}
 	
-	public String[] getRearView() {
-		return rearView.split(",");
+	public int[] getRearView() {
+		return MiscUtils.strArrayToIntArray(rearView.split(","));
 	}
 	public void setRearView(String rearView) {
 		this.rearView = String.join(",", rearView);
 	}
 	
-	public String[] getReset() {
-		return reset.split(",");
+	public int[] getReset() {
+		return MiscUtils.strArrayToIntArray(reset.split(","));
 	}
 	public void setReset(String reset) {
 		this.reset = String.join(",", reset);
 	}
 	
-	public String[] getUseItem() {
-		return useItem.split(",");
+	public int[] getUseItem() {
+		return MiscUtils.strArrayToIntArray(useItem.split(","));
 	}
 	public void setUseItem(String useItem) {
 		this.useItem = String.join(",", useItem);
 	}
 	
-	public String[] getHandBrake() {
-		return handBrake.split(",");
+	public int[] getHandBrake() {
+		return MiscUtils.strArrayToIntArray(handBrake.split(","));
 	}
 	public void setHandBrake(String handBrake) {
 		this.handBrake = String.join(",", handBrake);
 	}
 	
-	public String[] getNitro() {
-		return nitro.split(",");
+	public int[] getNitro() {
+		return MiscUtils.strArrayToIntArray(nitro.split(","));
 	}
 	public void setNitro(String nitro) {
 		this.nitro = String.join(",", nitro);
 	}
 	
-	public String[] getSteeringRight() {
-		return steeringRight.split(",");
+	public int[] getSteeringRight() {
+		return MiscUtils.strArrayToIntArray(steeringRight.split(","));
 	}
 	public void setSteeringRight(String steeringRight) {
 		this.steeringRight = String.join(",", steeringRight);
 	}
 	
-	public String[] getSteeringLeft() {
-		return steeringLeft.split(",");
+	public int[] getSteeringLeft() {
+		return MiscUtils.strArrayToIntArray(steeringLeft.split(","));
 	}
 	public void setSteeringLeft(String steeringLeft) {
 		this.steeringLeft = String.join(",", steeringLeft);
 	}
 	
-	public String[] getBrake() {
-		return brake.split(",");
+	public int[] getBrake() {
+		return MiscUtils.strArrayToIntArray(brake.split(","));
 	}
 	public void setBrake(String brake) {
 		this.brake = String.join(",", brake);
 	}
 	
-	public String[] getThrottle() {
-		return throttle.split(",");
+	public int[] getThrottle() {
+		return MiscUtils.strArrayToIntArray(throttle.split(","));
 	}
 	public void setThrottle(String throttle) {
 		this.throttle = String.join(",", throttle);
 	}
 	
-	public String[] getSecondBrake() {
-		return secondBrake.split(",");
+	public int[] getSecondBrake() {
+		return MiscUtils.strArrayToIntArray(secondBrake.split(","));
 	}
 	public void setSecondBrake(String secondBrake) {
 		this.secondBrake = String.join(",", secondBrake);
 	}
 	
-	public String[] getUseItem2() {
-		return useItem2.split(",");
+	public int[] getUseItem2() {
+		return MiscUtils.strArrayToIntArray(useItem2.split(","));
 	}
 	public void setUseItem2(String useItem2) {
 		this.useItem2 = String.join(",", useItem2);
 	}
 	
-	public String[] getToggleWorldmap() {
-		return toggleWorldmap.split(",");
+	public int[] getToggleWorldmap() {
+		return MiscUtils.strArrayToIntArray(toggleWorldmap.split(","));
 	}
 	public void setToggleWorldmap(String toggleWorldmap) {
 		this.toggleWorldmap = String.join(",", toggleWorldmap);

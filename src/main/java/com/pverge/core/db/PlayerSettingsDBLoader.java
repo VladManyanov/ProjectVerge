@@ -53,23 +53,23 @@ public class PlayerSettingsDBLoader extends DBEntityBase<PlayerSettingsEntity> {
 		query.setParameter("chatOn", gameSetting.getChatOn());
 		query.setParameter("flevron", gameSetting.getFlevron());
 		//
-		query.setParameter("toggleWorldmap", utils.IntListToStr(inputKey.getToggleWorldmap()));
-		query.setParameter("useItem2", utils.IntListToStr(inputKey.getUseItem2()));
-		query.setParameter("secondBrake", utils.IntListToStr(inputKey.getSecondBrake()));
-		query.setParameter("throttle", utils.IntListToStr(inputKey.getThrottle()));
-		query.setParameter("brake", utils.IntListToStr(inputKey.getBrake()));
-		query.setParameter("steeringLeft", utils.IntListToStr(inputKey.getSteeringLeft()));
-		query.setParameter("steeringRight", utils.IntListToStr(inputKey.getSteeringRight()));
-		query.setParameter("nitro", utils.IntListToStr(inputKey.getNitro()));
-		query.setParameter("handBrake", utils.IntListToStr(inputKey.getHandBrake()));
-		query.setParameter("useItem", utils.IntListToStr(inputKey.getUseItem()));
-		query.setParameter("reset", utils.IntListToStr(inputKey.getReset()));
-		query.setParameter("rearView", utils.IntListToStr(inputKey.getRearView()));
-		query.setParameter("leftView", utils.IntListToStr(inputKey.getLeftView()));
-		query.setParameter("rightView", utils.IntListToStr(inputKey.getRightView()));
-		query.setParameter("horn", utils.IntListToStr(inputKey.getHorn()));
-		query.setParameter("toggleCamera", utils.IntListToStr(inputKey.getToggleCamera()));
-		query.setParameter("toggleMinimap", utils.IntListToStr(inputKey.getToggleMinimap()));
+		query.setParameter("toggleWorldmap", utils.intListToStr(inputKey.getToggleWorldmap()));
+		query.setParameter("useItem2", utils.intListToStr(inputKey.getUseItem2()));
+		query.setParameter("secondBrake", utils.intListToStr(inputKey.getSecondBrake()));
+		query.setParameter("throttle", utils.intListToStr(inputKey.getThrottle()));
+		query.setParameter("brake", utils.intListToStr(inputKey.getBrake()));
+		query.setParameter("steeringLeft", utils.intListToStr(inputKey.getSteeringLeft()));
+		query.setParameter("steeringRight", utils.intListToStr(inputKey.getSteeringRight()));
+		query.setParameter("nitro", utils.intListToStr(inputKey.getNitro()));
+		query.setParameter("handBrake", utils.intListToStr(inputKey.getHandBrake()));
+		query.setParameter("useItem", utils.intListToStr(inputKey.getUseItem()));
+		query.setParameter("reset", utils.intListToStr(inputKey.getReset()));
+		query.setParameter("rearView", utils.intListToStr(inputKey.getRearView()));
+		query.setParameter("leftView", utils.intListToStr(inputKey.getLeftView()));
+		query.setParameter("rightView", utils.intListToStr(inputKey.getRightView()));
+		query.setParameter("horn", utils.intListToStr(inputKey.getHorn()));
+		query.setParameter("toggleCamera", utils.intListToStr(inputKey.getToggleCamera()));
+		query.setParameter("toggleMinimap", utils.intListToStr(inputKey.getToggleMinimap()));
 
 		query.executeUpdate();
 	}

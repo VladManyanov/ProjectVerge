@@ -64,7 +64,7 @@ public class EdgePlayerConfig {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPlayerConfig(@PathParam(value = "playerId") String playerId, @HeaderParam("_") String someValue) {
 		System.out.println("### [PlayerConfig] Player Config request from player ID " + playerId + ".");
-	    return playersBE.preparePlayerSettings(playerId);
+	    return playersBE.preparePlayerSettings(playerId).toString();
 	}
 	
 	/**
@@ -75,13 +75,13 @@ public class EdgePlayerConfig {
 	@Path("playerconfig/{playerId}/inputkey")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPlayerConfigInputs(String requestBody, @PathParam(value = "playerId") String playerId) {
-		InputKey newInputs = new Gson().fromJson(requestBody, InputKey.class);
+		PlayerConfig newInputs = new Gson().fromJson(requestBody, PlayerConfig.class);
 		PlayerConfig playerConfig = new Gson().fromJson(playersBE.preparePlayerSettings(playerId), PlayerConfig.class);
-		playerConfig.setInputKey(newInputs);
+		playerConfig.setInputKey(newInputs.getInputKey());
 		playerSettingsDB.updateSettings(playerId, playerConfig);
 		
 		System.out.println("### [PlayerConfig] Player config (Input keys) request from player ID " + playerId + ".");
-	    return playersBE.preparePlayerSettings(playerId);
+	    return playersBE.preparePlayerSettings(playerId).toString();
 	}
 	
 	/**
@@ -93,13 +93,13 @@ public class EdgePlayerConfig {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPlayerConfigGameSettings(String requestBody, @PathParam(value = "playerId") String playerId, 
 			@HeaderParam("_") String someValue) {
-		GameSetting newSettings = new Gson().fromJson(requestBody, GameSetting.class);
+		PlayerConfig newSettings = new Gson().fromJson(requestBody, PlayerConfig.class);
 		PlayerConfig playerConfig = new Gson().fromJson(playersBE.preparePlayerSettings(playerId), PlayerConfig.class);
-		playerConfig.setGameSetting(newSettings);
+		playerConfig.setGameSetting(newSettings.getGameSetting());
 		playerSettingsDB.updateSettings(playerId, playerConfig);
 		
 		System.out.println("### [PlayerConfig] Player config (Game Settings) save request from player ID " + playerId + ".");
-	    return playersBE.preparePlayerSettings(playerId);
+	    return playersBE.preparePlayerSettings(playerId).toString();
 	}
 	
 	/**

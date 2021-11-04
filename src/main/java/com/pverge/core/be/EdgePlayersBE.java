@@ -12,16 +12,9 @@ import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerSettingsDBLoader;
 import com.pverge.core.db.dbobjects.PlayerEntity;
 import com.pverge.core.db.dbobjects.PlayerSettingsEntity;
-import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
-import com.pverge.core.db.dbobjects.VehicleSteeringEntity;
 import com.pverge.core.socket.NettySocketIO;
 import com.pverge.core.socket.dataobjects.SIODataObjects.MessageDataIntObject;
-import com.pverge.core.socket.dataobjects.SIODataObjects.MessageDataObject;
 import com.pverge.core.socket.dataobjects.SIODataObjects.ResourceListDataObject;
-import com.pverge.core.socket.dataobjects.SIOInboxObjects.Bunch;
-import com.pverge.core.socket.dataobjects.SIOInboxObjects.InboxItemBody;
-import com.pverge.core.socket.dataobjects.SIOInboxObjects.Opts;
-import com.pverge.core.socket.dataobjects.SIOInboxObjects.Rewards;
 
 /**
  * Edge - Player data requests
@@ -106,7 +99,7 @@ public class EdgePlayersBE {
 	 * Player config data (Inputs and game settings)
 	 * @return Settings
 	 */
-	public String preparePlayerSettings(String playerId) {
+	public JsonObject preparePlayerSettings(String playerId) {
 		PlayerSettingsEntity settings = playerSettingsDB.findByPid(playerId);
 		if (settings == null) { // Create default settings entry
 			settings = createDefaultSettings(playerDB.getPlayer(playerId));
@@ -218,7 +211,7 @@ public class EdgePlayersBE {
 		
 		rootJson.addProperty("__v", 0);
 		rootJson.addProperty("id", playerId);
-		return rootJson.toString();
+		return rootJson;
 	}
 	
 	/**
