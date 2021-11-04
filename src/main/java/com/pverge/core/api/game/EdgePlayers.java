@@ -58,9 +58,11 @@ public class EdgePlayers {
 		accountJson.addProperty("createdat", "2017-11-12T18:22:47.587Z");
 		
 		JsonArray arrayJsonTutorHistory = new JsonArray();
+		arrayJsonTutorHistory.add(11);
+		arrayJsonTutorHistory.add(21);
 		accountJson.add("quickTutorialHistory", arrayJsonTutorHistory);
 		
-		accountJson.addProperty("tutorialState", 0);
+		accountJson.addProperty("tutorialState", 50);
 		accountJson.addProperty("__v", 0);
 		accountJson.addProperty("lastloginat", 0);
 		accountJson.addProperty("lastlogoutat", 0);

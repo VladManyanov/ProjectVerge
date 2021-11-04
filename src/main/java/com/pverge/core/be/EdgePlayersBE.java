@@ -246,8 +246,8 @@ public class EdgePlayersBE {
 		defaultSettings.setBrake("40,20");
 		defaultSettings.setSteeringLeft("37,0");
 		defaultSettings.setSteeringRight("39,0");
-		defaultSettings.setNitro("78,12");
-		defaultSettings.setHandBrake("32,14");
+		defaultSettings.setNitro("32,12");
+		defaultSettings.setHandBrake("16,14");
 		defaultSettings.setUseItem("17,13");
 		defaultSettings.setReset("82,19");
 		defaultSettings.setRearView("87,0");
