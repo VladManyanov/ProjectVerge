@@ -9,12 +9,14 @@ import javax.ejb.Stateless;
 import com.pverge.core.db.AttrsGradesDBLoader;
 import com.pverge.core.db.AttrsPartsDBLoader;
 import com.pverge.core.db.CarCustomizationDBLoader;
+import com.pverge.core.db.VehicleSteeringDBLoader;
 import com.pverge.core.db.dbobjects.AttrsGradesEntity;
 import com.pverge.core.db.dbobjects.AttrsPartsEntity;
 import com.pverge.core.db.dbobjects.AttrsPartsTorqueEntity;
 import com.pverge.core.db.dbobjects.AttrsTorqueEntity;
 import com.pverge.core.db.dbobjects.CarCustomizationEntity;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
+import com.pverge.core.db.dbobjects.VehicleSteeringEntity;
 import com.pverge.core.socket.dataobjects.SIOMatchObjects.NumberPlate;
 import com.pverge.core.socket.dataobjects.SIORaceCommonObjects.*;
 
@@ -31,9 +33,11 @@ public class EdgeMatchCreationBE {
 	private AttrsGradesDBLoader attrsGradesDB;
 	@EJB
 	private AttrsPartsDBLoader attrsPartsDB;
+	@EJB
+	private VehicleSteeringDBLoader vehicleSteeringDB;
 	
 	/**
-	 * Create player client entry
+	 * Create player client & vehicle entry
 	 * @return Player data
 	 */
 	public Clients createPlayerClient(String playerId, PlayerVehicleEntity currentVehicle, boolean isAI) {
@@ -64,6 +68,7 @@ public class EdgeMatchCreationBE {
 		client.setPositionOnStartingGrid(0);
 		client.setVid(currentVehicle.getId());
 		client.setAttrs(getCarAttrs(currentVehicle));
+		client.setSteeringAttrs(getSteeringAttrs(currentVehicle));
 		
 		AppearanceInfo appearanceInfo = new AppearanceInfo();
 		ColorData colorData = new ColorData();
@@ -449,7 +454,111 @@ public class EdgeMatchCreationBE {
 			attrsList.add(attrTransmissionTorqueSplitInDrift);
 			return attrsList;
 		}
-		List<Object> dummyAttrsList = new ArrayList<>();
-		return dummyAttrsList;
+		return new ArrayList<>();
 	}
+	
+	/**
+	 * Create Steering attributes entry for player vehicle
+	 * @return Steering attributes entry
+	 */
+	public List<SteeringAttrs> getSteeringAttrs(PlayerVehicleEntity currentVehicle) {
+		VehicleSteeringEntity steeringSettings = vehicleSteeringDB.findByVid(currentVehicle.getId());
+		List<SteeringAttrs> attrsList = new ArrayList<>();
+		int currentValue = 50;
+		if (steeringSettings == null) { // Use default steering settings
+			steeringSettings = new VehicleSteeringEntity();
+			steeringSettings.setV0(currentValue); steeringSettings.setV1(currentValue); steeringSettings.setV2(currentValue);
+			steeringSettings.setV3(currentValue); steeringSettings.setV4(currentValue); steeringSettings.setV5(currentValue);
+			steeringSettings.setV6(currentValue); steeringSettings.setV7(currentValue); steeringSettings.setV8(currentValue);
+			steeringSettings.setV9(currentValue); steeringSettings.setV10(currentValue); steeringSettings.setV11(currentValue);
+			steeringSettings.setV12(currentValue); steeringSettings.setV13(currentValue); 
+		}
+		
+		// Brake Pressure Distribution
+		currentValue = steeringSettings.getV0();
+		SteeringAttrs attr0 = new SteeringAttrs();
+		attr0.setAttr(59);
+		attr0.setModType(0);
+		attr0.setVal( (0.7 + (0.006 * currentValue)) );
+		attrsList.add(attr0);
+		
+		SteeringAttrs attr1 = new SteeringAttrs();
+		attr1.setAttr(151);
+		attr1.setModType(0);
+		attr1.setVal( (0.9 + (0.002 * currentValue)) );
+		attrsList.add(attr1);
+		
+		SteeringAttrs attr2 = new SteeringAttrs();
+		attr2.setAttr(153);
+		attr2.setModType(0);
+		attr2.setVal( (0.9 + (0.002 * currentValue)) );
+		attrsList.add(attr2);
+		
+		SteeringAttrs attr3 = new SteeringAttrs();
+		attr3.setAttr(77);
+		attr3.setModType(1);
+		attr3.setVal( (-0.5 + (0.05 * currentValue)) );
+		attrsList.add(attr3);
+		
+		// Brake Pressure
+		currentValue = steeringSettings.getV1();
+		SteeringAttrs attr4 = new SteeringAttrs();
+		attr4.setAttr(58);
+		attr4.setModType(0);
+		attr4.setVal( (1.1 - (0.002 * currentValue)) );
+		attrsList.add(attr4);
+		
+		// Braking Gear
+		currentValue = steeringSettings.getV2();
+		SteeringAttrs attr5 = new SteeringAttrs();
+		attr5.setAttr(140);
+		attr5.setModType(1);
+		if (currentValue <= 50) {
+			attr5.setVal( (0.5 - (0.01 * currentValue)) );
+		} else {
+			attr5.setVal( (0 - (0.0075 * currentValue)) );
+		}
+		attrsList.add(attr5);
+		
+		// E-Brake Strength
+		currentValue = steeringSettings.getV3();
+		SteeringAttrs attr6 = new SteeringAttrs();
+		attr6.setAttr(78);
+		attr6.setModType(0);
+		attr6.setVal( (0.7 + (0.006 * currentValue)) );
+		attrsList.add(attr6);
+		
+		// Suspension Strength
+		currentValue = steeringSettings.getV4();
+		SteeringAttrs attr7 = new SteeringAttrs();
+		attr7.setAttr(137);
+		attr7.setModType(0);
+		attr7.setVal( (0.25 + (0.015 * currentValue)) );
+		attrsList.add(attr7);
+		
+		// Anti-roll Bar
+		currentValue = steeringSettings.getV5();
+		SteeringAttrs attr8 = new SteeringAttrs();
+		attr8.setAttr(139);
+		attr8.setModType(1);
+		attr8.setVal( (-0.4 + (0.008 * currentValue)) );
+		attrsList.add(attr8);
+		
+		// Tire Grip
+		currentValue = steeringSettings.getV6();
+		SteeringAttrs attr9 = new SteeringAttrs();
+		attr9.setAttr(26);
+		attr9.setModType(1);
+		if (steeringSettings.getV6() <= 50) {
+			attr9.setVal( (-3 + (0.06 * currentValue)) );
+		} else {
+			attr9.setVal( (0 + (0.09 * currentValue)) );
+		}
+		attrsList.add(attr9);
+		
+		// TODO
+		
+		return attrsList;
+	}
+	
 }

@@ -10,6 +10,33 @@ import com.pverge.core.socket.dataobjects.SIOMatchObjects.NumberPlate;
  */
 public class SIORaceCommonObjects {
 
+	public static class SteeringAttrs {
+		private int attr; 
+		private int modType; 
+		private double val; 
+
+		public int getAttr() {
+			return attr; 
+		}
+		public void setAttr(int input) {
+			this.attr = input;
+		}
+		
+		public int getModType() {
+			return modType; 
+		}
+		public void setModType(int input) {
+			this.modType = input;
+		}
+		
+		public double getVal() {
+			return val; 
+		}
+		public void setVal(double input) {
+			this.val = input;
+		}
+	}
+	
 	public static class Attrs {
 		private String attr; 
 		private String type; 
@@ -164,7 +191,8 @@ public class SIORaceCommonObjects {
 		private boolean ai; 
 		private int team; 
 		private int positionOnStartingGrid; 
-		private AppearanceInfo appearanceInfo; 
+		private AppearanceInfo appearanceInfo;
+		private List<SteeringAttrs> steeringAttrs; 
 		private String vid; 
 
 		public String getPlayerId() {
@@ -221,6 +249,13 @@ public class SIORaceCommonObjects {
 		}
 		public void setAppearanceInfo(AppearanceInfo input) {
 			this.appearanceInfo = input;
+		}
+		
+		public List<SteeringAttrs> getSteeringAttrs() {
+			return steeringAttrs; 
+		}
+		public void setSteeringAttrs(List<SteeringAttrs> input) {
+			this.steeringAttrs = input;
 		}
 		
 		public String getVid() {
