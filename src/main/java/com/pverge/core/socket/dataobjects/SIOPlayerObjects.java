@@ -8,6 +8,43 @@ import java.util.List;
  */
 public class SIOPlayerObjects {
 	
+	public static class StateInfo {
+		private String pid; 
+		private String state; 
+
+		public String getPid() {
+			return pid; 
+		}
+		public void setPid(String input) {
+			this.pid = input;
+		}
+		
+		public String getState() {
+			return state; 
+		}
+		public void setState(String input) {
+			this.state = input;
+		}
+	}
+	public static class OptsStateInfo {
+		private List<StateInfo> info; 
+		private int time; 
+
+		public List<StateInfo> getInfo() {
+			return info; 
+		}
+		public void setInfo(List<StateInfo> input) {
+			this.info = input;
+		}
+		
+		public int getTime() {
+			return time; 
+		}
+		public void setTime(int input) {
+			this.time = input;
+		}
+	}
+	
 	public static class GameSetting{
 		private int minimapPosition; 
 		private boolean roomMirrorOff; 

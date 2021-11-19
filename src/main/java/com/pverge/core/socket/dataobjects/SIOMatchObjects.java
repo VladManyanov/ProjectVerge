@@ -2,6 +2,7 @@ package com.pverge.core.socket.dataobjects;
 
 import java.util.List;
 
+import com.pverge.core.socket.dataobjects.SIOAssetVehicleObjects.Steering;
 import com.pverge.core.socket.dataobjects.SIODataObjects.Observers;
 
 /**
@@ -10,6 +11,124 @@ import com.pverge.core.socket.dataobjects.SIODataObjects.Observers;
  */
 public class SIOMatchObjects {
 
+	public static class MatchPlayer {
+		private String pid; 
+		private String sid; 
+		private int rank; 
+		private boolean retire; 
+		private String channel; 
+		private int team; 
+		private Vehicle vehicle; 
+		private boolean forceLeave; 
+		private int abuseStatus; 
+
+		public String getPid() {
+			return pid; 
+		}
+		public void setPid(String input) {
+			this.pid = input;
+		}
+		
+		public String getSid() {
+			return sid; 
+		}
+		public void setSid(String input) {
+			this.sid = input;
+		}
+		
+		public int getRank() {
+			return rank; 
+		}
+		public void setRank(int input) {
+			this.rank = input;
+		}
+		
+		public boolean getRetire() {
+			return retire; 
+		}
+		public void setRetire(boolean input) {
+			this.retire = input;
+		}
+		
+		public String getChannel() {
+			return channel; 
+		}
+		public void setChannel(String input) {
+			this.channel = input;
+		}
+		
+		public int getTeam() {
+			return team; 
+		}
+		public void setTeam(int input) {
+			this.team = input;
+		}
+		
+		public Vehicle getVehicle() {
+			return vehicle; 
+		}
+		public void setVehicle(Vehicle input) {
+			this.vehicle = input;
+		}
+		
+		public boolean getForceLeave() {
+			return forceLeave; 
+		}
+		public void setForceLeave(boolean input) {
+			this.forceLeave = input;
+		}
+		
+		public int getAbuseStatus() {
+			return abuseStatus; 
+		}
+		public void setAbuseStatus(int input) {
+			this.abuseStatus = input;
+		}
+	}
+	
+	public static class MatchEnd {
+		private int id; 
+		private int trackCode; 
+		private String gameMode; 
+		private List<MatchPlayer> players; 
+		private int matchEndAt; 
+
+		public int getId() {
+			return id; 
+		}
+		public void setId(int input) {
+			this.id = input;
+		}
+		
+		public int getTrackCode() {
+			return trackCode; 
+		}
+		public void setTrackCode(int input) {
+			this.trackCode = input;
+		}
+		
+		public String getGameMode() {
+			return gameMode; 
+		}
+		public void setGameMode(String input) {
+			this.gameMode = input;
+		}
+		
+		public List<MatchPlayer> getPlayers() {
+			return players; 
+		}
+		public void setPlayers(List<MatchPlayer> input) {
+			this.players = input;
+		}
+		
+		public int getMatchEndAt() {
+			return matchEndAt; 
+		}
+		public void setMatchEndAt(int input) {
+			this.matchEndAt = input;
+		}
+	}
+	
 	public static class NumberPlate {
 		private String pid; 
 		private String prefix; 
@@ -350,7 +469,5 @@ public class SIOMatchObjects {
 			this.durability = input;
 		}
 	}
-	public static class Steering {
-		// TODO
-	}
+
 }

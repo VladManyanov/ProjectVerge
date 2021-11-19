@@ -28,6 +28,7 @@ public class EdgePresenceBE {
 	 */
 	public void setPlayerState(String state, String playerId) {
 		playerState = state;
+		eventLauncher.stateChangeSIO(playerId, state);
 	}
 	
 	/**
@@ -89,7 +90,7 @@ public class EdgePresenceBE {
 					initRaceEvent();
 					break;
 				case "matchFinish":
-					eventLauncher.MatchRewardSIO();
+					eventLauncher.MatchRewardSIO(savePlayerId, room2GameModeMeta, futureTrackId);
 					break;
 				}
 			}

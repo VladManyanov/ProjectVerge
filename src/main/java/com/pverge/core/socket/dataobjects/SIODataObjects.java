@@ -3,7 +3,6 @@ package com.pverge.core.socket.dataobjects;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.TTOpts;
 
 /**
  * Socket-IO - Collection of various data objects

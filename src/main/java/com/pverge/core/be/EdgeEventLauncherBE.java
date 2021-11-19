@@ -1,7 +1,5 @@
 package com.pverge.core.be;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,13 +11,20 @@ import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 import com.pverge.core.socket.NettySocketIO;
-import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinChatChannelObj;
 import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinOpts;
 import com.pverge.core.socket.dataobjects.SIODataObjects.*;
 import com.pverge.core.socket.dataobjects.SIOMatch2Objects.End;
 import com.pverge.core.socket.dataobjects.SIOMatch2Objects.MatchPeerOpts;
 import com.pverge.core.socket.dataobjects.SIOMatch2Objects.TakeDownTarget;
 import com.pverge.core.socket.dataobjects.SIOMatchObjects.*;
+import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardCard;
+import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardDexp;
+import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardExp;
+import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardHistory;
+import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardSP;
+import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardsOpts;
+import com.pverge.core.socket.dataobjects.SIOPlayerObjects.OptsStateInfo;
+import com.pverge.core.socket.dataobjects.SIOPlayerObjects.StateInfo;
 import com.pverge.core.socket.dataobjects.SIORaceCommonObjects.*;
 import com.pverge.core.socket.dataobjects.SIOTimeTrialObjects.*;
 
@@ -36,6 +41,8 @@ public class EdgeEventLauncherBE {
 	private PlayerVehicleDBLoader playerVehicleDB;
 	@EJB
 	private EdgeMatchCreationBE edgeMatchCreationBE;
+	@EJB
+	private EdgeSocketVehiclesBE edgeSocketVehiclesBE;
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	static int[] aiDrivers = new int[]{677,691,693,694,695}; 
@@ -204,9 +211,7 @@ public class EdgeEventLauncherBE {
 		status.setStrength(680);
 		status.setTopSpeed(793);
 		vehicle.setStatus(status);
-		
-		List<Steering> steeringList = new ArrayList<>();
-		vehicle.setSteering(steeringList);
+		vehicle.setSteering(edgeSocketVehiclesBE.prepareSteeringSIO(currentVehicle.getSteering()));
 		
 		player.setVehicle(vehicle);
 		playersList.add(player);
@@ -308,12 +313,137 @@ public class EdgeEventLauncherBE {
 	}
 	
 	/**
-	 * Match finish rewards message
+	 * Match finish & rewards request. Contains Match End and Rewards parts
 	 */
-	public void MatchRewardSIO() {
-		ResourceDataObject testData = new ResourceDataObject();
-		testData.setCmd("match.finish");
+	public void MatchRewardSIO(String playerId, String gameModeMeta, int trackId) {
+		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
+		ResourceListDataObject matchRoot = new ResourceListDataObject();
+		List<Object> optsList = new ArrayList<>();
+		MessageDataObject matchObj = new MessageDataObject();
 		
-		socketIO.sendEvent("msg", testData, testData.getCmd());
+		// Match info part
+		matchObj.setUri("/v2/room2s/1/matchend"); // 1 is Match ID
+		MatchEnd matchEnd = new MatchEnd();
+		matchEnd.setId(1);
+		matchEnd.setTrackCode(trackId);
+		matchEnd.setGameMode(gameModeMeta);
+		matchEnd.setMatchEndAt(123456789);
+		
+		List<MatchPlayer> matchPlayers = new ArrayList<>();
+		MatchPlayer matchPlayer = new MatchPlayer();
+		matchPlayers.add(matchPlayer);
+		matchPlayer.setPid(playerId);
+		matchPlayer.setSid("");
+		matchPlayer.setRank(1); // TODO Detect player places somehow
+		matchPlayer.setRetire(false);
+		matchPlayer.setChannel("ALL");
+		matchPlayer.setTeam(0);
+		
+		Vehicle vehicle = new Vehicle();
+		vehicle.setCode(currentVehicle.getVcode());
+		vehicle.setGrade(currentVehicle.getGrade());
+		
+		Parts parts = new Parts();
+		parts.setBumper(currentVehicle.getPartBumper());
+		parts.setEngine(currentVehicle.getPartEngine());
+		parts.setFrame(currentVehicle.getPartFrame());
+		parts.setNitroTank(currentVehicle.getPartNitroTank());
+		parts.setTransmission(currentVehicle.getPartTransmission());
+		vehicle.setParts(parts);
+		
+		Status status = new Status();
+		status.setAcceleration(765);
+		status.setDurability(658);
+		status.setNitroCapacity(777);
+		status.setStrength(680);
+		status.setTopSpeed(793);
+		vehicle.setStatus(status);
+		
+		matchPlayer.setVehicle(vehicle);
+		matchPlayer.setForceLeave(false);
+		matchPlayer.setAbuseStatus(0);
+		matchEnd.setPlayers(matchPlayers);
+		matchObj.setBody(matchEnd);
+
+		// Rewards part
+		MessageDataObject rewardObj = new MessageDataObject();
+		rewardObj.setUri("/v2/room2s/1/matchend/" + playerId + "/reward"); // 1 is Match ID
+		RewardsOpts rewardsOpts = new RewardsOpts();
+		rewardObj.setBody(rewardsOpts);
+		
+		RewardSP rewardSP = new RewardSP();
+		rewardsOpts.setSp(rewardSP);
+		rewardSP.setBase(1126);
+		rewardSP.setIncrement(0);
+		//
+		RewardHistory rewardSPHistory = new RewardHistory();
+		List<RewardHistory> rewardSPHistoryList = new ArrayList<>();
+		rewardSPHistoryList.add(rewardSPHistory);
+		rewardSP.setHistory(rewardSPHistoryList);
+		//
+		rewardSPHistory.setProvider("BASIC");
+		rewardSPHistory.setDisplay("TEXT");
+		rewardSPHistory.setType("SP_PLUS");
+		rewardSPHistory.setCode(1);
+		rewardSPHistory.setCount(1166);
+		rewardSPHistory.setDisplayValue(1166);
+		
+		RewardExp rewardExp = new RewardExp();
+		rewardsOpts.setExp(rewardExp);
+		rewardExp.setBase(925);
+		rewardExp.setIncrement(0);
+		//
+		RewardHistory rewardExpHistory = new RewardHistory();
+		List<RewardHistory> rewardExpHistoryList = new ArrayList<>();
+		rewardExpHistoryList.add(rewardExpHistory);
+		rewardExp.setHistory(rewardExpHistoryList);
+		//
+		rewardExpHistory.setProvider("BASIC");
+		rewardExpHistory.setDisplay("TEXT");
+		rewardExpHistory.setType("EXP_PLUS");
+		rewardExpHistory.setCode(1);
+		rewardExpHistory.setCount(925);
+		rewardExpHistory.setDisplayValue(925);
+		
+		RewardDexp rewardDexp = new RewardDexp();
+		rewardsOpts.setDexp(rewardDexp);
+		rewardDexp.setBase(0);
+		rewardDexp.setIncrement(0);
+		//
+		List<RewardHistory> rewardDexpHistoryList = new ArrayList<>();
+		rewardDexp.setHistory(rewardDexpHistoryList);
+		
+		RewardCard rewardCard = new RewardCard();
+		rewardsOpts.setCard(rewardCard);
+		// TODO Cards
+		
+		optsList.add(rewardObj);
+		optsList.add(matchObj);
+		matchRoot.setCmd("resources");
+		matchRoot.setOpts(optsList);
+		
+		socketIO.sendEvent("msg", matchRoot, matchRoot.getCmd());
+		System.out.println("### [Match] Match ID 1 has been ended, request from player ID " + playerId + ".");
+	}
+	
+	/**
+	 * Send current player state data request (SIO)
+	 */
+	public void stateChangeSIO(String playerId, String state) {
+		ResourceDataObject rootObj = new ResourceDataObject();
+		rootObj.setCmd("change_presence");
+		
+		OptsStateInfo optsStateInfo = new OptsStateInfo();
+		optsStateInfo.setTime(123456789);
+		List<StateInfo> statesList = new ArrayList<>();
+		optsStateInfo.setInfo(statesList);
+		
+		StateInfo stateInfo = new StateInfo();
+		stateInfo.setPid(playerId);
+		stateInfo.setState(state);
+		statesList.add(stateInfo);
+		
+		rootObj.setOpts(optsStateInfo);
+		socketIO.sendEvent("msg", rootObj, rootObj.getCmd());
 	}
 }
