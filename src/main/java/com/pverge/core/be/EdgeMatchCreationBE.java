@@ -549,14 +549,204 @@ public class EdgeMatchCreationBE {
 		SteeringAttrs attr9 = new SteeringAttrs();
 		attr9.setAttr(26);
 		attr9.setModType(1);
-		if (steeringSettings.getV6() <= 50) {
+		if (currentValue <= 50) {
 			attr9.setVal( (-3 + (0.06 * currentValue)) );
 		} else {
 			attr9.setVal( (0 + (0.09 * currentValue)) );
 		}
 		attrsList.add(attr9);
 		
-		// TODO
+		// Front Wheel Pressure
+		currentValue = steeringSettings.getV7();
+		SteeringAttrs attr10 = new SteeringAttrs();
+		attr10.setAttr(56);
+		attr10.setModType(0);
+		if (currentValue <= 50) {
+			attr10.setVal( (1 + (0.001 * currentValue)) );
+		} else {
+			attr10.setVal( (1 - (0.003 * currentValue)) );
+		}
+		attrsList.add(attr10);
+		
+		// Rear Wheel Pressure
+		currentValue = steeringSettings.getV8();
+		SteeringAttrs attr11 = new SteeringAttrs();
+		attr11.setAttr(57);
+		attr11.setModType(0);
+		if (currentValue <= 50) {
+			attr11.setVal( (1 - (0.003 * currentValue)) );
+		} else {
+			attr11.setVal( (1 + (0.006 * currentValue)) );
+		}
+		attrsList.add(attr11);
+		
+		// Steering Response Time
+		currentValue = steeringSettings.getV9();
+		SteeringAttrs attr12 = new SteeringAttrs();
+		attr12.setAttr(60);
+		attr12.setModType(0);
+		attr12.setVal( (1.1 - (0.002 * currentValue)) );
+		attrsList.add(attr12);
+		
+		SteeringAttrs attr13 = new SteeringAttrs();
+		attr13.setAttr(80);
+		attr13.setModType(0);
+		attr13.setVal( (0.8 + (0.004 * currentValue)) );
+		attrsList.add(attr13);
+		
+		// Turn Radius
+		currentValue = steeringSettings.getV10();
+		SteeringAttrs attr14 = new SteeringAttrs();
+		attr14.setAttr(81);
+		attr14.setModType(0);
+		attr14.setVal( (1.25 - (0.005 * currentValue)) );
+		attrsList.add(attr14);
+		
+		SteeringAttrs attr15 = new SteeringAttrs();
+		attr15.setAttr(82);
+		attr15.setModType(0);
+		attr15.setVal( (1.25 - (0.005 * currentValue)) );
+		attrsList.add(attr15);
+		
+		SteeringAttrs attr16 = new SteeringAttrs();
+		attr16.setAttr(84);
+		attr16.setModType(1);
+		attr16.setVal( (25 - (0.5 * currentValue)) );
+		attrsList.add(attr16);
+		
+		SteeringAttrs attr17 = new SteeringAttrs();
+		attr17.setAttr(85);
+		attr17.setModType(1);
+		attr17.setVal( (5 - (0.1 * currentValue)) );
+		attrsList.add(attr17);
+		
+		// Brake Drift Assist
+		currentValue = steeringSettings.getV11();
+		SteeringAttrs attr18 = new SteeringAttrs();
+		attr18.setAttr(99);
+		attr18.setModType(0);
+		if (currentValue <= 50) {
+			attr18.setVal( (1 + (0.98 * currentValue)) );
+		} else {
+			attr18.setVal( (50 + (0.99 * currentValue)) );
+		}
+		attrsList.add(attr18);
+		
+		SteeringAttrs attr19 = new SteeringAttrs();
+		attr19.setAttr(100);
+		attr19.setModType(0);
+		if (currentValue <= 50) {
+			attr19.setVal( (1 + (0.98 * currentValue)) );
+		} else {
+			attr19.setVal( (50 + (0.99 * currentValue)) );
+		}
+		attrsList.add(attr19);
+		
+		SteeringAttrs attr20 = new SteeringAttrs();
+		attr20.setAttr(103);
+		attr20.setModType(0);
+		if (currentValue <= 50) {
+			attr20.setVal( (1 + (0.98 * currentValue)) );
+		} else {
+			attr20.setVal( (50 + (0.99 * currentValue)) );
+		}
+		attrsList.add(attr20);
+		
+		// Drift Stability
+		currentValue = steeringSettings.getV12();
+		SteeringAttrs attr21 = new SteeringAttrs();
+		attr21.setAttr(135);
+		attr21.setModType(1);
+		if (currentValue <= 50) {
+			attr21.setVal( (0.7 - (0.014 * currentValue)) );
+		} else {
+			attr21.setVal( (0 - (0.0013 * currentValue)) );
+		}
+		attrsList.add(attr21);
+		
+		SteeringAttrs attr22 = new SteeringAttrs();
+		attr22.setAttr(136);
+		attr22.setModType(1);
+		if (currentValue <= 50) {
+			attr22.setVal( (0.4 - (0.008 * currentValue)) );
+		} else {
+			attr22.setVal( (0 - (0.0013 * currentValue)) );
+		}
+		attrsList.add(attr22);
+		
+		SteeringAttrs attr23 = new SteeringAttrs();
+		attr23.setAttr(108);
+		attr23.setModType(0);
+		if (currentValue <= 50) {
+			attr23.setVal( (0.95 + (0.001 * currentValue)) );
+		} else {
+			attr23.setVal( (1 + (0.002 * currentValue)) );
+		}
+		attrsList.add(attr23);
+		
+		SteeringAttrs attr24 = new SteeringAttrs();
+		attr24.setAttr(109);
+		attr24.setModType(0);
+		if (currentValue <= 50) {
+			attr24.setVal( (0.6 + (0.008 * currentValue)) );
+		} else {
+			attr24.setVal( (1 + (0.004 * currentValue)) );
+		}
+		attrsList.add(attr24);
+		
+		SteeringAttrs attr25 = new SteeringAttrs();
+		attr25.setAttr(110);
+		attr25.setModType(0);
+		if (currentValue <= 50) {
+			attr25.setVal( (1.6 - (0.012 * currentValue)) );
+		} else {
+			attr25.setVal( (1 - (0.004 * currentValue)) );
+		}
+		attrsList.add(attr25);
+		
+		SteeringAttrs attr26 = new SteeringAttrs();
+		attr26.setAttr(111);
+		attr26.setModType(0);
+		if (currentValue <= 50) {
+			attr26.setVal( (0.4 + (0.012 * currentValue)) );
+		} else {
+			attr26.setVal( (1 + (0.004 * currentValue)) );
+		}
+		attrsList.add(attr26);
+		
+		SteeringAttrs attr27 = new SteeringAttrs();
+		attr27.setAttr(105);
+		attr27.setModType(0);
+		if (currentValue <= 50) {
+			attr27.setVal( (1.6 - (0.012 * currentValue)) );
+		} else {
+			attr27.setVal( (1 - (0.003 * currentValue)) );
+		}
+		attrsList.add(attr27);
+		
+		// 154 - 1 ???
+		
+		// Enable Controller
+		currentValue = steeringSettings.getV13();
+		SteeringAttrs attr29 = new SteeringAttrs();
+		attr29.setAttr(133);
+		attr29.setModType(0);
+		if (currentValue <= 50) {
+			attr29.setVal( (1.25 - (0.005 * currentValue)) );
+		} else {
+			attr29.setVal( (1 - (0.008 * currentValue)) );
+		}
+		attrsList.add(attr29);
+		
+		SteeringAttrs attr30 = new SteeringAttrs();
+		attr30.setAttr(18);
+		attr30.setModType(0);
+		if (currentValue <= 50) {
+			attr30.setVal( (1 - (0.004 * currentValue)) );
+		} else {
+			attr30.setVal( (1 + (0.006 * currentValue)) );
+		}
+		attrsList.add(attr30);
 		
 		return attrsList;
 	}

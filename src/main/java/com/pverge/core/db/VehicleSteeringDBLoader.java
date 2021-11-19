@@ -53,5 +53,10 @@ public class VehicleSteeringDBLoader extends DBEntityBase<VehicleSteeringEntity>
 		query.setParameter("v13", steeringOpts.get(13).getVal());
 		query.executeUpdate();
 	}
+	
+	public boolean isSteeringValuesEqual(VehicleSteeringEntity entity) {
+		// TODO
+		return true;
+	}
 
 }
