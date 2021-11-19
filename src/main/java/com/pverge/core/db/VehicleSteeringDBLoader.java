@@ -55,8 +55,15 @@ public class VehicleSteeringDBLoader extends DBEntityBase<VehicleSteeringEntity>
 	}
 	
 	public boolean isSteeringValuesEqual(VehicleSteeringEntity entity) {
-		// TODO
-		return true;
+		int value = entity.getV0();
+		if (entity.getV0() == value && entity.getV1() == value && entity.getV2() == value &&
+				entity.getV3() == value && entity.getV4() == value && entity.getV5() == value &&
+				entity.getV6() == value && entity.getV7() == value && entity.getV8() == value &&
+				entity.getV9() == value && entity.getV10() == value && entity.getV11() == value &&
+				entity.getV12() == value && entity.getV13() == value) {
+			return true;
+		}
+		return false;
 	}
 
 }
