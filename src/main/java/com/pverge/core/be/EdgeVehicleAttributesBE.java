@@ -1,7 +1,6 @@
 package com.pverge.core.be;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -390,7 +389,8 @@ public class EdgeVehicleAttributesBE {
 	}
 	
 	/**
-	 * Create Steering attributes entry for player vehicle
+	 * Create Steering attributes entry for player vehicle. BigDecimal calculations is used 
+	 * to avoid rounding & calculations errors
 	 * @return Steering attributes entry
 	 */
 	public List<SteeringAttrs> getSteeringAttrs(PlayerVehicleEntity currentVehicle) {
@@ -398,6 +398,7 @@ public class EdgeVehicleAttributesBE {
 		List<SteeringAttrs> attrsList = new ArrayList<>();
 		int currentValue = 50;
 		boolean equalValues = false;
+		BigDecimal calc = new BigDecimal("0");
 		if (steeringSettings == null) { // Use default steering settings
 			steeringSettings = new VehicleSteeringEntity();
 			steeringSettings.setV0(currentValue); steeringSettings.setV1(currentValue); steeringSettings.setV2(currentValue);
@@ -414,25 +415,29 @@ public class EdgeVehicleAttributesBE {
 		SteeringAttrs attr0 = new SteeringAttrs();
 		attr0.setAttr(59);
 		attr0.setModType(0);
-		attr0.setVal( (0.7 + (0.006 * currentValue)) );
+		calc = new BigDecimal("0.006").multiply(BigDecimal.valueOf(currentValue));
+		attr0.setVal( (new BigDecimal("0.7").add(calc).doubleValue()) );
 		attrsList.add(attr0);
 		
 		SteeringAttrs attr1 = new SteeringAttrs();
 		attr1.setAttr(151);
 		attr1.setModType(0);
-		attr1.setVal( (0.9 + (0.002 * currentValue)) );
+		calc = new BigDecimal("0.002").multiply(BigDecimal.valueOf(currentValue));
+		attr1.setVal( (new BigDecimal("0.9").add(calc).doubleValue()) );
 		attrsList.add(attr1);
 		
 		SteeringAttrs attr2 = new SteeringAttrs();
 		attr2.setAttr(153);
 		attr2.setModType(0);
-		attr2.setVal( (0.9 + (0.002 * currentValue)) );
+		calc = new BigDecimal("0.002").multiply(BigDecimal.valueOf(currentValue));
+		attr2.setVal( (new BigDecimal("0.9").add(calc).doubleValue()) );
 		attrsList.add(attr2);
 		
 		SteeringAttrs attr3 = new SteeringAttrs();
 		attr3.setAttr(77);
 		attr3.setModType(1);
-		attr3.setVal( (-0.5 + (0.01 * currentValue)) );
+		calc = new BigDecimal("0.01").multiply(BigDecimal.valueOf(currentValue));
+		attr3.setVal( (new BigDecimal("-0.5").add(calc).doubleValue()) );
 		attrsList.add(attr3);
 		
 		// Brake Pressure
@@ -440,7 +445,8 @@ public class EdgeVehicleAttributesBE {
 		SteeringAttrs attr4 = new SteeringAttrs();
 		attr4.setAttr(58);
 		attr4.setModType(0);
-		attr4.setVal( (1.1 - (0.002 * currentValue)) );
+		calc = new BigDecimal("0.002").multiply(BigDecimal.valueOf(currentValue));
+		attr4.setVal( (new BigDecimal("1.1").subtract(calc).doubleValue()) );
 		attrsList.add(attr4);
 		
 		// Braking Gear
@@ -449,9 +455,11 @@ public class EdgeVehicleAttributesBE {
 		attr5.setAttr(140);
 		attr5.setModType(1);
 		if (currentValue <= 50) {
-			attr5.setVal( (0.5 - (0.01 * currentValue)) );
+			calc = new BigDecimal("0.01").multiply(BigDecimal.valueOf(currentValue));
+			attr5.setVal( (new BigDecimal("0.5").subtract(calc).doubleValue()) );
 		} else {
-			attr5.setVal( (0 - (0.0075 * currentValue)) );
+			calc = new BigDecimal("0.0075").multiply(BigDecimal.valueOf(currentValue));
+			attr5.setVal( (new BigDecimal("0").subtract(calc).doubleValue()) );
 		}
 		attrsList.add(attr5);
 		
@@ -460,7 +468,8 @@ public class EdgeVehicleAttributesBE {
 		SteeringAttrs attr6 = new SteeringAttrs();
 		attr6.setAttr(78);
 		attr6.setModType(0);
-		attr6.setVal( (0.7 + (0.006 * currentValue)) );
+		calc = new BigDecimal("0.006").multiply(BigDecimal.valueOf(currentValue));
+		attr6.setVal( (new BigDecimal("0.7").add(calc).doubleValue()) );
 		attrsList.add(attr6);
 		
 		// Suspension Strength
@@ -468,7 +477,8 @@ public class EdgeVehicleAttributesBE {
 		SteeringAttrs attr7 = new SteeringAttrs();
 		attr7.setAttr(137);
 		attr7.setModType(0);
-		attr7.setVal( (0.25 + (0.015 * currentValue)) );
+		calc = new BigDecimal("0.015").multiply(BigDecimal.valueOf(currentValue));
+		attr7.setVal( (new BigDecimal("0.25").add(calc).doubleValue()) );
 		attrsList.add(attr7);
 		
 		// Anti-roll Bar
@@ -476,7 +486,8 @@ public class EdgeVehicleAttributesBE {
 		SteeringAttrs attr8 = new SteeringAttrs();
 		attr8.setAttr(139);
 		attr8.setModType(1);
-		attr8.setVal( (-0.4 + (0.008 * currentValue)) );
+		calc = new BigDecimal("0.008").multiply(BigDecimal.valueOf(currentValue));
+		attr8.setVal( (new BigDecimal("-0.4").add(calc).doubleValue()) );
 		attrsList.add(attr8);
 		
 		// Tire Grip
@@ -485,9 +496,11 @@ public class EdgeVehicleAttributesBE {
 		attr9.setAttr(26);
 		attr9.setModType(1);
 		if (currentValue <= 50) {
-			attr9.setVal( (-3 + (0.06 * currentValue)) );
+			calc = new BigDecimal("0.06").multiply(BigDecimal.valueOf(currentValue));
+			attr9.setVal( (new BigDecimal("-3").add(calc).doubleValue()) );
 		} else {
-			attr9.setVal( (-4.5 + (0.09 * currentValue)) );
+			calc = new BigDecimal("0.09").multiply(BigDecimal.valueOf(currentValue));
+			attr9.setVal( (new BigDecimal("-4.5").add(calc).doubleValue()) );
 		}
 		attrsList.add(attr9);
 		
@@ -497,9 +510,11 @@ public class EdgeVehicleAttributesBE {
 		attr10.setAttr(56);
 		attr10.setModType(0);
 		if (currentValue <= 50) {
-			attr10.setVal( (1.05 - (0.001 * currentValue)) );
+			calc = new BigDecimal("0.001").multiply(BigDecimal.valueOf(currentValue));
+			attr10.setVal( (new BigDecimal("1.05").subtract(calc).doubleValue()) );
 		} else {
-			attr10.setVal( (1.15 - (0.003 * currentValue)) );
+			calc = new BigDecimal("0.003").multiply(BigDecimal.valueOf(currentValue));
+			attr10.setVal( (new BigDecimal("1.15").subtract(calc).doubleValue()) );
 		}
 		attrsList.add(attr10);
 		
@@ -509,9 +524,11 @@ public class EdgeVehicleAttributesBE {
 		attr11.setAttr(57);
 		attr11.setModType(0);
 		if (currentValue <= 50) {
-			attr11.setVal( (0.85 + (0.003 * currentValue)) );
+			calc = new BigDecimal("0.003").multiply(BigDecimal.valueOf(currentValue));
+			attr11.setVal( (new BigDecimal("0.85").add(calc).doubleValue()) );
 		} else {
-			attr11.setVal( (0.7 + (0.006 * currentValue)) );
+			calc = new BigDecimal("0.006").multiply(BigDecimal.valueOf(currentValue));
+			attr11.setVal( (new BigDecimal("0.7").add(calc).doubleValue()) );
 		}
 		attrsList.add(attr11);
 		
@@ -520,13 +537,15 @@ public class EdgeVehicleAttributesBE {
 		SteeringAttrs attr12 = new SteeringAttrs();
 		attr12.setAttr(60);
 		attr12.setModType(0);
-		attr12.setVal( (1.1 - (0.002 * currentValue)) );
+		calc = new BigDecimal("0.002").multiply(BigDecimal.valueOf(currentValue));
+		attr12.setVal( (new BigDecimal("1.1").subtract(calc).doubleValue()) );
 		attrsList.add(attr12);
 		
 		SteeringAttrs attr13 = new SteeringAttrs();
 		attr13.setAttr(80);
 		attr13.setModType(0);
-		attr13.setVal( (0.8 + (0.004 * currentValue)) );
+		calc = new BigDecimal("0.004").multiply(BigDecimal.valueOf(currentValue));
+		attr13.setVal( (new BigDecimal("0.8").add(calc).doubleValue()) );
 		attrsList.add(attr13);
 		
 		// Turn Radius
@@ -534,25 +553,29 @@ public class EdgeVehicleAttributesBE {
 		SteeringAttrs attr14 = new SteeringAttrs();
 		attr14.setAttr(81);
 		attr14.setModType(0);
-		attr14.setVal( (1.25 - (0.005 * currentValue)) );
+		calc = new BigDecimal("0.005").multiply(BigDecimal.valueOf(currentValue));
+		attr14.setVal( (new BigDecimal("1.25").subtract(calc).doubleValue()) );
 		attrsList.add(attr14);
 		
 		SteeringAttrs attr15 = new SteeringAttrs();
 		attr15.setAttr(82);
 		attr15.setModType(0);
-		attr15.setVal( (1.25 - (0.005 * currentValue)) );
+		calc = new BigDecimal("0.005").multiply(BigDecimal.valueOf(currentValue));
+		attr15.setVal( (new BigDecimal("1.25").subtract(calc).doubleValue()) );
 		attrsList.add(attr15);
 		
 		SteeringAttrs attr16 = new SteeringAttrs();
 		attr16.setAttr(84);
 		attr16.setModType(1);
-		attr16.setVal( (25 - (0.5 * currentValue)) );
+		calc = new BigDecimal("0.5").multiply(BigDecimal.valueOf(currentValue));
+		attr16.setVal( (new BigDecimal("25").subtract(calc).doubleValue()) );
 		attrsList.add(attr16);
 		
 		SteeringAttrs attr17 = new SteeringAttrs();
 		attr17.setAttr(85);
 		attr17.setModType(1);
-		attr17.setVal( (5 - (0.1 * currentValue)) );
+		calc = new BigDecimal("0.1").multiply(BigDecimal.valueOf(currentValue));
+		attr17.setVal( (new BigDecimal("5").subtract(calc).doubleValue()) );
 		attrsList.add(attr17);
 		
 		// Brake Drift Assist
@@ -561,9 +584,11 @@ public class EdgeVehicleAttributesBE {
 		attr18.setAttr(99);
 		attr18.setModType(0);
 		if (currentValue <= 50) {
-			attr18.setVal( (1 + (0.98 * currentValue)) );
+			calc = new BigDecimal("0.98").multiply(BigDecimal.valueOf(currentValue));
+			attr18.setVal( (new BigDecimal("1").add(calc).doubleValue()) );
 		} else {
-			attr18.setVal( (0.5 + (0.99 * currentValue)) );
+			calc = new BigDecimal("0.99").multiply(BigDecimal.valueOf(currentValue));
+			attr18.setVal( (new BigDecimal("0.5").add(calc).doubleValue()) );
 		}
 		attrsList.add(attr18);
 		
@@ -571,9 +596,11 @@ public class EdgeVehicleAttributesBE {
 		attr19.setAttr(100);
 		attr19.setModType(0);
 		if (currentValue <= 50) {
-			attr19.setVal( (1 + (0.98 * currentValue)) );
+			calc = new BigDecimal("0.98").multiply(BigDecimal.valueOf(currentValue));
+			attr19.setVal( (new BigDecimal("1").add(calc).doubleValue()) );
 		} else {
-			attr19.setVal( (0.5 + (0.99 * currentValue)) );
+			calc = new BigDecimal("0.99").multiply(BigDecimal.valueOf(currentValue));
+			attr19.setVal( (new BigDecimal("0.5").add(calc).doubleValue()) );
 		}
 		attrsList.add(attr19);
 		
@@ -581,9 +608,11 @@ public class EdgeVehicleAttributesBE {
 		attr20.setAttr(103);
 		attr20.setModType(0);
 		if (currentValue <= 50) {
-			attr20.setVal( (1 + (0.98 * currentValue)) );
+			calc = new BigDecimal("0.98").multiply(BigDecimal.valueOf(currentValue));
+			attr20.setVal( (new BigDecimal("1").add(calc).doubleValue()) );
 		} else {
-			attr20.setVal( (0.5 + (0.99 * currentValue)) );
+			calc = new BigDecimal("0.99").multiply(BigDecimal.valueOf(currentValue));
+			attr20.setVal( (new BigDecimal("0.5").add(calc).doubleValue()) );
 		}
 		attrsList.add(attr20);
 		
@@ -593,10 +622,11 @@ public class EdgeVehicleAttributesBE {
 		attr21.setAttr(135);
 		attr21.setModType(1);
 		if (currentValue <= 50) {
-			BigDecimal result = new BigDecimal("0.014").multiply(BigDecimal.valueOf(currentValue));
-			attr21.setVal( (new BigDecimal("0.7").subtract(result).doubleValue()) );
+			calc = new BigDecimal("0.014").multiply(BigDecimal.valueOf(currentValue));
+			attr21.setVal( (new BigDecimal("0.7").subtract(calc).doubleValue()) );
 		} else {
-			attr21.setVal( (0.065 - (0.0013 * currentValue)) );
+			calc = new BigDecimal("0.0013").multiply(BigDecimal.valueOf(currentValue));
+			attr21.setVal( (new BigDecimal("0.065").subtract(calc).doubleValue()) );
 		}
 		attrsList.add(attr21);
 		
@@ -604,9 +634,11 @@ public class EdgeVehicleAttributesBE {
 		attr22.setAttr(136);
 		attr22.setModType(1);
 		if (currentValue <= 50) {
-			attr22.setVal( (0.4 - (0.008 * currentValue)) );
+			calc = new BigDecimal("0.008").multiply(BigDecimal.valueOf(currentValue));
+			attr22.setVal( (new BigDecimal("0.4").subtract(calc).doubleValue()) );
 		} else {
-			attr22.setVal( (0.065 - (0.0013 * currentValue)) );
+			calc = new BigDecimal("0.0013").multiply(BigDecimal.valueOf(currentValue));
+			attr22.setVal( (new BigDecimal("0.065").subtract(calc).doubleValue()) );
 		}
 		attrsList.add(attr22);
 		
@@ -614,9 +646,11 @@ public class EdgeVehicleAttributesBE {
 		attr23.setAttr(108);
 		attr23.setModType(0);
 		if (currentValue <= 50) {
-			attr23.setVal( (0.95 + (0.001 * currentValue)) );
+			calc = new BigDecimal("0.001").multiply(BigDecimal.valueOf(currentValue));
+			attr23.setVal( (new BigDecimal("0.95").add(calc).doubleValue()) );
 		} else {
-			attr23.setVal( (0.9 + (0.002 * currentValue)) );
+			calc = new BigDecimal("0.0012").multiply(BigDecimal.valueOf(currentValue));
+			attr23.setVal( (new BigDecimal("0.9").add(calc).doubleValue()) );
 		}
 		attrsList.add(attr23);
 		
@@ -624,9 +658,11 @@ public class EdgeVehicleAttributesBE {
 		attr24.setAttr(109);
 		attr24.setModType(0);
 		if (currentValue <= 50) {
-			attr24.setVal( (0.6 + (0.008 * currentValue)) );
+			calc = new BigDecimal("0.008").multiply(BigDecimal.valueOf(currentValue));
+			attr24.setVal( (new BigDecimal("0.6").add(calc).doubleValue()) );
 		} else {
-			attr24.setVal( (0.8 + (0.004 * currentValue)) );
+			calc = new BigDecimal("0.004").multiply(BigDecimal.valueOf(currentValue));
+			attr24.setVal( (new BigDecimal("0.8").add(calc).doubleValue()) );
 		}
 		attrsList.add(attr24);
 		
@@ -634,9 +670,11 @@ public class EdgeVehicleAttributesBE {
 		attr25.setAttr(110);
 		attr25.setModType(0);
 		if (currentValue <= 50) {
-			attr25.setVal( (1.6 - (0.012 * currentValue)) );
+			calc = new BigDecimal("0.012").multiply(BigDecimal.valueOf(currentValue));
+			attr25.setVal( (new BigDecimal("1.6").subtract(calc).doubleValue()) );
 		} else {
-			attr25.setVal( (1.2 - (0.004 * currentValue)) );
+			calc = new BigDecimal("0.004").multiply(BigDecimal.valueOf(currentValue));
+			attr25.setVal( (new BigDecimal("1.2").subtract(calc).doubleValue()) );
 		}
 		attrsList.add(attr25);
 		
@@ -644,9 +682,11 @@ public class EdgeVehicleAttributesBE {
 		attr26.setAttr(111);
 		attr26.setModType(0);
 		if (currentValue <= 50) {
-			attr26.setVal( (0.4 + (0.012 * currentValue)) );
+			calc = new BigDecimal("0.012").multiply(BigDecimal.valueOf(currentValue));
+			attr26.setVal( (new BigDecimal("0.4").add(calc).doubleValue()) );
 		} else {
-			attr26.setVal( (0.8 + (0.004 * currentValue)) );
+			calc = new BigDecimal("0.004").multiply(BigDecimal.valueOf(currentValue));
+			attr26.setVal( (new BigDecimal("0.8").add(calc).doubleValue()) );
 		}
 		attrsList.add(attr26);
 		
@@ -654,18 +694,21 @@ public class EdgeVehicleAttributesBE {
 		attr27.setAttr(105);
 		attr27.setModType(0);
 		if (currentValue <= 50) {
-			attr27.setVal( (1.6 - (0.012 * currentValue)) );
+			calc = new BigDecimal("0.012").multiply(BigDecimal.valueOf(currentValue));
+			attr27.setVal( (new BigDecimal("1.6").subtract(calc).doubleValue()) );
 		} else {
-			attr27.setVal( (1.15 - (0.003 * currentValue)) );
+			calc = new BigDecimal("0.003").multiply(BigDecimal.valueOf(currentValue));
+			attr27.setVal( (new BigDecimal("1.15").subtract(calc).doubleValue()) );
 		}
 		attrsList.add(attr27);
 		
-		// Unknown parameter which is changed with equal setting values
+		// Unknown parameter which is changed when all setting values is equal
 		SteeringAttrs attr28 = new SteeringAttrs();
 		attr28.setAttr(154);
 		attr28.setModType(1);
 		if (equalValues && currentValue <= 50) {
-			attr28.setVal( (0.8 - (0.016 * currentValue)) );
+			calc = new BigDecimal("0.016").multiply(BigDecimal.valueOf(currentValue));
+			attr28.setVal( (new BigDecimal("0.8").subtract(calc).doubleValue()) );
 		} else {
 			attr28.setVal(0); // Still 0 when value is > 50
 		}
@@ -677,9 +720,11 @@ public class EdgeVehicleAttributesBE {
 		attr29.setAttr(133);
 		attr29.setModType(0);
 		if (currentValue <= 50) {
-			attr29.setVal( (1.25 - (0.005 * currentValue)) );
+			calc = new BigDecimal("0.005").multiply(BigDecimal.valueOf(currentValue));
+			attr29.setVal( (new BigDecimal("1.25").subtract(calc).doubleValue()) );
 		} else {
-			attr29.setVal( (1.4 - (0.008 * currentValue)) );
+			calc = new BigDecimal("0.008").multiply(BigDecimal.valueOf(currentValue));
+			attr29.setVal( (new BigDecimal("1.4").subtract(calc).doubleValue()) );
 		}
 		attrsList.add(attr29);
 		
@@ -687,9 +732,11 @@ public class EdgeVehicleAttributesBE {
 		attr30.setAttr(18);
 		attr30.setModType(0);
 		if (currentValue <= 50) {
-			attr30.setVal( (0.8 + (0.004 * currentValue)) );
+			calc = new BigDecimal("0.004").multiply(BigDecimal.valueOf(currentValue));
+			attr30.setVal( (new BigDecimal("0.8").add(calc).doubleValue()) );
 		} else {
-			attr30.setVal( (0.7 + (0.006 * currentValue)) );
+			calc = new BigDecimal("0.006").multiply(BigDecimal.valueOf(currentValue));
+			attr30.setVal( (new BigDecimal("0.7").add(calc).doubleValue()) );
 		}
 		attrsList.add(attr30);
 		
