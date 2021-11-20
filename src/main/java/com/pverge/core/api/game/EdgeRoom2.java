@@ -8,6 +8,7 @@ import javax.ws.rs.core.Response;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeMatchCreationBE;
 import com.pverge.core.be.EdgePresenceBE;
 import com.pverge.core.be.EdgeVehiclesBE;
 import com.pverge.core.db.PlayerDBLoader;
@@ -30,6 +31,8 @@ public class EdgeRoom2 {
 	private EdgePresenceBE edgePresenceBE;
 	@EJB
 	private EdgeVehiclesBE edgeVehiclesBE;
+	@EJB
+	private EdgeMatchCreationBE edgeMatchCreationBE;
 	
 	private static String forcePlayerId = "33";
 	// TODO Learn more about room2summaries
@@ -139,6 +142,7 @@ public class EdgeRoom2 {
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		int trackCode = requestJson.get("trackCode").getAsInt();
 		edgePresenceBE.setPlayerActivity("room2superpeer", trackCode, forcePlayerId);
+		edgeMatchCreationBE.updateRoomStateSIO();
 		
 		System.out.println("### [Room] Track Code " + trackCode + " change request from player ID " + forcePlayerId + ".");
 	    return "true";
@@ -155,6 +159,7 @@ public class EdgeRoom2 {
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		String vehicleId = requestJson.get("vid").getAsString();
 		playerDB.changeRecentVehicle(forcePlayerId, vehicleId);
+		edgePresenceBE.changeRecentVehicleSIORequest(forcePlayerId, vehicleId);
 		
 		System.out.println("### [Room] Vehicle ID " + vehicleId + " change request from player slot " + slotId + ".");
 	    return "true";

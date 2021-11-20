@@ -140,7 +140,7 @@ public class SIOMatchRewardObjects {
 		}
 	}
 	
-	public static class Gain {
+	public static class CardsGain {
 		private String provider; 
 		private String display; 
 		private String type; 
@@ -183,7 +183,7 @@ public class SIOMatchRewardObjects {
 		}
 	}
 	
-	public static class Lost {
+	public static class CardsLost {
 		private String provider; 
 		private String display; 
 		private String type; 
@@ -226,32 +226,32 @@ public class SIOMatchRewardObjects {
 		}
 	}
 	
-	public static class Items {
-		private List<Gain> gain; 
-		private List<Lost> lost; 
+	public static class RewardItems {
+		private List<CardsGain> gain; 
+		private List<CardsLost> lost; 
 
-		public List<Gain> getGain() {
+		public List<CardsGain> getGain() {
 			return gain; 
 		}
-		public void setGain(List<Gain> input) {
+		public void setGain(List<CardsGain> input) {
 			this.gain = input;
 		}
 		
-		public List<Lost> getLost() {
+		public List<CardsLost> getLost() {
 			return lost; 
 		}
-		public void setLost(List<Lost> input) {
+		public void setLost(List<CardsLost> input) {
 			this.lost = input;
 		}
 	}
 	
 	public static class RewardCard {
-		private Items items; 
+		private RewardItems items; 
 
-		public Items getItems() {
+		public RewardItems getItems() {
 			return items; 
 		}
-		public void setItems(Items input) {
+		public void setItems(RewardItems input) {
 			this.items = input;
 		}
 	}

@@ -17,10 +17,13 @@ import com.pverge.core.socket.dataobjects.SIOMatch2Objects.End;
 import com.pverge.core.socket.dataobjects.SIOMatch2Objects.MatchPeerOpts;
 import com.pverge.core.socket.dataobjects.SIOMatch2Objects.TakeDownTarget;
 import com.pverge.core.socket.dataobjects.SIOMatchObjects.*;
+import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.CardsGain;
+import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.CardsLost;
 import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardCard;
 import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardDexp;
 import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardExp;
 import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardHistory;
+import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardItems;
 import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardSP;
 import com.pverge.core.socket.dataobjects.SIOMatchRewardObjects.RewardsOpts;
 import com.pverge.core.socket.dataobjects.SIOPlayerObjects.OptsStateInfo;
@@ -415,7 +418,44 @@ public class EdgeEventLauncherBE {
 		
 		RewardCard rewardCard = new RewardCard();
 		rewardsOpts.setCard(rewardCard);
-		// TODO Cards
+		RewardItems rewardItems = new RewardItems();
+		rewardCard.setItems(rewardItems);
+		List<CardsGain> gainList = new ArrayList<>();
+		List<CardsLost> lostList = new ArrayList<>();
+		CardsGain cardsGain = new CardsGain();
+		gainList.add(cardsGain);
+		rewardItems.setGain(gainList);
+		rewardItems.setLost(lostList);
+		
+		cardsGain.setProvider("BASIC"); // Gain - reward which will be given to player (no matter which card)
+		cardsGain.setDisplay("ITEM");
+		cardsGain.setType("ITEM");
+		cardsGain.setCode(400109);
+		cardsGain.setCount(1);
+		//
+		CardsLost cardsLost1 = new CardsLost(); // Lost - "fake" cards with item, cannot be obtainable
+		cardsLost1.setProvider("DUMMY");
+		cardsLost1.setDisplay("ITEM");
+		cardsLost1.setType("BLUEPRINT");
+		cardsLost1.setCode(148);
+		cardsLost1.setCount(3);
+		lostList.add(cardsLost1);
+		//
+		CardsLost cardsLost2 = new CardsLost();
+		cardsLost2.setProvider("DUMMY");
+		cardsLost2.setDisplay("ITEM");
+		cardsLost2.setType("BLUEPRINT");
+		cardsLost2.setCode(148);
+		cardsLost2.setCount(3);
+		lostList.add(cardsLost2);
+		//
+		CardsLost cardsLost3 = new CardsLost();
+		cardsLost3.setProvider("DUMMY");
+		cardsLost3.setDisplay("ITEM");
+		cardsLost3.setType("BLUEPRINT");
+		cardsLost3.setCode(148);
+		cardsLost3.setCount(3);
+		lostList.add(cardsLost3);
 		
 		optsList.add(rewardObj);
 		optsList.add(matchObj);

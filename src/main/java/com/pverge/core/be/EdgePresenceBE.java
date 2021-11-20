@@ -80,6 +80,13 @@ public class EdgePresenceBE {
 	}
 	
 	/**
+	 * Get Room properties
+	 */
+	public String[] getRoomInfo() {
+		return new String[] {room2GameModeMeta, String.valueOf(futureTrackId)};
+	}
+	
+	/**
 	 * Start Socket events with delay
 	 */
 	public void startWithDelay(String action) {

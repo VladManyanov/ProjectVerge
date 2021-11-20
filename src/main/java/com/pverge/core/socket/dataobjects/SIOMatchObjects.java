@@ -11,6 +11,49 @@ import com.pverge.core.socket.dataobjects.SIODataObjects.Observers;
  */
 public class SIOMatchObjects {
 
+	public static class RoomSettings {
+	    public String gameMode;
+	    public String maxVehicleClazz;
+	    public boolean isRandomTrack;
+	    public int trackCode;
+	    public List<Integer> locked;
+	    
+		public String getGameMode() {
+			return gameMode;
+		}
+		public void setGameMode(String gameMode) {
+			this.gameMode = gameMode;
+		}
+		
+		public String getMaxVehicleClazz() {
+			return maxVehicleClazz;
+		}
+		public void setMaxVehicleClazz(String maxVehicleClazz) {
+			this.maxVehicleClazz = maxVehicleClazz;
+		}
+		
+		public boolean isRandomTrack() {
+			return isRandomTrack;
+		}
+		public void setRandomTrack(boolean isRandomTrack) {
+			this.isRandomTrack = isRandomTrack;
+		}
+		
+		public int getTrackCode() {
+			return trackCode;
+		}
+		public void setTrackCode(int trackCode) {
+			this.trackCode = trackCode;
+		}
+		
+		public List<Integer> getLocked() {
+			return locked;
+		}
+		public void setLocked(List<Integer> locked) {
+			this.locked = locked;
+		}
+	}
+	
 	public static class MatchPlayer {
 		private String pid; 
 		private String sid; 

@@ -1,12 +1,19 @@
 package com.pverge.core.be;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import com.pverge.core.db.CarCustomizationDBLoader;
 import com.pverge.core.db.dbobjects.CarCustomizationEntity;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
+import com.pverge.core.socket.NettySocketIO;
+import com.pverge.core.socket.dataobjects.SIODataObjects.MessageDataObject;
+import com.pverge.core.socket.dataobjects.SIODataObjects.ResourceListDataObject;
 import com.pverge.core.socket.dataobjects.SIOMatchObjects.NumberPlate;
+import com.pverge.core.socket.dataobjects.SIOMatchObjects.RoomSettings;
 import com.pverge.core.socket.dataobjects.SIORaceCommonObjects.*;
 
 /**
@@ -20,6 +27,10 @@ public class EdgeMatchCreationBE {
 	private EdgeVehicleAttributesBE vehicleAttributesBE;
 	@EJB
 	private CarCustomizationDBLoader carCustomizationDB;
+	@EJB
+	private EdgePresenceBE presenceBE;
+	
+	NettySocketIO socketIO = new NettySocketIO();
 	
 	/**
 	 * Create player client & vehicle entry
@@ -84,6 +95,35 @@ public class EdgeMatchCreationBE {
 		plate.setFontColor("#ffffff");
 		
 		return plate;
+	}
+	
+	/**
+	 * Send current Room state data request (SIO)
+	 */
+	public void updateRoomStateSIO() {
+		String[] roomInfo = presenceBE.getRoomInfo();
+		ResourceListDataObject rootObj = new ResourceListDataObject();
+		rootObj.setCmd("resources");
+		
+		MessageDataObject optsObj = new MessageDataObject();
+		optsObj.setUri("/v2/room2s/1"); // 1 is Match ID
+		RoomSettings roomSettings = new RoomSettings();
+		optsObj.setBody(roomSettings);
+		
+		roomSettings.setGameMode(roomInfo[0]);
+		roomSettings.setMaxVehicleClazz("ALL");
+		roomSettings.setRandomTrack(false);
+		roomSettings.setTrackCode(Integer.parseInt(roomInfo[1]));
+		List<Integer> lockedSlots = new ArrayList<>();
+		lockedSlots.add(2); lockedSlots.add(3); lockedSlots.add(4);
+		lockedSlots.add(5); lockedSlots.add(6); lockedSlots.add(7);
+		lockedSlots.add(8);
+		roomSettings.setLocked(lockedSlots);
+		
+		List<Object> optsList = new ArrayList<>();
+		optsList.add(optsObj);
+		rootObj.setOpts(optsList);
+		socketIO.sendEvent("msg", rootObj, rootObj.getCmd());
 	}
 	
 }
