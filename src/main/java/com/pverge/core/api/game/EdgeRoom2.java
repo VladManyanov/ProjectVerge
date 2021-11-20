@@ -14,7 +14,6 @@ import com.pverge.core.be.EdgeVehiclesBE;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerEntity;
-import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 
 /**
  * Edge - Race rooms requests. To start the race, a proper Socket-IO with event details must be sent

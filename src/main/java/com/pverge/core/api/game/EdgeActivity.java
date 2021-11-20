@@ -1,14 +1,18 @@
 package com.pverge.core.api.game;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.be.EdgeVehicleAttributesBE;
 import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
@@ -20,6 +24,8 @@ public class EdgeActivity {
 	
 	@EJB
 	private EdgeTokensBE tokensBE;
+	@EJB
+	private EdgeVehicleAttributesBE vehicleAttributesBE;
 	@Context
 	private HttpServletRequest sr;
 	
@@ -85,14 +91,13 @@ public class EdgeActivity {
 	@Path("match2/vehicle/attrs")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiMatchVehicleAttrs(@QueryParam("code") String code, @QueryParam("grade") String grade) {
-		// TODO Load actual Attrs from DB
 		//PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
-		JsonArray rootArray = new JsonArray();
-		
 		//System.out.println("### [Activity] Match vehicle attrib request from player ID " + player.getPid() + 
 		//		", vehicle code: " + code + ".");
+		List<Object> attrsObj = vehicleAttributesBE.getStockCarAttrs(Integer.parseInt(code), Integer.parseInt(grade));
+		
 		System.out.println("### [Activity] Match vehicle attrib request from player ID 33, vehicle code: " + code + ".");
-	    return rootArray.toString();
+	    return new Gson().toJson(attrsObj);
 	}
     
 }

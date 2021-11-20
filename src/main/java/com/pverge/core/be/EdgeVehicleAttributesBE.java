@@ -33,6 +33,22 @@ public class EdgeVehicleAttributesBE {
 	private VehicleSteeringDBLoader vehicleSteeringDB;
 	
 	/**
+	 * Get Attributes entry for stock vehicle
+	 * @return Attributes entry
+	 */
+	public List<Object> getStockCarAttrs(int vCode, int grade) {
+		PlayerVehicleEntity stockVehicle = new PlayerVehicleEntity();
+		stockVehicle.setVcode(vCode);
+		stockVehicle.setGrade(grade);
+		stockVehicle.setPartBumper(0);
+		stockVehicle.setPartEngine(0);
+		stockVehicle.setPartFrame(0);
+		stockVehicle.setPartNitroTank(0);
+		stockVehicle.setPartTransmission(0);
+		return getCarAttrs(stockVehicle);
+	}
+	
+	/**
 	 * Create Attributes entry for player vehicle
 	 * @return Attributes entry
 	 */
