@@ -413,7 +413,6 @@ public class EdgeVehicleAttributesBE {
 		VehicleSteeringEntity steeringSettings = vehicleSteeringDB.findByVid(currentVehicle.getId());
 		List<SteeringAttrs> attrsList = new ArrayList<>();
 		int currentValue = 50;
-		boolean equalValues = false;
 		BigDecimal calc = new BigDecimal("0");
 		if (steeringSettings == null) { // Use default steering settings
 			steeringSettings = new VehicleSteeringEntity();
@@ -422,35 +421,33 @@ public class EdgeVehicleAttributesBE {
 			steeringSettings.setV6(currentValue); steeringSettings.setV7(currentValue); steeringSettings.setV8(currentValue);
 			steeringSettings.setV9(currentValue); steeringSettings.setV10(currentValue); steeringSettings.setV11(currentValue);
 			steeringSettings.setV12(currentValue); steeringSettings.setV13(currentValue); 
-		} else if (vehicleSteeringDB.isSteeringValuesEqual(steeringSettings)) {
-			equalValues = true;
-		}
+		} 
 		
 		// Brake Pressure Distribution
 		currentValue = steeringSettings.getV0();
 		SteeringAttrs attr0 = new SteeringAttrs();
-		attr0.setAttr(59);
+		attr0.setAttr(59); // ATM_RearBrakeTorqueVsSpeed
 		attr0.setModType(0);
 		calc = new BigDecimal("0.006").multiply(BigDecimal.valueOf(currentValue));
 		attr0.setVal( (new BigDecimal("0.7").add(calc).doubleValue()) );
 		attrsList.add(attr0);
 		
 		SteeringAttrs attr1 = new SteeringAttrs();
-		attr1.setAttr(151);
+		attr1.setAttr(151); // ATM_BrakingLateralGripForLargeSpinRatioInitialGripRear
 		attr1.setModType(0);
 		calc = new BigDecimal("0.002").multiply(BigDecimal.valueOf(currentValue));
 		attr1.setVal( (new BigDecimal("0.9").add(calc).doubleValue()) );
 		attrsList.add(attr1);
 		
 		SteeringAttrs attr2 = new SteeringAttrs();
-		attr2.setAttr(153);
+		attr2.setAttr(153); // ATM_BrakingLateralGripForLargeSpinRatioPeakGripRear
 		attr2.setModType(0);
 		calc = new BigDecimal("0.002").multiply(BigDecimal.valueOf(currentValue));
 		attr2.setVal( (new BigDecimal("0.9").add(calc).doubleValue()) );
 		attrsList.add(attr2);
 		
 		SteeringAttrs attr3 = new SteeringAttrs();
-		attr3.setAttr(77);
+		attr3.setAttr(77); // ATM_DownforceOffsetUnderBraking
 		attr3.setModType(1);
 		calc = new BigDecimal("0.01").multiply(BigDecimal.valueOf(currentValue));
 		attr3.setVal( (new BigDecimal("-0.5").add(calc).doubleValue()) );
@@ -459,7 +456,7 @@ public class EdgeVehicleAttributesBE {
 		// Brake Pressure
 		currentValue = steeringSettings.getV1();
 		SteeringAttrs attr4 = new SteeringAttrs();
-		attr4.setAttr(58);
+		attr4.setAttr(58); // ATM_FrontBrakeTorqueVsSpeed
 		attr4.setModType(0);
 		calc = new BigDecimal("0.002").multiply(BigDecimal.valueOf(currentValue));
 		attr4.setVal( (new BigDecimal("1.1").subtract(calc).doubleValue()) );
@@ -468,7 +465,7 @@ public class EdgeVehicleAttributesBE {
 		// Braking Gear
 		currentValue = steeringSettings.getV2();
 		SteeringAttrs attr5 = new SteeringAttrs();
-		attr5.setAttr(140);
+		attr5.setAttr(140); // ATM_DownforceOffset
 		attr5.setModType(1);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.01").multiply(BigDecimal.valueOf(currentValue));
@@ -482,7 +479,7 @@ public class EdgeVehicleAttributesBE {
 		// E-Brake Strength
 		currentValue = steeringSettings.getV3();
 		SteeringAttrs attr6 = new SteeringAttrs();
-		attr6.setAttr(78);
+		attr6.setAttr(78); // ATM_HandbrakeTorqueVsSpeed
 		attr6.setModType(0);
 		calc = new BigDecimal("0.006").multiply(BigDecimal.valueOf(currentValue));
 		attr6.setVal( (new BigDecimal("0.7").add(calc).doubleValue()) );
@@ -491,7 +488,7 @@ public class EdgeVehicleAttributesBE {
 		// Suspension Strength
 		currentValue = steeringSettings.getV4();
 		SteeringAttrs attr7 = new SteeringAttrs();
-		attr7.setAttr(137);
+		attr7.setAttr(137); // ATM_XCarScalarX
 		attr7.setModType(0);
 		calc = new BigDecimal("0.015").multiply(BigDecimal.valueOf(currentValue));
 		attr7.setVal( (new BigDecimal("0.25").add(calc).doubleValue()) );
@@ -500,7 +497,7 @@ public class EdgeVehicleAttributesBE {
 		// Anti-roll Bar
 		currentValue = steeringSettings.getV5();
 		SteeringAttrs attr8 = new SteeringAttrs();
-		attr8.setAttr(139);
+		attr8.setAttr(139); // ATM_XCarScalarZ
 		attr8.setModType(1);
 		calc = new BigDecimal("0.008").multiply(BigDecimal.valueOf(currentValue));
 		attr8.setVal( (new BigDecimal("-0.4").add(calc).doubleValue()) );
@@ -509,7 +506,7 @@ public class EdgeVehicleAttributesBE {
 		// Tire Grip
 		currentValue = steeringSettings.getV6();
 		SteeringAttrs attr9 = new SteeringAttrs();
-		attr9.setAttr(26);
+		attr9.setAttr(26); // ATM_MinimumAngleForDrift
 		attr9.setModType(1);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.06").multiply(BigDecimal.valueOf(currentValue));
@@ -523,7 +520,7 @@ public class EdgeVehicleAttributesBE {
 		// Front Wheel Pressure
 		currentValue = steeringSettings.getV7();
 		SteeringAttrs attr10 = new SteeringAttrs();
-		attr10.setAttr(56);
+		attr10.setAttr(56); // ATM_LateralFrictionScaleFront
 		attr10.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.001").multiply(BigDecimal.valueOf(currentValue));
@@ -537,7 +534,7 @@ public class EdgeVehicleAttributesBE {
 		// Rear Wheel Pressure
 		currentValue = steeringSettings.getV8();
 		SteeringAttrs attr11 = new SteeringAttrs();
-		attr11.setAttr(57);
+		attr11.setAttr(57); // ATM_LateralFrictionScaleRear
 		attr11.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.003").multiply(BigDecimal.valueOf(currentValue));
@@ -551,14 +548,14 @@ public class EdgeVehicleAttributesBE {
 		// Steering Response Time
 		currentValue = steeringSettings.getV9();
 		SteeringAttrs attr12 = new SteeringAttrs();
-		attr12.setAttr(60);
+		attr12.setAttr(60); // ATM_SteerRate
 		attr12.setModType(0);
 		calc = new BigDecimal("0.002").multiply(BigDecimal.valueOf(currentValue));
 		attr12.setVal( (new BigDecimal("1.1").subtract(calc).doubleValue()) );
 		attrsList.add(attr12);
 		
 		SteeringAttrs attr13 = new SteeringAttrs();
-		attr13.setAttr(80);
+		attr13.setAttr(80); // ATM_CenterSteerRate
 		attr13.setModType(0);
 		calc = new BigDecimal("0.004").multiply(BigDecimal.valueOf(currentValue));
 		attr13.setVal( (new BigDecimal("0.8").add(calc).doubleValue()) );
@@ -567,28 +564,28 @@ public class EdgeVehicleAttributesBE {
 		// Turn Radius
 		currentValue = steeringSettings.getV10();
 		SteeringAttrs attr14 = new SteeringAttrs();
-		attr14.setAttr(81);
+		attr14.setAttr(81); // ATM_SteeringRangeOffThrottle
 		attr14.setModType(0);
 		calc = new BigDecimal("0.005").multiply(BigDecimal.valueOf(currentValue));
 		attr14.setVal( (new BigDecimal("1.25").subtract(calc).doubleValue()) );
 		attrsList.add(attr14);
 		
 		SteeringAttrs attr15 = new SteeringAttrs();
-		attr15.setAttr(82);
+		attr15.setAttr(82); // ATM_SteeringRangeOnThrottle
 		attr15.setModType(0);
 		calc = new BigDecimal("0.005").multiply(BigDecimal.valueOf(currentValue));
 		attr15.setVal( (new BigDecimal("1.25").subtract(calc).doubleValue()) );
 		attrsList.add(attr15);
 		
 		SteeringAttrs attr16 = new SteeringAttrs();
-		attr16.setAttr(84);
+		attr16.setAttr(84); // ATM_DriftCounterSteerRate
 		attr16.setModType(1);
 		calc = new BigDecimal("0.5").multiply(BigDecimal.valueOf(currentValue));
 		attr16.setVal( (new BigDecimal("25").subtract(calc).doubleValue()) );
 		attrsList.add(attr16);
 		
 		SteeringAttrs attr17 = new SteeringAttrs();
-		attr17.setAttr(85);
+		attr17.setAttr(85); // ATM_MaxSteeringAngle
 		attr17.setModType(1);
 		calc = new BigDecimal("0.1").multiply(BigDecimal.valueOf(currentValue));
 		attr17.setVal( (new BigDecimal("5").subtract(calc).doubleValue()) );
@@ -597,7 +594,7 @@ public class EdgeVehicleAttributesBE {
 		// Brake Drift Assist
 		currentValue = steeringSettings.getV11();
 		SteeringAttrs attr18 = new SteeringAttrs();
-		attr18.setAttr(99);
+		attr18.setAttr(99); // ATM_SlipAngleToEnterWhenBraking
 		attr18.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.98").multiply(BigDecimal.valueOf(currentValue));
@@ -609,7 +606,7 @@ public class EdgeVehicleAttributesBE {
 		attrsList.add(attr18);
 		
 		SteeringAttrs attr19 = new SteeringAttrs();
-		attr19.setAttr(100);
+		attr19.setAttr(100); // ATM_SlipAngleToEnterWhenHandbraking
 		attr19.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.98").multiply(BigDecimal.valueOf(currentValue));
@@ -621,7 +618,7 @@ public class EdgeVehicleAttributesBE {
 		attrsList.add(attr19);
 		
 		SteeringAttrs attr20 = new SteeringAttrs();
-		attr20.setAttr(103);
+		attr20.setAttr(103); // ATM_StartingDriftScaleAfterScandinavianFlick
 		attr20.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.98").multiply(BigDecimal.valueOf(currentValue));
@@ -635,7 +632,7 @@ public class EdgeVehicleAttributesBE {
 		// Drift Stability
 		currentValue = steeringSettings.getV12();
 		SteeringAttrs attr21 = new SteeringAttrs();
-		attr21.setAttr(135);
+		attr21.setAttr(135); // ATM_DefaultSteeringRemapping
 		attr21.setModType(1);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.014").multiply(BigDecimal.valueOf(currentValue));
@@ -647,7 +644,7 @@ public class EdgeVehicleAttributesBE {
 		attrsList.add(attr21);
 		
 		SteeringAttrs attr22 = new SteeringAttrs();
-		attr22.setAttr(136);
+		attr22.setAttr(136); // ATM_CounterSteeringRemapping
 		attr22.setModType(1);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.008").multiply(BigDecimal.valueOf(currentValue));
@@ -659,7 +656,7 @@ public class EdgeVehicleAttributesBE {
 		attrsList.add(attr22);
 		
 		SteeringAttrs attr23 = new SteeringAttrs();
-		attr23.setAttr(108);
+		attr23.setAttr(108); // ATM_DriftScaleFromSteering
 		attr23.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.001").multiply(BigDecimal.valueOf(currentValue));
@@ -671,7 +668,7 @@ public class EdgeVehicleAttributesBE {
 		attrsList.add(attr23);
 		
 		SteeringAttrs attr24 = new SteeringAttrs();
-		attr24.setAttr(109);
+		attr24.setAttr(109); // ATM_DriftScaleFromCounterSteering
 		attr24.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.008").multiply(BigDecimal.valueOf(currentValue));
@@ -683,7 +680,7 @@ public class EdgeVehicleAttributesBE {
 		attrsList.add(attr24);
 		
 		SteeringAttrs attr25 = new SteeringAttrs();
-		attr25.setAttr(110);
+		attr25.setAttr(110); // ATM_DriftScaleFromGasLetOff
 		attr25.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.012").multiply(BigDecimal.valueOf(currentValue));
@@ -695,7 +692,7 @@ public class EdgeVehicleAttributesBE {
 		attrsList.add(attr25);
 		
 		SteeringAttrs attr26 = new SteeringAttrs();
-		attr26.setAttr(111);
+		attr26.setAttr(111); // ATM_DriftSidewaysDamping
 		attr26.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.012").multiply(BigDecimal.valueOf(currentValue));
@@ -707,7 +704,7 @@ public class EdgeVehicleAttributesBE {
 		attrsList.add(attr26);
 		
 		SteeringAttrs attr27 = new SteeringAttrs();
-		attr27.setAttr(105);
+		attr27.setAttr(105); // ATM_DriftAngularDamping
 		attr27.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.012").multiply(BigDecimal.valueOf(currentValue));
@@ -718,11 +715,10 @@ public class EdgeVehicleAttributesBE {
 		}
 		attrsList.add(attr27);
 		
-		// Unknown parameter which is changed when all setting values is equal
 		SteeringAttrs attr28 = new SteeringAttrs();
-		attr28.setAttr(154);
+		attr28.setAttr(154); // ATM_AligningTorqueEffectInDrift
 		attr28.setModType(1);
-		if (equalValues && currentValue <= 50) {
+		if (currentValue <= 50) {
 			calc = new BigDecimal("0.016").multiply(BigDecimal.valueOf(currentValue));
 			attr28.setVal( (new BigDecimal("0.8").subtract(calc).doubleValue()) );
 		} else {
@@ -733,7 +729,7 @@ public class EdgeVehicleAttributesBE {
 		// Enable Controller
 		currentValue = steeringSettings.getV13();
 		SteeringAttrs attr29 = new SteeringAttrs();
-		attr29.setAttr(133);
+		attr29.setAttr(133); // ATM_ExtraFishTailTorque
 		attr29.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.005").multiply(BigDecimal.valueOf(currentValue));
@@ -745,7 +741,7 @@ public class EdgeVehicleAttributesBE {
 		attrsList.add(attr29);
 		
 		SteeringAttrs attr30 = new SteeringAttrs();
-		attr30.setAttr(18);
+		attr30.setAttr(18); // ATM_RearFinalLongGripForZeroSlip
 		attr30.setModType(0);
 		if (currentValue <= 50) {
 			calc = new BigDecimal("0.004").multiply(BigDecimal.valueOf(currentValue));
