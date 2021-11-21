@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
+import com.pverge.core.db.dbobjects.RatingVehiclesEntity;
 import com.pverge.core.db.dbobjects.VehicleSteeringEntity;
 import com.pverge.core.socket.NettySocketIO;
 import com.pverge.core.socket.dataobjects.SIODataObjects.*;
@@ -25,6 +26,8 @@ import com.pverge.core.socket.dataobjects.SIOAssetVehicleObjects.*;
 public class EdgeSocketVehiclesBE {
 
 	@EJB
+	private EdgeVehiclesBE edgeVehiclesBE;
+	@EJB
 	private PlayerDBLoader playerDB;
 	@EJB
 	private PlayerVehicleDBLoader playerVehicleDB;
@@ -37,6 +40,7 @@ public class EdgeSocketVehiclesBE {
 	 */
 	public void prepareAssetVehicleUpdate(String playerId, String uri) {
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
+		RatingVehiclesEntity ratingEntity = edgeVehiclesBE.calcCarRating(currentVehicle);
 		
 		ResourceListDataObject rootData = new ResourceListDataObject();
 		List<Object> optsList = new ArrayList<>();
@@ -77,15 +81,15 @@ public class EdgeSocketVehiclesBE {
 		assetBody.setId(currentVehicle.getId());
 		
 		Status assetStatus = new Status();
-		assetStatus.setTopSpeed(700);
-		assetStatus.setAcceleration(723);
-		assetStatus.setNitroCapacity(738);
-		assetStatus.setStrength(470);
-		assetStatus.setDurability(410);
+		assetStatus.setTopSpeed(ratingEntity.getTopSpeed());
+		assetStatus.setAcceleration(ratingEntity.getAcceleration());
+		assetStatus.setNitroCapacity(ratingEntity.getNitroCapacity());
+		assetStatus.setStrength(ratingEntity.getStrength());
+		assetStatus.setDurability(ratingEntity.getDurability());
 		assetBody.setStatus(assetStatus);
 		
-		assetBody.setOvr(720);
-		assetBody.setClazz("S");
+		assetBody.setOvr(ratingEntity.getOvrDefault());
+		assetBody.setClazz(ratingEntity.getClazz());
 		assetOpts.setBody(assetBody);
 		optsList.add(assetOpts);
 		

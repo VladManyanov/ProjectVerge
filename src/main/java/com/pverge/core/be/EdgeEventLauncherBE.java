@@ -10,6 +10,7 @@ import com.pverge.core.be.util.TrackCode;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
+import com.pverge.core.db.dbobjects.RatingVehiclesEntity;
 import com.pverge.core.socket.NettySocketIO;
 import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinOpts;
 import com.pverge.core.socket.dataobjects.SIODataObjects.*;
@@ -46,6 +47,8 @@ public class EdgeEventLauncherBE {
 	private EdgeMatchCreationBE edgeMatchCreationBE;
 	@EJB
 	private EdgeSocketVehiclesBE edgeSocketVehiclesBE;
+	@EJB
+	private EdgeVehiclesBE edgeVehiclesBE;
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	static int[] aiDrivers = new int[]{677,691,693,694,695}; 
@@ -149,6 +152,7 @@ public class EdgeEventLauncherBE {
 		}
 		maxPlayers = maxPlayers - 1;
 		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(playerId).getVid());
+		RatingVehiclesEntity ratingEntity = edgeVehiclesBE.calcCarRating(currentVehicle);
 		
 		ResourceDataObject matchCreatedRootData = new ResourceDataObject();
 		matchCreatedRootData.setCmd("match2.created");
@@ -191,7 +195,7 @@ public class EdgeEventLauncherBE {
 		vehicle.setGrade(currentVehicle.getGrade());
 		vehicle.setId(currentVehicle.getId());
 		vehicle.setIGR(false);
-		vehicle.setOvr(549);
+		vehicle.setOvr(ratingEntity.getOvrDefault());
 		
 		Paint paint = new Paint();
 		paint.setColorCode(currentVehicle.getColorCode());
@@ -208,11 +212,11 @@ public class EdgeEventLauncherBE {
 		vehicle.setParts(parts);
 		
 		Status status = new Status();
-		status.setAcceleration(765);
-		status.setDurability(658);
-		status.setNitroCapacity(777);
-		status.setStrength(680);
-		status.setTopSpeed(793);
+		status.setAcceleration(ratingEntity.getAcceleration());
+		status.setDurability(ratingEntity.getDurability());
+		status.setNitroCapacity(ratingEntity.getNitroCapacity());
+		status.setStrength(ratingEntity.getStrength());
+		status.setTopSpeed(ratingEntity.getTopSpeed());
 		vehicle.setStatus(status);
 		vehicle.setSteering(edgeSocketVehiclesBE.prepareSteeringSIO(currentVehicle.getSteering()));
 		

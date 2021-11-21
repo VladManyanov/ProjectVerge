@@ -7,10 +7,16 @@ import javax.ejb.Stateless;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.db.AttrsPartsInfoDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
+import com.pverge.core.db.RatingGradesDBLoader;
+import com.pverge.core.db.RatingVehiclesDBLoader;
 import com.pverge.core.db.VehicleSteeringDBLoader;
+import com.pverge.core.db.dbobjects.AttrsPartsInfoEntity;
 import com.pverge.core.db.dbobjects.CarCustomizationEntity;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
+import com.pverge.core.db.dbobjects.RatingGradesEntity;
+import com.pverge.core.db.dbobjects.RatingVehiclesEntity;
 import com.pverge.core.db.dbobjects.VehicleSteeringEntity;
 
 /**
@@ -24,6 +30,12 @@ public class EdgeVehiclesBE {
 	private PlayerVehicleDBLoader playerVehicleDB;
 	@EJB
 	private VehicleSteeringDBLoader vehicleSteeringDB;
+	@EJB
+	private RatingVehiclesDBLoader ratingVehiclesDB;
+	@EJB
+	private RatingGradesDBLoader ratingGradesDB;
+	@EJB
+	private AttrsPartsInfoDBLoader attrsPartsInfoDBLoader;
 	
 	private static String forcePlayerId = "33";
 	
@@ -47,6 +59,7 @@ public class EdgeVehiclesBE {
 	 */
 	public JsonObject prepareVehicleData(PlayerVehicleEntity vehicle) {
 		JsonObject carJson = new JsonObject();
+		RatingVehiclesEntity ratingEntity = calcCarRating(vehicle);
 			
 		carJson.addProperty("embededId", vehicle.getId()); // on 1 more than Id value for some reason
 		carJson.addProperty("pid", forcePlayerId);
@@ -77,16 +90,16 @@ public class EdgeVehiclesBE {
 		carJson.addProperty("id", vehicle.getId()); // vehicle id
 			
 		JsonObject carStatus = new JsonObject();
-		carStatus.addProperty("topSpeed", 562);
-		carStatus.addProperty("acceleration", 569);
-		carStatus.addProperty("nitroCapacity", 559);
-		carStatus.addProperty("strength", 409);
-		carStatus.addProperty("durability", 397);
+		carStatus.addProperty("topSpeed", ratingEntity.getTopSpeed());
+		carStatus.addProperty("acceleration", ratingEntity.getAcceleration());
+		carStatus.addProperty("nitroCapacity", ratingEntity.getNitroCapacity());
+		carStatus.addProperty("strength", ratingEntity.getStrength());
+		carStatus.addProperty("durability", ratingEntity.getDurability());
 		carJson.add("status", carStatus);
 			
-		carJson.addProperty("ovr", 573);
+		carJson.addProperty("ovr", ratingEntity.getOvrDefault());
 		carJson.addProperty("igr", false);
-		carJson.addProperty("clazz", "A");
+		carJson.addProperty("clazz", ratingEntity.getClazz());
 		
 		return carJson;
 	}
@@ -214,5 +227,71 @@ public class EdgeVehiclesBE {
 		playerVehicleDB.update(vehicle);
 		System.out.println("### [Vehicles] Vehicle ID " + vehicle.getId() + 
 				" create steering settings request from player ID " + forcePlayerId + ".");
+	}
+	
+	/**
+	 * Calculate car rating with parts & current grade
+	 */
+	public RatingVehiclesEntity calcCarRating(PlayerVehicleEntity vehicle) {
+		RatingVehiclesEntity output = new RatingVehiclesEntity();
+		RatingVehiclesEntity ratingEntity = ratingVehiclesDB.findByCode(vehicle.getVcode());
+		RatingGradesEntity ratingGradesEntity = ratingGradesDB.findGrade(vehicle.getVcode(), vehicle.getGrade());
+		if (ratingEntity == null) {
+			ratingEntity = dummyRating();
+			System.out.println("!!! [Vehicle] Rating entity of vehicle Code " + vehicle.getVcode() + " cannot be found.");
+		}
+		if (ratingGradesEntity == null) {ratingGradesEntity = dummyGradeRating();}
+		
+		output.setClazz(ratingEntity.getClazz());
+		output.setTopSpeed(ratingEntity.getTopSpeed() + ratingGradesEntity.getTopSpeed());
+		output.setAcceleration(ratingEntity.getAcceleration() + ratingGradesEntity.getAcceleration());
+		output.setNitroCapacity(ratingEntity.getNitroCapacity() + ratingGradesEntity.getNitroCapacity());
+		output.setStrength(ratingEntity.getStrength() + ratingGradesEntity.getStrength());
+		output.setDurability(ratingEntity.getDurability() + ratingGradesEntity.getDurability());
+		
+		if (vehicle.getPartEngine() != 0) {
+			output.setTopSpeed(output.getTopSpeed() + 
+					attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartEngine()).getOvrTopSpeed());
+		}
+		if (vehicle.getPartTransmission() != 0) {
+			output.setAcceleration(output.getAcceleration() + 
+					attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartTransmission()).getOvrAcceleration());
+		}
+		if (vehicle.getPartNitroTank() != 0) {
+			output.setNitroCapacity(output.getNitroCapacity() + 
+					attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartNitroTank()).getOvrNitroCapacity());
+		}
+		if (vehicle.getPartBumper() != 0) {
+			output.setStrength(output.getStrength() + 
+					attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartBumper()).getOvrStrength());
+		}
+		if (vehicle.getPartFrame() != 0) {
+			output.setDurability(output.getDurability() + 
+					attrsPartsInfoDBLoader.getPartInfo(vehicle.getPartFrame()).getOvrDurability());
+		}
+		output.setOvrDefault( // Calculate OVR without Strength or Durability, like original values
+				((output.getTopSpeed() + output.getAcceleration() + output.getNitroCapacity()) / 3) );
+		
+		return output;
+	}
+	
+	private RatingVehiclesEntity dummyRating() {
+		RatingVehiclesEntity dummy = new RatingVehiclesEntity();
+		dummy.setTopSpeed(0);
+		dummy.setStrength(0);
+		dummy.setNitroCapacity(0);
+		dummy.setDurability(0);
+		dummy.setAcceleration(0);
+		return dummy;
+	}
+	
+	private RatingGradesEntity dummyGradeRating() {
+		RatingGradesEntity dummy = new RatingGradesEntity();
+		dummy.setTopSpeed(0);
+		dummy.setStrength(0);
+		dummy.setNitroCapacity(0);
+		dummy.setDurability(0);
+		dummy.setAcceleration(0);
+		return dummy;
 	}
 }

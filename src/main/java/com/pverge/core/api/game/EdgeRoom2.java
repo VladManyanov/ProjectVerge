@@ -43,7 +43,6 @@ public class EdgeRoom2 {
 	@Path("room2")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiRoom2Create(String requestBody) {
-		// TODO A lot of parameters was added during tests, not all of them is actually used
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		String gameModeMeta = requestJson.get("gameMode").getAsString();
 		
@@ -65,7 +64,6 @@ public class EdgeRoom2 {
 		rootJson.addProperty("isRandomTrack", false);
 		rootJson.addProperty("clientsversion", 0);
 		rootJson.addProperty("status", "READY");
-		//rootJson.addProperty("matchEndAt", 1632422068150);
 		rootJson.addProperty("isRefereeMode", false);
 		rootJson.addProperty("refereeSlot", -1);
 		

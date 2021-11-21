@@ -150,7 +150,7 @@ public class EdgeTimeTrial {
 	@Path("timetrial/{playerId}/trackcode/{trackId}/complete")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiTTComplete(@PathParam(value = "playerId") String playerId, @PathParam(value = "trackId") String trackId) {	
-		String cryptKey = "37c1#5^z28x7s4ds10x[81";
+		String cryptKey = "123_456!789";
 		
 		System.out.println("### [Time Trial] Match complete request from player ID " + playerId + ", track code: " + trackId + ".");
 	    return Response.ok().build();

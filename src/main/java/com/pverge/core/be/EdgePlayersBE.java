@@ -56,7 +56,7 @@ public class EdgePlayersBE {
 		unlockJson.addProperty("maxGarageCount", 250);
 		playerJson.add("unlock", unlockJson);
 		
-		playerJson.addProperty("latestmatchid", 51527777);
+		playerJson.addProperty("latestmatchid", 123456);
 		playerJson.addProperty("createdat", "2017-11-05T22:33:56.802Z");
 		
 		JsonObject newlyGainedJson = new JsonObject();
