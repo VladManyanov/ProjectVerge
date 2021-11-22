@@ -55,6 +55,7 @@ public class EdgeVehicleAttributesBE {
 	public List<Object> getCarAttrs(PlayerVehicleEntity currentVehicle) {
 		AttrsGradesEntity attrsGrades = attrsGradesDB.getAttrsByGrade(currentVehicle.getVcode(), currentVehicle.getGrade());
 		if (attrsGrades == null) {
+			System.out.println("!!! [Vehicle] Attributes of vehicle Code " + currentVehicle.getVcode() + " cannot be found.");
 			return getDefaultAttrs(false);
 		}
 		AttrsTorqueEntity attrsTorque = attrsGrades.getAttrsTorque();

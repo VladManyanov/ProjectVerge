@@ -236,11 +236,11 @@ public class EdgeVehiclesBE {
 		RatingVehiclesEntity output = new RatingVehiclesEntity();
 		RatingVehiclesEntity ratingEntity = ratingVehiclesDB.findByCode(vehicle.getVcode());
 		RatingGradesEntity ratingGradesEntity = ratingGradesDB.findGrade(vehicle.getVcode(), vehicle.getGrade());
-		if (ratingEntity == null) {
+		if (ratingEntity == null) { // Note: some of vehicles without the rating, still could have a Grades data on DB
 			ratingEntity = dummyRating();
+			ratingGradesEntity = dummyGradeRating(); 
 			System.out.println("!!! [Vehicle] Rating entity of vehicle Code " + vehicle.getVcode() + " cannot be found.");
 		}
-		if (ratingGradesEntity == null) {ratingGradesEntity = dummyGradeRating();}
 		
 		output.setClazz(ratingEntity.getClazz());
 		output.setTopSpeed(ratingEntity.getTopSpeed() + ratingGradesEntity.getTopSpeed());
@@ -282,6 +282,7 @@ public class EdgeVehiclesBE {
 		dummy.setNitroCapacity(0);
 		dummy.setDurability(0);
 		dummy.setAcceleration(0);
+		dummy.setClazz("C");
 		return dummy;
 	}
 	

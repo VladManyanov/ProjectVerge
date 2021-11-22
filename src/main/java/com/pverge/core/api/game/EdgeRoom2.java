@@ -124,8 +124,9 @@ public class EdgeRoom2 {
 	@Path("match2/superpeer/@start")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiRoom2SuperPeerStart(String requestBody) {
-		System.out.println("### [Room] Room ID start (Super Peer) request (Data: " + requestBody + 
-				") from player ID " + forcePlayerId + ".");
+//		System.out.println("### [Room] Room ID start (Super Peer) request (Data: " + requestBody + 
+//				") from player ID " + forcePlayerId + ".");
+		System.out.println("### [Room] Room ID start (Super Peer) request from player ID " + forcePlayerId + ".");
 	    return Response.ok().build();
 	}
 	
