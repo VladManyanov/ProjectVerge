@@ -100,7 +100,7 @@ public class EdgeMatchCreationBE {
 	/**
 	 * Send current Room state data request (SIO)
 	 */
-	public void updateRoomStateSIO() {
+	public void updateRoomStateSIO(boolean isRandomTrack) {
 		String[] roomInfo = presenceBE.getRoomInfo();
 		ResourceListDataObject rootObj = new ResourceListDataObject();
 		rootObj.setCmd("resources");
@@ -112,7 +112,7 @@ public class EdgeMatchCreationBE {
 		
 		roomSettings.setGameMode(roomInfo[0]);
 		roomSettings.setMaxVehicleClazz("ALL");
-		roomSettings.setRandomTrack(false);
+		roomSettings.setRandomTrack(isRandomTrack);
 		roomSettings.setTrackCode(Integer.parseInt(roomInfo[1]));
 		List<Integer> lockedSlots = new ArrayList<>();
 		lockedSlots.add(2); lockedSlots.add(3); lockedSlots.add(4);

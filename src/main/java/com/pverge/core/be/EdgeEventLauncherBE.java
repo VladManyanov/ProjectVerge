@@ -2,6 +2,7 @@ package com.pverge.core.be;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -64,6 +65,16 @@ public class EdgeEventLauncherBE {
 			trackLevel = trackLevel.replaceFirst("DUP_", "");
 		}
 		return trackLevel;
+	}
+	
+	/**
+	 * Get random track for Room. Note that currently we ignore track collections restrictions of gamemodes
+	 */
+	public int pickRandomTrack() {
+		Random random = new Random();
+		TrackCode[] tracks = TrackCode.values();
+		int pickId = random.nextInt(tracks.length);
+		return tracks[pickId].getId();
 	}
 	
 	/**

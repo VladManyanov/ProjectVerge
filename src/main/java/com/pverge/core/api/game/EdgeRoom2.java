@@ -8,6 +8,7 @@ import javax.ws.rs.core.Response;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeEventLauncherBE;
 import com.pverge.core.be.EdgeMatchCreationBE;
 import com.pverge.core.be.EdgePresenceBE;
 import com.pverge.core.be.EdgeVehiclesBE;
@@ -32,6 +33,8 @@ public class EdgeRoom2 {
 	private EdgeVehiclesBE edgeVehiclesBE;
 	@EJB
 	private EdgeMatchCreationBE edgeMatchCreationBE;
+	@EJB
+	private EdgeEventLauncherBE edgeEventLauncherBE;
 	
 	private static String forcePlayerId = "33";
 	// TODO Learn more about room2summaries
@@ -139,8 +142,11 @@ public class EdgeRoom2 {
 	public String apiRoom2ChangeTrack(String requestBody, @PathParam(value = "roomId") String roomId) {
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		int trackCode = requestJson.get("trackCode").getAsInt();
+		boolean isRandomTrack = requestJson.get("isRandomTrack").getAsBoolean();
+		if (isRandomTrack) {trackCode = edgeEventLauncherBE.pickRandomTrack();}
+		
 		edgePresenceBE.setPlayerActivity("room2superpeer", trackCode, forcePlayerId);
-		edgeMatchCreationBE.updateRoomStateSIO();
+		edgeMatchCreationBE.updateRoomStateSIO(isRandomTrack);
 		
 		System.out.println("### [Room] Track Code " + trackCode + " change request from player ID " + forcePlayerId + ".");
 	    return "true";
