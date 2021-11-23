@@ -1,10 +1,14 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - LogApiServer requests
@@ -14,10 +18,10 @@ import javax.ws.rs.core.Response;
 @Path("logs/v2")
 public class EdgeLogConfig {
 	
+	@EJB
+	private EdgeTokensBE tokensBE;
 	@Context
 	private HttpServletRequest sr;
-	
-	private static String forcePlayerId = "33";
 	
 	/**
 	 * TODO Not researched
@@ -28,7 +32,7 @@ public class EdgeLogConfig {
 	@Path("logs/log/config")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiLogConfig(@HeaderParam("_") String someValue) {
-		System.out.println("### [LogConfig] Logs configuration request from player ID " + forcePlayerId + ".");
+		System.out.println("### [LogConfig] Logs configuration request from IP " + sr.getRemoteAddr() + ".");
 	    return Response.ok().build();
 	}
 	

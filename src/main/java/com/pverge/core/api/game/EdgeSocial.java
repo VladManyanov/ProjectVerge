@@ -1,11 +1,16 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Player social activity requests
@@ -14,7 +19,10 @@ import com.google.gson.JsonObject;
 @Path("/v2")
 public class EdgeSocial {
 	
-	private static String forcePlayerId = "33";
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	// TODO 
 	
 	/**
@@ -48,7 +56,8 @@ public class EdgeSocial {
 	@Path("friends")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiFriends() {
-		System.out.println("### [Social] Player friends request from player ID " + forcePlayerId + ".");
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		System.out.println("### [Social] Player friends request from player ID " + player.getPid() + ".");
 	    return Response.ok().build();
 	}
 	
@@ -60,7 +69,8 @@ public class EdgeSocial {
 	@Path("invites")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiInvites() {
-		System.out.println("### [Social] Player friend invites request from player ID " + forcePlayerId + ".");
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		System.out.println("### [Social] Player friend invites request from player ID " + player.getPid() + ".");
 	    return Response.ok().build();
 	}
     

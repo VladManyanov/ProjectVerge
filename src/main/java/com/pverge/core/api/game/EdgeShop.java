@@ -3,7 +3,9 @@ package com.pverge.core.api.game;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -12,11 +14,13 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgeInventoryBE;
 import com.pverge.core.be.EdgePlayersBE;
+import com.pverge.core.be.EdgeTokensBE;
 import com.pverge.core.be.EdgeVehiclesBE;
 import com.pverge.core.db.CarCustomizationDBLoader;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.CarCustomizationEntity;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 
 /**
@@ -38,8 +42,10 @@ public class EdgeShop {
 	private CarCustomizationDBLoader carCustomizationDB;
 	@EJB
 	private PlayerVehicleDBLoader playerVehicleDB;
-	
-	private static String forcePlayerId = "33";
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	// TODO 
 	
 	/**
@@ -51,9 +57,12 @@ public class EdgeShop {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiShopProductsTuning(@QueryParam("sellingShop") String sellingShop,
 			@QueryParam("category") String category) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
 		JsonArray rootArrayJson = new JsonArray();
 		if (category != null) { // Another shop request
-			System.out.println("### [Shop] Shop (category: " + category + ") request from player ID " + forcePlayerId + ".");
+			System.out.println("### [Shop] Shop (category: " + category + ") request from player ID " 
+					+ player.getPid() + ".");
 		    return rootArrayJson.toString();
 		}
 		List<CarCustomizationEntity> loadAllItems = carCustomizationDB.loadAllItems();
@@ -102,7 +111,7 @@ public class EdgeShop {
 			order++;
 		}
 		
-		System.out.println("### [Shop] Shop (Selling Shop: " + sellingShop + ") request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Shop] Shop (Selling Shop: " + sellingShop + ") request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
 	
@@ -114,9 +123,10 @@ public class EdgeShop {
 	@Path("shop/bestproducts")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiShopBestProducts() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray rootArrayJson = new JsonArray();
 		
-		System.out.println("### [Shop] Shop best products request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Shop] Shop best products request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
 	
@@ -128,18 +138,20 @@ public class EdgeShop {
 	@Path("shop/products/{itemCode}/@purchase")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiShopPurchase(@PathParam("itemCode") String itemCodeStr) {
-		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(forcePlayerId).getVid());
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
+		PlayerVehicleEntity currentVehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer(player.getPid()).getVid());
 		int itemCode = Integer.parseInt(itemCodeStr);
 		CarCustomizationEntity customizationItem = carCustomizationDB.getItemProperties(itemCode);
 		if (customizationItem == null) {
 			return Response.serverError().build();
 		}
 		edgeInventoryBE.setPendingItemId(itemCode);
-		edgePlayersBE.prepareCashValueUpdateSIO(forcePlayerId);
+		edgePlayersBE.prepareCashValueUpdateSIO(player.getPid());
 		edgeVehiclesBE.applyCustomizationItem(customizationItem, currentVehicle);
-		edgeInventoryBE.prepareInboxCreatePackageSIO(forcePlayerId, itemCodeStr);
+		edgeInventoryBE.prepareInboxCreatePackageSIO(player.getPid(), itemCodeStr);
 	
-		System.out.println("### [Shop] Shop item (Code " + itemCodeStr + ") purchase request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Shop] Shop item (Code " + itemCodeStr + ") purchase request from player ID " + player.getPid() + ".");
 	    return Response.ok().build();
 	}
 

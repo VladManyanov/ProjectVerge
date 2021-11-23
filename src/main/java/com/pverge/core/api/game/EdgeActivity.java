@@ -37,11 +37,10 @@ public class EdgeActivity {
 	@Path("quests")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiQuests(@HeaderParam("_") String someValue) {
-		//PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		
 		JsonObject rootJson = new JsonObject();
-		//rootJson.addProperty("id", String.valueOf(player.getPid()));
-		rootJson.addProperty("id", "33");
+		rootJson.addProperty("id", String.valueOf(player.getPid()));
 		rootJson.addProperty("qp", 290);
 		rootJson.addProperty("qpResetTime", "2022-09-30T16:00:00.000Z");
 		rootJson.addProperty("qpResetType", "MONTHLY");
@@ -59,7 +58,7 @@ public class EdgeActivity {
 		
 		//System.out.println("### [Activity] Quests list request from player ID " + 
 		//		String.valueOf(player.getPid()) + ".");
-		System.out.println("### [Activity] Quests list request from player ID 33.");
+		System.out.println("### [Activity] Quests list request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
 	}
 	
@@ -91,12 +90,11 @@ public class EdgeActivity {
 	@Path("match2/vehicle/attrs")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiMatchVehicleAttrs(@QueryParam("code") String code, @QueryParam("grade") String grade) {
-		//PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
-		//System.out.println("### [Activity] Match vehicle attrib request from player ID " + player.getPid() + 
-		//		", vehicle code: " + code + ".");
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		List<Object> attrsObj = vehicleAttributesBE.getStockCarAttrs(Integer.parseInt(code), Integer.parseInt(grade));
 		
-		System.out.println("### [Activity] Match vehicle attrib request from player ID 33, vehicle code: " + code + ".");
+		System.out.println("### [Activity] Match vehicle attrib request from player ID " + player.getPid() 
+			+ ", vehicle code: " + code + ".");
 	    return new Gson().toJson(attrsObj);
 	}
     

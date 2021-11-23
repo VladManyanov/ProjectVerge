@@ -1,10 +1,15 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Promotion events requests
@@ -13,7 +18,10 @@ import com.google.gson.JsonObject;
 @Path("/v2")
 public class EdgePromotions {
 	
-	private static String forcePlayerId = "33";
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	// TODO 
 	
 	/**
@@ -23,6 +31,7 @@ public class EdgePromotions {
 	@Path("promotion2/promotions")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPromotions() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray rootArrayJson = new JsonArray();
 		JsonObject promoJson = new JsonObject();
 		rootArrayJson.add(promoJson);
@@ -68,7 +77,7 @@ public class EdgePromotions {
 		promoJson.addProperty("code", 100002);
 		promoJson.addProperty("id", "12345");
 		
-		System.out.println("### [Promotions] Current Promotions information request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Promotions] Current Promotions information request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
 	
@@ -79,11 +88,12 @@ public class EdgePromotions {
 	@Path("promotion2/records")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPromotionsRecords() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray rootArrayJson = new JsonArray();
 		JsonObject recordJson = new JsonObject();
 		rootArrayJson.add(recordJson);
 		
-		recordJson.addProperty("pid", forcePlayerId); 
+		recordJson.addProperty("pid", player.getPid()); 
 		recordJson.addProperty("promotionId", "12345");
 		
 		JsonObject dtJson = new JsonObject();
@@ -100,7 +110,7 @@ public class EdgePromotions {
 		
 		recordJson.addProperty("id", "5bf076ab34dcb33871e3b644");
 		
-		System.out.println("### [Promotions] Promotions records request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Promotions] Promotions records request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
 	
@@ -111,11 +121,12 @@ public class EdgePromotions {
 	@Path("promotion2/banners")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPromotionsBanners() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray rootArrayJson = new JsonArray();
 		JsonObject bannerJson = new JsonObject();
 		rootArrayJson.add(bannerJson);
 		
-		System.out.println("### [Promotions] Banners request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Promotions] Banners request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
     

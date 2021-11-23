@@ -1,7 +1,9 @@
 package com.pverge.core.api.game;
 
 import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -10,9 +12,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgePlayersBE;
 import com.pverge.core.be.EdgePresenceBE;
+import com.pverge.core.be.EdgeTokensBE;
 import com.pverge.core.db.PlayerSettingsDBLoader;
-import com.pverge.core.socket.dataobjects.SIOPlayerObjects.GameSetting;
-import com.pverge.core.socket.dataobjects.SIOPlayerObjects.InputKey;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 import com.pverge.core.socket.dataobjects.SIOPlayerObjects.PlayerConfig;
 
 /**
@@ -29,18 +31,23 @@ public class EdgePlayerConfig {
 	private EdgePlayersBE playersBE;
 	@EJB
 	private PlayerSettingsDBLoader playerSettingsDB;
-	
-	private static String forcePlayerId = "33";
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	// TODO Store Client Feature config somewhere
     
     /**
 	 * Client Features request, controls some of the game sections availability
+	 * @auth False
 	 * @return Array of Client Features
 	 */
 	@GET
 	@Path("staticdata/clientfeature")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiClientFeature(@HeaderParam("_") String someValue) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
 		JsonArray rootArrayJson = new JsonArray();
 		rootArrayJson.add("CLAN");rootArrayJson.add("IGR");rootArrayJson.add("PARTNERSHIPMARKETING");rootArrayJson.add("MILEAGE");
 		rootArrayJson.add("FESTIVAL");rootArrayJson.add("AUCTION");rootArrayJson.add("NUMBERPLATE");rootArrayJson.add("TRADE");
@@ -51,7 +58,7 @@ public class EdgePlayerConfig {
 		//rootArrayJson.add("WRAPPING"); // Korean version vinyl editor
 		//arrayJson.add("PURSUIT");arrayJson.add("ESPORTS"); // Not available on official server
 		
-		System.out.println("### [PlayerConfig] Client Features request from player ID " + forcePlayerId + ".");
+		System.out.println("### [PlayerConfig] Client Features request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
 	

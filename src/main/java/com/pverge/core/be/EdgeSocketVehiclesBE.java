@@ -6,9 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
@@ -32,7 +29,6 @@ public class EdgeSocketVehiclesBE {
 	@EJB
 	private PlayerVehicleDBLoader playerVehicleDB;
 	
-	private static String forcePlayerId = "33";
 	NettySocketIO socketIO = new NettySocketIO();
 	
 	/**

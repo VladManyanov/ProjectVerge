@@ -1,6 +1,8 @@
 package com.pverge.core.be;
 
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ejb.EJB;
@@ -19,14 +21,22 @@ public class EdgeTokensBE {
 	@EJB
 	private PlayerDBLoader playerDB;
 	
-	private final Map<String, Integer> players = new ConcurrentHashMap<>();
+	private static Map<String, String> players = new ConcurrentHashMap<>();
+	private final Map<String, UUID> playersSIO = new ConcurrentHashMap<>();
 	static String playerState = "idle";
 	
 	/**
 	 * Save the player token
 	 */
-	public void savePlayerToken(String token, int pid) {
+	public void savePlayerToken(String token, String pid) {
 		players.put(token, pid);
+    }
+	
+	/**
+	 * Save the player Socket-IO token
+	 */
+	public void savePlayerSIOToken(String pid, UUID id) {
+		playersSIO.put(pid, id);
     }
     
 	/**
@@ -47,9 +57,19 @@ public class EdgeTokensBE {
 	 * Get the current player data from header token
 	 */
     public PlayerEntity resolveToken(String header) {
+    	System.out.println("HEADEROOO: " + header);
     	String token = header.substring(7); // Cut down the "Bearer "
-    	int playerId = players.get(token);
-		return playerDB.findById(playerId);
+    	System.out.println("PLAYEROOO: " + players.get(token));
+    	
+    	String playerId = players.get(token);
+		return playerDB.findById(Integer.parseInt(playerId));
     }
+    
+    /**
+    * Get the current player UUID of Socket connection
+	*/
+    public UUID resolveSIOId(String pid) {
+		return playersSIO.get(pid);
+   }
 	
 }

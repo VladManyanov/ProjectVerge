@@ -1,13 +1,17 @@
 package com.pverge.core.api.game;
 
 import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgeChatEventsBE;
+import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Open World channels requests
@@ -20,8 +24,11 @@ public class EdgeOWChannels {
 	
 	@EJB
 	private EdgeChatEventsBE chatEvents;
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	
-	private static String forcePlayerId = "33";
 	private static int forceChannelId = 94;
 	// TODO Learn more about @leave and @join requests
 	
@@ -34,6 +41,8 @@ public class EdgeOWChannels {
 	@Path("openworld/channel/@reserve")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiOWChannelReserve() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("channelId", forceChannelId);
 		rootJson.addProperty("host", "http://localhost");
@@ -41,9 +50,10 @@ public class EdgeOWChannels {
 		rootJson.addProperty("securityKey", "NMtEu3CAgpk22OIMIC4fBQ==");
 		chatEvents.chatOWChatJoinSIO(forceChannelId);
 		chatEvents.chatOWJoinSIO(forceChannelId);
-		chatEvents.chatOWOtherJoinSIO(forcePlayerId);
+		chatEvents.chatOWOtherJoinSIO(player.getPid());
 		
-		System.out.println("### [OW Channels] Open World Channel reserve request from player ID " + forcePlayerId + ", channelId: " + forceChannelId + ".");
+		System.out.println("### [OW Channels] Open World Channel reserve request from player ID " + player.getPid() 
+				+ ", channelId: " + forceChannelId + ".");
 	    return rootJson.toString();
 	}
 	
@@ -55,10 +65,11 @@ public class EdgeOWChannels {
 	@Path("openworld/channel/players/{playerId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiOWChannelPlayers() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("channelId", forceChannelId);
 		
-		System.out.println("### [OW Channels] Open World Channel reserve request from player ID " + forcePlayerId + ".");
+		System.out.println("### [OW Channels] Open World Channel reserve request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
 	}
 	
@@ -69,10 +80,12 @@ public class EdgeOWChannels {
 	@Path("openworld/channel/@join")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiOWChannelJoin(String requestBody) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		String channelId = requestJson.get("channelId").getAsString();
 		
-		System.out.println("### [OW Channels] Open World Channel join request from player ID " + forcePlayerId + ", channelId: " + channelId + ".");
+		System.out.println("### [OW Channels] Open World Channel join request from player ID " + player.getPid() 
+			+ ", channelId: " + channelId + ".");
 	    return Response.ok().build();
 	}
 	
@@ -83,10 +96,11 @@ public class EdgeOWChannels {
 	@Path("openworld/channel/@leave")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiOWChannelLeave() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("channelId", -1);
 		
-		System.out.println("### [OW Channels] Open World Channel leave request from player ID " + forcePlayerId + ".");
+		System.out.println("### [OW Channels] Open World Channel leave request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
 	}
 	
@@ -97,11 +111,12 @@ public class EdgeOWChannels {
 	@Path("openworld/channel/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiOWChannelCount() {
-		System.out.println("/// EDGE: OW Channel count GET");
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("count", 250);
 		
-		System.out.println("### [OW Channels] Open World Channel count request from player ID " + forcePlayerId + ", count: " + 250 + ".");
+		System.out.println("### [OW Channels] Open World Channel count request from player ID " + player.getPid() 
+			+ ", count: " + 250 + ".");
 	    return rootJson.toString();
 	}
     

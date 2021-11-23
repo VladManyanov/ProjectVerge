@@ -12,7 +12,6 @@ import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.RatingGradesDBLoader;
 import com.pverge.core.db.RatingVehiclesDBLoader;
 import com.pverge.core.db.VehicleSteeringDBLoader;
-import com.pverge.core.db.dbobjects.AttrsPartsInfoEntity;
 import com.pverge.core.db.dbobjects.CarCustomizationEntity;
 import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 import com.pverge.core.db.dbobjects.RatingGradesEntity;
@@ -37,8 +36,6 @@ public class EdgeVehiclesBE {
 	@EJB
 	private AttrsPartsInfoDBLoader attrsPartsInfoDBLoader;
 	
-	private static String forcePlayerId = "33";
-	
 	/**
 	 * Common player data, same on several requests
 	 * @return Player data
@@ -62,7 +59,7 @@ public class EdgeVehiclesBE {
 		RatingVehiclesEntity ratingEntity = calcCarRating(vehicle);
 			
 		carJson.addProperty("embededId", vehicle.getId()); // on 1 more than Id value for some reason
-		carJson.addProperty("pid", forcePlayerId);
+		carJson.addProperty("pid", vehicle.getPid());
 		carJson.addProperty("code", vehicle.getVcode()); 
 		carJson.addProperty("createdat", "2017-11-12T18:42:19.874Z");
 		carJson.addProperty("updatedat", "2020-08-12T20:42:53.861Z");
@@ -226,7 +223,7 @@ public class EdgeVehiclesBE {
 		vehicle.setSteering(defaultSteering);
 		playerVehicleDB.update(vehicle);
 		System.out.println("### [Vehicles] Vehicle ID " + vehicle.getId() + 
-				" create steering settings request from player ID " + forcePlayerId + ".");
+				" create steering settings request from player ID " + vehicle.getPid() + ".");
 	}
 	
 	/**

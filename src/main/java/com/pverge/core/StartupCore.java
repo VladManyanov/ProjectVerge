@@ -25,7 +25,7 @@ public class StartupCore {
 	    // TODO Detect actual IP:Port of the server modules
 		//h2db.startH2Database();
 	    socketIO.startSocketIO();
-	    System.out.println("### [Init] Project Verge Core has been started, default address is "
+	    System.out.println("### [Init] Project Verge Core (0.0.6) has been started, default address is "
 	    		+ "192.168.0.10:8888" + ".");
 	}
 	

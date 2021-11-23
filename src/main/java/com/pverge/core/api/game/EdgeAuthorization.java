@@ -22,12 +22,11 @@ import com.pverge.core.db.dbobjects.PlayerEntity;
 public class EdgeAuthorization {
 	
 	@EJB
+	private EdgeAuthorizationBE edgeAuthBE;
+	@EJB
 	private EdgeTokensBE tokensBE;
 	@Context
 	private HttpServletRequest sr;
-	
-	EdgeAuthorizationBE edgeAuthBE = new EdgeAuthorizationBE();
-	private static String forcePlayerId = "33";
 	// TODO Real parsing of player tokens
 	
 	/**
@@ -38,11 +37,11 @@ public class EdgeAuthorization {
     @Path("oauth2/token")
     @Produces(MediaType.APPLICATION_JSON)
     public String apiDevTokenAuth(String requestBody) {
-    	//JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
-		//String username = requestJson.get("username").getAsString();
+    	JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
+		String username = requestJson.get("username").getAsString();
     	
-    	System.out.println("### [Auth] Login request from player ID " + forcePlayerId + ", type: OAuth2.");
-        return edgeAuthBE.getAuthTokenParams("username");
+    	System.out.println("### [Auth] Login request from Username " + username + ", type: OAuth2.");
+        return edgeAuthBE.getAuthTokenParams(username);
     }
     
     /**
@@ -53,7 +52,7 @@ public class EdgeAuthorization {
     @Path("tc/token")
     @Produces(MediaType.APPLICATION_JSON)
     public String apiTCTokenAuth() {
-    	System.out.println("### [Auth] Login request from player ID " + forcePlayerId + ", type: TC.");
+    	System.out.println("### [Auth] Login request from player ID " + "33" + ", type: TC.");
         return edgeAuthBE.getAuthTokenParams("tc");
     }
     
@@ -65,7 +64,7 @@ public class EdgeAuthorization {
     @Path("nx/sso")
     @Produces(MediaType.APPLICATION_JSON)
     public String apiNXTokenAuth() {
-    	System.out.println("### [Auth] Login request from player ID " + forcePlayerId + ", type: NX.");
+    	System.out.println("### [Auth] Login request from player ID " + "33" + ", type: NX.");
         return edgeAuthBE.getAuthTokenParams("nx");
     }
     
@@ -76,9 +75,9 @@ public class EdgeAuthorization {
 	@Path("session")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiCreateSession() {
-		//PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		
-		System.out.println("### [Auth] Session request from player ID 33.");
+		System.out.println("### [Auth] Session request from player ID " + player.getPid() + ".");
 	    return Response.ok().build();
 	}
 	
@@ -89,9 +88,9 @@ public class EdgeAuthorization {
 	@Path("session/@debug")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiCreateDebugSession() {
-		//PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		
-		System.out.println("### [Auth] Session request on Debug mode from player ID 33.");
+		System.out.println("### [Auth] Session request on Debug mode from player ID " + player.getPid() + ".");
 	    return Response.ok().build();
 	}
 	
@@ -102,9 +101,9 @@ public class EdgeAuthorization {
 	@Path("session")
 	@Produces(MediaType.TEXT_HTML)
 	public Response edgeEndSession() {
-		//PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		
-		System.out.println("### [Auth] Session delete request from player ID 33.");
+		System.out.println("### [Auth] Session delete request from player ID " + player.getPid() + ".");
 	    return Response.ok().build();
 	}
 }

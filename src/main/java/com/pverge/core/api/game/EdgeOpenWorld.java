@@ -21,8 +21,7 @@ public class EdgeOpenWorld {
 	
 	@EJB
 	private PlayerDBLoader playerDB;
-	
-	private static String forcePlayerId = "33";
+
 	private static int maxCampaignCode = 70;
 	// TODO Get the event ID from Campaign event start request
 	

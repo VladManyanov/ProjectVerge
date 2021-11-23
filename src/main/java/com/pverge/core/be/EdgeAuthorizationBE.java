@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -17,6 +18,7 @@ import com.pverge.core.db.dbobjects.PlayerEntity;
  * Majority of requests contains "Authorization: Bearer 123456789.123456789" header, where number is Access Token (in base64) from Auth request
  * @author Hypernucle
  */
+@Stateless
 public class EdgeAuthorizationBE {
 
 	@EJB
@@ -36,10 +38,10 @@ public class EdgeAuthorizationBE {
 		//"A5OTg4Nzc2NjU1NDQzMzIyMTEiLCJsdmwiOjcsImp0aSI6IjExMjIzMzQ0NTU2Njc3ODg5OSIsImV4cCI6MTYzNDY4MjUxOH0" +
 		//".os8E0L4HrRex-hieoCepNTG3o4P1HXPmEBNYM-uvRyY"
 		// last part from official server example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-//		PlayerEntity player = playerDB.findUsername(username);
-//		if (player == null) { // Create new player
-//			player = tokensBE.createNewUser(username);
-//		}
+		PlayerEntity player = playerDB.findUsername(username);
+		if (player == null) { // Create new player
+			player = tokensBE.createNewUser(username);
+		}
 		String token = "";
 		LocalDateTime ldt = LocalDateTime.now().plusDays(7); // Expiration date
 		try {
@@ -49,7 +51,7 @@ public class EdgeAuthorizationBE {
 		    		.withClaim("qqid", 123456789)
 		    		.withArrayClaim("types", new String[]{"pc","igr","tc"})
 		    		.withClaim("sid", "0987654321")
-		    		.withClaim("aid", "33")
+		    		.withClaim("aid", player.getPid())
 		    		.withClaim("clientId", "00998877665544332211")
 		    		.withClaim("lvl", 7)
 		    		.withClaim("jti", "112233445566778899")
@@ -63,7 +65,7 @@ public class EdgeAuthorizationBE {
     	rootJson.addProperty("refresh_token", token); 
     	rootJson.addProperty("token_type", "Bearer"); 
     	
-//    	tokensBE.savePlayerToken(token, player.getPid());
+    	tokensBE.savePlayerToken(token, player.getPid());
     	return rootJson.toString();
 	}
 }

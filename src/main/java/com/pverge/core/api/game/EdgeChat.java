@@ -29,12 +29,12 @@ public class EdgeChat {
 	@Path("chat/broadcasts/item")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiChatBroadcastsItem() {
-//		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("itemCount", 0);
 		
-//		System.out.println("### [Chat] Get broadcasts items request from player ID " + player.getPid() + ".");
-		System.out.println("### [Chat] Get broadcasts items request from player ID 33.");
+		System.out.println("### [Chat] Get broadcasts items request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
 	}
     

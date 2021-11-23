@@ -33,21 +33,20 @@ public class EdgePlayersBE {
 	private PlayerSettingsDBLoader playerSettingsDB;
 	
 	NettySocketIO socketIO = new NettySocketIO();
-	private static String forcePlayerId = "33";
 	
 	/**
 	 * Common player data, same on several requests
 	 * @return Player data
 	 */
-	public String getPlayerInfoCommon(boolean isArray) {
-		PlayerEntity playerEntity = playerDB.getPlayer(forcePlayerId);
+	public String getPlayerInfoCommon(boolean isArray, PlayerEntity player) {
+		PlayerEntity playerEntity = playerDB.getPlayer(player.getPid());
 		
 		JsonArray rootArrayJson = new JsonArray();
 		JsonObject playerJson = new JsonObject();
 		rootArrayJson.add(playerJson);
 		
-		playerJson.addProperty("name", "ProjectVerge");
-		playerJson.addProperty("lowerCaseName", "projectverge");
+		playerJson.addProperty("name", player.getUserName());
+		playerJson.addProperty("lowerCaseName", player.getUserName().toLowerCase());
 		playerJson.addProperty("__v", 0);
 		playerJson.addProperty("isManager", false);
 		
@@ -79,7 +78,7 @@ public class EdgePlayersBE {
 		playerJson.addProperty("exp", 2917691);
 		playerJson.addProperty("level", 63);
 		playerJson.addProperty("sp", 999999);
-		playerJson.addProperty("id", forcePlayerId);
+		playerJson.addProperty("id", player.getPid());
 		
 		JsonObject mileageJson = new JsonObject();
 		mileageJson.addProperty("balance", 0); 
@@ -87,7 +86,7 @@ public class EdgePlayersBE {
 		playerJson.add("mileage", mileageJson);
 		
 		if (presenceBE.getPlayerState().contentEquals("idle")) {
-			chatEventsBE.owPlayerSnippetUpdateSIO(forcePlayerId);
+			chatEventsBE.owPlayerSnippetUpdateSIO(player.getPid());
 		}
 		if (isArray) { // "players" and "checkedat" have different JSON output
 			return rootArrayJson.toString();}

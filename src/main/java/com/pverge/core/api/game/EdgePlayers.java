@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -14,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgeEventLauncherBE;
 import com.pverge.core.be.EdgePlayersBE;
 import com.pverge.core.be.EdgePresenceBE;
+import com.pverge.core.be.EdgeTokensBE;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerEntity;
@@ -36,9 +39,10 @@ public class EdgePlayers {
 	private EdgePresenceBE edgePresenceBE;
 	@EJB
 	private EdgeEventLauncherBE edgeEventLauncherBE;
-	
-	private static String forcePlayerId = "33";
-	private static String forceAccountId = "11";
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	// TODO 
 	
 	/**
@@ -50,11 +54,12 @@ public class EdgePlayers {
 	@Path("accounts")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiAccounts(@HeaderParam("_") String someValue) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray rootArrayJson = new JsonArray();
 		JsonObject accountJson = new JsonObject();
 		rootArrayJson.add(accountJson);
 		
-		accountJson.addProperty("pubId", forceAccountId); // Account ID, related to the Chinese or Korean server owner
+		accountJson.addProperty("pubId", player.getPid()); // Account ID, related to the Chinese or Korean server owner
 		accountJson.addProperty("createdat", "2017-11-12T18:22:47.587Z");
 		
 		JsonArray arrayJsonTutorHistory = new JsonArray();
@@ -75,11 +80,11 @@ public class EdgePlayers {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		String nowTime = LocalDateTime.now().format(formatter);
 		
-		accountJson.addProperty("id", forcePlayerId);
+		accountJson.addProperty("id", player.getPid());
 		accountJson.addProperty("serverTime", nowTime);
 		edgeEventLauncherBE.syncServerTimeSIO(nowTime);
 		
-		System.out.println("### [Players] Account player request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Players] Account player request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
 	
@@ -91,8 +96,10 @@ public class EdgePlayers {
 	@Path("players")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPlayers(@HeaderParam("_") String someValue) {
-		System.out.println("### [Players] Player data request from player ID " + forcePlayerId + ".");
-	    return edgePlayersBE.getPlayerInfoCommon(true);
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
+		System.out.println("### [Players] Player data request from player ID " + player.getPid() + ".");
+	    return edgePlayersBE.getPlayerInfoCommon(true, player);
 	}
 	
 	/**
@@ -103,8 +110,10 @@ public class EdgePlayers {
 	@Path("players/{playerId}/checkedat")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPlayersCheckedAt(@PathParam(value = "playerId") String playerId) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
 		System.out.println("### [Players] Player data (Checked at) request from player ID " + playerId + ".");
-	    return edgePlayersBE.getPlayerInfoCommon(false);
+	    return edgePlayersBE.getPlayerInfoCommon(false, player);
 	}
 	
 	/**
@@ -142,8 +151,9 @@ public class EdgePlayers {
 	@Path("snippets/players")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPlayerSnippet(String requestBody) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray requestJson = new Gson().fromJson(requestBody, JsonArray.class);
-		PlayerEntity playerEntity = playerDB.getPlayer(forcePlayerId);
+		PlayerEntity playerEntity = playerDB.getPlayer(player.getPid());
 		
 		JsonArray rootArrayJson = new JsonArray();
 		if (!requestJson.get(0).getAsString().contentEquals("33")) {
@@ -191,8 +201,8 @@ public class EdgePlayers {
 		JsonObject playerJson = new JsonObject();
 		rootArrayJson.add(playerJson);
 		
-		playerJson.addProperty("pid", forcePlayerId);
-		playerJson.addProperty("name", "ProjectVerge");
+		playerJson.addProperty("pid", player.getPid());
+		playerJson.addProperty("name", player.getUserName());
 		playerJson.addProperty("level", 63);
 		playerJson.addProperty("avatar", "");
 		playerJson.addProperty("igr", false);
@@ -225,7 +235,7 @@ public class EdgePlayers {
 		
 		playerJson.addProperty("updatedAt", "2021-09-19T12:15:03.599Z");
 		
-		System.out.println("### [Players] Player Snippet request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Players] Player Snippet request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
 	
@@ -237,10 +247,11 @@ public class EdgePlayers {
 	@Path("tc/balance")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiTCBalance(@HeaderParam("_") String someValue) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("balance", 0);
 		
-		System.out.println("### [Players] Player TC balance request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Players] Player TC balance request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
 	}
     

@@ -20,7 +20,6 @@ public class EdgeGameConfig {
 	@Context
 	private HttpServletRequest sr;
 	
-	private static String forcePlayerId = "33";
 	// TODO Load Push address from some config file
     
     /**
@@ -34,7 +33,7 @@ public class EdgeGameConfig {
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("apiServer", "127.0.0.1");
 	    
-		System.out.println("### [GameConfig] Sand SDK address request from player ID " + forcePlayerId + ".");
+		System.out.println("### [GameConfig] Sand SDK address request from IP " + sr.getRemoteAddr() + ".");
 	    return rootJson.toString();
 	}
 	
@@ -50,7 +49,7 @@ public class EdgeGameConfig {
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("pushServer", "http://127.0.0.1:3000");
 
-		System.out.println("### [GameConfig] Socket-IO Push address request from player ID " + forcePlayerId + ".");
+		System.out.println("### [GameConfig] Socket-IO Push address request from IP " + sr.getRemoteAddr() + ".");
 	    return rootJson.toString();
 	}
 	
@@ -65,8 +64,7 @@ public class EdgeGameConfig {
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("remoteAddress", sr.getRemoteAddr());
 
-		System.out.println("### [GameConfig] Player remote address (IP: " + sr.getRemoteAddr() + 
-				") request from player ID " + forcePlayerId + ".");
+		System.out.println("### [GameConfig] Player remote address is " + sr.getRemoteAddr() + ".");
 		return rootJson.toString();
 	}
 	
@@ -78,7 +76,7 @@ public class EdgeGameConfig {
 	@Path("noticebanners")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response apiNoticeBanners() {
-		System.out.println("### [GameConfig] NOTICE banners request from player ID " + forcePlayerId + ".");
+		System.out.println("### [GameConfig] NOTICE banners request from player IP " + sr.getRemoteAddr() + ".");
 	    return Response.ok().build();
 	}
 }

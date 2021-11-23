@@ -1,10 +1,15 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Number plate requests & management
@@ -14,7 +19,10 @@ import com.google.gson.JsonObject;
 @Path("/v2")
 public class EdgeNumberPlates {
 	
-	private static String forcePlayerId = "33";
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	// TODO 
 	
 	/**
@@ -25,15 +33,17 @@ public class EdgeNumberPlates {
 	@Path("numberplate/defaultnumberplate")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiDefaultNumberPlate(@HeaderParam("_") String someValue) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
 		JsonObject rootJson = new JsonObject();
-		rootJson.addProperty("pid", forcePlayerId);
+		rootJson.addProperty("pid", player.getPid());
 		rootJson.addProperty("prefix", "PJ");
 		rootJson.addProperty("plateNumber", "VERGE");
 		rootJson.addProperty("templateCode", 0);
 		rootJson.addProperty("background", 0);
 		rootJson.addProperty("fontColor", "#cccccc");
 		
-		System.out.println("### [Number Plate] Default plate request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Number Plate] Default plate request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
 	}
 	
@@ -125,6 +135,7 @@ public class EdgeNumberPlates {
 	@Path("numberplate/templatecodes")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPlateTemplates() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray rootJsonArray = new JsonArray();
 		JsonObject templateJson = new JsonObject();
 		rootJsonArray.add(templateJson);
@@ -139,7 +150,7 @@ public class EdgeNumberPlates {
 		templateJson.addProperty("codeclass", 1);
 		templateJson.addProperty("templatecode", 0);
 		
-		System.out.println("### [Number Plate] Template Number Plates request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Number Plate] Template Number Plates request from player ID " + player.getPid() + ".");
 	    return rootJsonArray.toString();
 	}
     

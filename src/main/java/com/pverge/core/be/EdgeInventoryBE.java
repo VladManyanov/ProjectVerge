@@ -32,7 +32,6 @@ public class EdgeInventoryBE {
 	private AttrsPartsDBLoader attrsPartsDB;
 	
 	NettySocketIO socketIO = new NettySocketIO();
-	private static String forcePlayerId = "33";
 	private static int pendingItemId = 0;
 	// TODO 
 	
@@ -85,7 +84,7 @@ public class EdgeInventoryBE {
 		optsList.add(inboxOpts);
 		
 		socketIO.sendEvent("msg", rootData, rootData.getCmd());
-		System.out.println("### [Socket] Inbox package information request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Socket] Inbox package information request from player ID " + playerId + ".");
 	}
 	
 	/**
@@ -112,13 +111,13 @@ public class EdgeInventoryBE {
 		optsList.add(itemOpts);
 		
 		socketIO.sendEvent("msg", rootData, rootData.getCmd());
-		System.out.println("### [Socket] Asset item change request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Socket] Asset item change request from player ID " + playerId + ".");
 	}
 	
 	/**
 	 * Prepare the fake set of performance parts. They will be not removed when used
 	 */
-	public String fetchFakePerformanceInventory() {
+	public String fetchFakePerformanceInventory(String playerId) {
 		JsonArray rootArrayJson = new JsonArray();
 		
 		List<AttrsPartsEntity> parts = attrsPartsDB.loadAll();
@@ -126,7 +125,7 @@ public class EdgeInventoryBE {
 		for (AttrsPartsEntity part : parts) {
 			id = id + 1;
 			JsonObject partJson = new JsonObject();
-			partJson.addProperty("pid", forcePlayerId);
+			partJson.addProperty("pid", playerId);
 			partJson.addProperty("code", String.valueOf(part.getPartId()));
 			partJson.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
 			partJson.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
@@ -138,7 +137,7 @@ public class EdgeInventoryBE {
 		
 		// Disassembler item
 		JsonObject dismJson = new JsonObject();
-		dismJson.addProperty("pid", forcePlayerId);
+		dismJson.addProperty("pid", playerId);
 		dismJson.addProperty("code", "90001");
 		dismJson.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
 		dismJson.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");
@@ -149,7 +148,7 @@ public class EdgeInventoryBE {
 		
 		// Engine material item
 		JsonObject engineMatJson = new JsonObject();
-		engineMatJson.addProperty("pid", forcePlayerId);
+		engineMatJson.addProperty("pid", playerId);
 		engineMatJson.addProperty("code", "10003");
 		engineMatJson.addProperty("updatedAt", "2021-08-28T19:16:28.676Z");
 		engineMatJson.addProperty("increasedAt", "2021-08-28T19:16:28.676Z");

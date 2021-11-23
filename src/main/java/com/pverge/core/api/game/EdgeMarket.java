@@ -1,12 +1,17 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - In-game market activity
@@ -15,7 +20,10 @@ import com.google.gson.JsonObject;
 @Path("/v2")
 public class EdgeMarket {
 	
-	private static String forcePlayerId = "33";
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	// TODO 
 	
 	/**
@@ -53,10 +61,11 @@ public class EdgeMarket {
 	@Path("market2/vehiclevalues")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiMarketVehicleValues(@QueryParam(value = "codes") String codes) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray rootArrayJson = new JsonArray();
 		rootArrayJson.add("1");
 		
-		System.out.println("### [Market] Get vehicle values request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Market] Get vehicle values request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
 	
@@ -67,9 +76,10 @@ public class EdgeMarket {
 	@Path("market2/offers")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiMarketOffers() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray rootArrayJson = new JsonArray();
 		
-		System.out.println("### [Market] Get offers request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Market] Get offers request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}
     

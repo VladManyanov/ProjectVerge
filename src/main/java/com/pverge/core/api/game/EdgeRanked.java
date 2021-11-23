@@ -1,9 +1,14 @@
 package com.pverge.core.api.game;
 
+import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Ranked game mode requests
@@ -12,7 +17,10 @@ import com.google.gson.JsonObject;
 @Path("/v2")
 public class EdgeRanked {
 	
-	private static String forcePlayerId = "33";
+	@EJB
+	private EdgeTokensBE tokensBE;
+	@Context
+	private HttpServletRequest sr;
 	// TODO 
 	
 	/**
@@ -22,6 +30,8 @@ public class EdgeRanked {
 	@Path("ranked2/seasons")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiRankedSeasons() {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
 		JsonObject rootJson = new JsonObject();
 		JsonObject prevSeasonJson = new JsonObject();
 		prevSeasonJson.addProperty("seasonnum", 36);
@@ -41,7 +51,7 @@ public class EdgeRanked {
 		nextSeasonJson.addProperty("id", 3);
 		rootJson.add("nextSeason", nextSeasonJson);
 		
-		System.out.println("### [Ranked] Current Season information request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Ranked] Current Season information request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
 	}
 	
@@ -52,12 +62,14 @@ public class EdgeRanked {
 	@Path("ranked2/seasons/current/{gameModeMeta}/tierrankinfo")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiRankedTierInfo(@PathParam(value = "gameModeMeta") String gameModeMeta) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
+		
 		JsonObject rootJson = new JsonObject();
 		JsonObject tierPlayerJson = new JsonObject();
 		rootJson.add("tierPlayerCount", tierPlayerJson);
 		rootJson.addProperty("totalPlayerCount", 0);
 		
-		System.out.println("### [Ranked] Current Season tier ranks request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Ranked] Current Season tier ranks request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
 	}
 	
@@ -68,11 +80,12 @@ public class EdgeRanked {
 	@Path("ranked2/seasons/current/{gameModeMeta}/topplayerinfo")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiRankedTopPlayers(@PathParam(value = "gameModeMeta") String gameModeMeta) {
+		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonObject rootJson = new JsonObject();
 		JsonObject topPlayersJson = new JsonObject();
 		rootJson.add("top5", topPlayersJson);
 		
-		System.out.println("### [Ranked] Current Season top players request from player ID " + forcePlayerId + ".");
+		System.out.println("### [Ranked] Current Season top players request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
 	}
     
