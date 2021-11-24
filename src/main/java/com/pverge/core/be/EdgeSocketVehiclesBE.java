@@ -28,6 +28,8 @@ public class EdgeSocketVehiclesBE {
 	private PlayerDBLoader playerDB;
 	@EJB
 	private PlayerVehicleDBLoader playerVehicleDB;
+	@EJB
+	private EdgeTokensBE tokensBE;
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	
@@ -89,7 +91,7 @@ public class EdgeSocketVehiclesBE {
 		assetOpts.setBody(assetBody);
 		optsList.add(assetOpts);
 		
-		socketIO.sendEvent("msg", rootData, rootData.getCmd());
+		socketIO.sendEvent("msg", rootData, rootData.getCmd(), tokensBE.getSessionUUID(playerId));
 	}
 	
 	/**

@@ -29,6 +29,8 @@ public class EdgeMatchCreationBE {
 	private CarCustomizationDBLoader carCustomizationDB;
 	@EJB
 	private EdgePresenceBE presenceBE;
+	@EJB
+	private EdgeTokensBE tokensBE;
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	
@@ -100,7 +102,7 @@ public class EdgeMatchCreationBE {
 	/**
 	 * Send current Room state data request (SIO)
 	 */
-	public void updateRoomStateSIO(boolean isRandomTrack) {
+	public void updateRoomStateSIO(boolean isRandomTrack, String playerId) {
 		String[] roomInfo = presenceBE.getRoomInfo();
 		ResourceListDataObject rootObj = new ResourceListDataObject();
 		rootObj.setCmd("resources");
@@ -115,7 +117,7 @@ public class EdgeMatchCreationBE {
 		roomSettings.setRandomTrack(isRandomTrack);
 		roomSettings.setTrackCode(Integer.parseInt(roomInfo[1]));
 		List<Integer> lockedSlots = new ArrayList<>();
-		lockedSlots.add(2); lockedSlots.add(3); lockedSlots.add(4);
+		lockedSlots.add(3); lockedSlots.add(4);
 		lockedSlots.add(5); lockedSlots.add(6); lockedSlots.add(7);
 		lockedSlots.add(8);
 		roomSettings.setLocked(lockedSlots);
@@ -123,7 +125,7 @@ public class EdgeMatchCreationBE {
 		List<Object> optsList = new ArrayList<>();
 		optsList.add(optsObj);
 		rootObj.setOpts(optsList);
-		socketIO.sendEvent("msg", rootObj, rootObj.getCmd());
+		socketIO.sendEvent("msg", rootObj, rootObj.getCmd(), tokensBE.getSessionUUID(playerId));
 	}
 	
 }

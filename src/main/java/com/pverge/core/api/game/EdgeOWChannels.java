@@ -10,13 +10,15 @@ import javax.ws.rs.core.Response;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgeChatEventsBE;
+import com.pverge.core.be.EdgeEventLauncherBE;
 import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.be.util.MiscUtils;
 import com.pverge.core.db.dbobjects.PlayerEntity;
 
 /**
  * Edge - Open World channels requests
  * Work of Channel system is relies on properly recreated Socket-IO module
- * Note: without proper Open World Channel configuration, game will not let player to load Open World (HP2) location, and stuck on Lighthouse2
+ * Note: without proper Open World Channel sync emulation, game will not let player to load Open World (HP2) location, and stuck on Lighthouse2
  * @author Hypernucle
  */
 @Path("/v2")
@@ -26,6 +28,8 @@ public class EdgeOWChannels {
 	private EdgeChatEventsBE chatEvents;
 	@EJB
 	private EdgeTokensBE tokensBE;
+	@EJB
+	private EdgeEventLauncherBE eventLauncherBE;
 	@Context
 	private HttpServletRequest sr;
 	
@@ -48,9 +52,6 @@ public class EdgeOWChannels {
 		rootJson.addProperty("host", "http://localhost");
 		rootJson.addProperty("port", 9999);
 		rootJson.addProperty("securityKey", "NMtEu3CAgpk22OIMIC4fBQ==");
-		chatEvents.chatOWChatJoinSIO(forceChannelId);
-		chatEvents.chatOWJoinSIO(forceChannelId);
-		chatEvents.chatOWOtherJoinSIO(player.getPid());
 		
 		System.out.println("### [OW Channels] Open World Channel reserve request from player ID " + player.getPid() 
 				+ ", channelId: " + forceChannelId + ".");
@@ -83,6 +84,11 @@ public class EdgeOWChannels {
 		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonObject requestJson = new Gson().fromJson(requestBody, JsonObject.class);
 		String channelId = requestJson.get("channelId").getAsString();
+		
+		chatEvents.chatOWChatJoinSIO(forceChannelId, player.getPid());
+		chatEvents.chatOWJoinSIO(forceChannelId, player.getPid());
+		chatEvents.chatOWOtherJoinSIO(player.getPid());
+		eventLauncherBE.syncServerTimeSIO(MiscUtils.getCurrentTime(), player.getPid());
 		
 		System.out.println("### [OW Channels] Open World Channel join request from player ID " + player.getPid() 
 			+ ", channelId: " + channelId + ".");

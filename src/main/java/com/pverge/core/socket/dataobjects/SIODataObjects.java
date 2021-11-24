@@ -10,17 +10,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class SIODataObjects {
 	
-	// Auth
-	public static class IOAuthObject {
+	// Auth input
+	public static class IOAuthInput {
 	    private boolean result;
-	    public IOAuthObject() {
-	    }
+	    private String token;
 
-	    public IOAuthObject(boolean result) {
-	        super();
+	    public boolean getResult() {
+	        return result;
+	    }
+	    public void setResult(boolean result) {
 	        this.result = result;
 	    }
-
+	    
+	    public String getToken() {
+	        return token;
+	    }
+	    public void setToken(String token) {
+	        this.token = token;
+	    }
+	}
+	
+	// Auth output
+	public static class IOAuthOutput {
+	    private boolean result;
+	    
 	    public boolean getResult() {
 	        return result;
 	    }

@@ -1,8 +1,5 @@
 package com.pverge.core.api.game;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -17,6 +14,7 @@ import com.pverge.core.be.EdgeEventLauncherBE;
 import com.pverge.core.be.EdgePlayersBE;
 import com.pverge.core.be.EdgePresenceBE;
 import com.pverge.core.be.EdgeTokensBE;
+import com.pverge.core.be.util.MiscUtils;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerEntity;
@@ -77,12 +75,8 @@ public class EdgePlayers {
 		lastPlayedJson.addProperty("time", "1970-01-01T00:00:00.000Z");
 		accountJson.add("lastplayed", lastPlayedJson);
 		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		String nowTime = LocalDateTime.now().format(formatter);
-		
 		accountJson.addProperty("id", player.getPid());
-		accountJson.addProperty("serverTime", nowTime);
-		edgeEventLauncherBE.syncServerTimeSIO(nowTime);
+		accountJson.addProperty("serverTime", MiscUtils.getCurrentTime());
 		
 		System.out.println("### [Players] Account player request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();

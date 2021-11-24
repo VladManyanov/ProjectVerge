@@ -20,12 +20,15 @@ import com.pverge.core.socket.dataobjects.SIODataObjects.*;
 @Stateless
 public class EdgeChatEventsBE {
 
+	@EJB
+	private EdgeTokensBE tokensBE;
+	
 	NettySocketIO socketIO = new NettySocketIO();
 	
 	/**
 	 * Open World chat connection message
 	 */
-	public void chatOWChatJoinSIO(int channelId) {
+	public void chatOWChatJoinSIO(int channelId, String playerId) {
 		ResourceListDataObject owJoinRootData = new ResourceListDataObject();
 		List<Object> optsList = new ArrayList<>();
 		OWJoinOpts owJoinOpts = new OWJoinOpts();
@@ -38,13 +41,13 @@ public class EdgeChatEventsBE {
 		owJoinRootData.setCmd("resources");
 		owJoinRootData.setOpts(optsList);
 		
-		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd());
+		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd(), tokensBE.getSessionUUID(playerId));
 	}
 	
 	/**
 	 * Open World channel connection message
 	 */
-	public void chatOWJoinSIO(int channelId) {
+	public void chatOWJoinSIO(int channelId, String playerId) {
 		ResourceListDataObject owJoinRootData = new ResourceListDataObject();
 		List<Object> optsList = new ArrayList<>();
 		OWJoinOpts owJoinOpts = new OWJoinOpts();
@@ -57,7 +60,7 @@ public class EdgeChatEventsBE {
 		owJoinRootData.setCmd("resources");
 		owJoinRootData.setOpts(optsList);
 		
-		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd());
+		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd(), tokensBE.getSessionUUID(playerId));
 	}
 	
 	/**
@@ -76,7 +79,7 @@ public class EdgeChatEventsBE {
 		owJoinRootData.setCmd("resources");
 		owJoinRootData.setOpts(optsList);
 		
-		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd());
+		socketIO.sendEvent("msg", owJoinRootData, owJoinRootData.getCmd(), tokensBE.getSessionUUID(pid));
 	}
 	
 	/**
@@ -95,7 +98,7 @@ public class EdgeChatEventsBE {
 		owSnippetRootData.setCmd("resources");
 		owSnippetRootData.setOpts(optsList);
 		
-		socketIO.sendEvent("msg", owSnippetRootData, owSnippetRootData.getCmd());
+		socketIO.sendEvent("msg", owSnippetRootData, owSnippetRootData.getCmd(), tokensBE.getSessionUUID(pid));
 	}
 	
 }

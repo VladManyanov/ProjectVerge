@@ -25,6 +25,8 @@ import com.pverge.core.socket.dataobjects.SIOInboxObjects.*;
 public class EdgeInventoryBE {
 
 	@EJB
+	private EdgeTokensBE tokensBE;
+	@EJB
 	private PlayerDBLoader playerDB;
 	@EJB
 	private PlayerVehicleDBLoader playerVehicleDB;
@@ -83,7 +85,7 @@ public class EdgeInventoryBE {
 		inboxOpts.setBody(inboxBody);
 		optsList.add(inboxOpts);
 		
-		socketIO.sendEvent("msg", rootData, rootData.getCmd());
+		socketIO.sendEvent("msg", rootData, rootData.getCmd(), tokensBE.getSessionUUID(playerId));
 		System.out.println("### [Socket] Inbox package information request from player ID " + playerId + ".");
 	}
 	
@@ -110,7 +112,7 @@ public class EdgeInventoryBE {
 		itemOpts.setBody(itemBody);
 		optsList.add(itemOpts);
 		
-		socketIO.sendEvent("msg", rootData, rootData.getCmd());
+		socketIO.sendEvent("msg", rootData, rootData.getCmd(), tokensBE.getSessionUUID(playerId));
 		System.out.println("### [Socket] Asset item change request from player ID " + playerId + ".");
 	}
 	

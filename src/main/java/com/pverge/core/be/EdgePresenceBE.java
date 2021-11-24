@@ -16,7 +16,7 @@ public class EdgePresenceBE {
 	@EJB
 	private EdgeEventLauncherBE eventLauncher;
 	
-	static String playerState = "idle";
+	static String playerState = "off";
 	static String playerActivity = "openworld";
 	static String savePlayerId = "33";
 	static int futureTrackId = 22;
@@ -27,8 +27,10 @@ public class EdgePresenceBE {
 	 * Set current player state
 	 */
 	public void setPlayerState(String state, String playerId) {
+		if (!playerState.contentEquals("off")) { // Do not send SIO request before Auth SIO request from client
+			eventLauncher.stateChangeSIO(playerId, state);
+		}
 		playerState = state;
-		eventLauncher.stateChangeSIO(playerId, state);
 	}
 	
 	/**

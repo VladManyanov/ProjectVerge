@@ -50,6 +50,8 @@ public class EdgeEventLauncherBE {
 	private EdgeSocketVehiclesBE edgeSocketVehiclesBE;
 	@EJB
 	private EdgeVehiclesBE edgeVehiclesBE;
+	@EJB
+	private EdgeTokensBE edgeTokensBE;
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	static int[] aiDrivers = new int[]{677,691,693,694,695}; 
@@ -149,7 +151,7 @@ public class EdgeEventLauncherBE {
 		clientList.add(edgeMatchCreationBE.createPlayerClient(playerId, currentVehicle, false));
 		ttOpts.setClients(clientList);
 		
-		socketIO.sendEvent("msg", ttRootData, ttRootData.getCmd());
+		socketIO.sendEvent("msg", ttRootData, ttRootData.getCmd(), edgeTokensBE.getSessionUUID(playerId));
 	}
 	
 	/**
@@ -236,7 +238,7 @@ public class EdgeEventLauncherBE {
 		matchOpts.setPlayers(playersList);
 		
 		matchCreatedRootData.setOpts(matchOpts);
-		socketIO.sendEvent("msg", matchCreatedRootData, matchCreatedRootData.getCmd());
+		socketIO.sendEvent("msg", matchCreatedRootData, matchCreatedRootData.getCmd(), edgeTokensBE.getSessionUUID(playerId));
 	}
 	
 	/**
@@ -294,7 +296,7 @@ public class EdgeEventLauncherBE {
 		}
 		superPeerOpts.setClients(clientList);
 		matchSuperPeerRootData.setOpts(superPeerOpts);
-		socketIO.sendEvent("msg", matchSuperPeerRootData, matchSuperPeerRootData.getCmd());
+		socketIO.sendEvent("msg", matchSuperPeerRootData, matchSuperPeerRootData.getCmd(), edgeTokensBE.getSessionUUID(playerId));
 	}
 	
 	/**
@@ -310,13 +312,13 @@ public class EdgeEventLauncherBE {
 		recentRootData.setCmd("resources");
 		recentRootData.setOpts(optsList);
 		
-		socketIO.sendEvent("msg", recentRootData, recentRootData.getCmd());
+		socketIO.sendEvent("msg", recentRootData, recentRootData.getCmd(), edgeTokensBE.getSessionUUID(pid));
 	}
 	
 	/**
 	 * Server time sync message
 	 */
-	public void syncServerTimeSIO(String nowTime) {
+	public void syncServerTimeSIO(String nowTime, String playerId) {
 		ResourceListDataObject timeRootData = new ResourceListDataObject();
 		List<Object> optsList = new ArrayList<>();
 		OWJoinOpts timeOpts = new OWJoinOpts();
@@ -327,7 +329,7 @@ public class EdgeEventLauncherBE {
 		timeRootData.setCmd("resources");
 		timeRootData.setOpts(optsList);
 		
-		socketIO.sendEvent("msg", timeRootData, timeRootData.getCmd());
+		socketIO.sendEvent("msg", timeRootData, timeRootData.getCmd(), edgeTokensBE.getSessionUUID(playerId));
 	}
 	
 	/**
@@ -477,7 +479,7 @@ public class EdgeEventLauncherBE {
 		matchRoot.setCmd("resources");
 		matchRoot.setOpts(optsList);
 		
-		socketIO.sendEvent("msg", matchRoot, matchRoot.getCmd());
+		socketIO.sendEvent("msg", matchRoot, matchRoot.getCmd(), edgeTokensBE.getSessionUUID(playerId));
 		System.out.println("### [Match] Match ID 1 has been ended, request from player ID " + playerId + ".");
 	}
 	
@@ -499,6 +501,6 @@ public class EdgeEventLauncherBE {
 		statesList.add(stateInfo);
 		
 		rootObj.setOpts(optsStateInfo);
-		socketIO.sendEvent("msg", rootObj, rootObj.getCmd());
+		socketIO.sendEvent("msg", rootObj, rootObj.getCmd(), edgeTokensBE.getSessionUUID(playerId));
 	}
 }

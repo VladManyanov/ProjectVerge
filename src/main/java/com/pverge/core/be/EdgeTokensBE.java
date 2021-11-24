@@ -1,12 +1,11 @@
 package com.pverge.core.be;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.dbobjects.PlayerEntity;
@@ -15,28 +14,23 @@ import com.pverge.core.db.dbobjects.PlayerEntity;
  * Tokens & users management. Simplified for local server use
  * @author Hypernucle
  */
-@Stateless
+@Stateful
 public class EdgeTokensBE {
 
 	@EJB
 	private PlayerDBLoader playerDB;
+	EdgeTokensSocketBE tokensSocketBE = new EdgeTokensSocketBE();
 	
-	private static Map<String, String> players = new ConcurrentHashMap<>();
-	private final Map<String, UUID> playersSIO = new ConcurrentHashMap<>();
+	private static Map<String, String> tokenAndPid = new ConcurrentHashMap<>();
+	private static Map<String, String> pidAndToken = new ConcurrentHashMap<>();
 	static String playerState = "idle";
 	
 	/**
 	 * Save the player token
 	 */
 	public void savePlayerToken(String token, String pid) {
-		players.put(token, pid);
-    }
-	
-	/**
-	 * Save the player Socket-IO token
-	 */
-	public void savePlayerSIOToken(String pid, UUID id) {
-		playersSIO.put(pid, id);
+		tokenAndPid.put(token, pid);
+		pidAndToken.put(pid, token);
     }
     
 	/**
@@ -57,19 +51,17 @@ public class EdgeTokensBE {
 	 * Get the current player data from header token
 	 */
     public PlayerEntity resolveToken(String header) {
-    	System.out.println("HEADEROOO: " + header);
     	String token = header.substring(7); // Cut down the "Bearer "
-    	System.out.println("PLAYEROOO: " + players.get(token));
-    	
-    	String playerId = players.get(token);
+    	String playerId = tokenAndPid.get(token);
 		return playerDB.findById(Integer.parseInt(playerId));
     }
     
     /**
-    * Get the current player UUID of Socket connection
-	*/
-    public UUID resolveSIOId(String pid) {
-		return playersSIO.get(pid);
-   }
+	 * Get the current player session from "Player ID - Token" pair
+	 */
+    public UUID getSessionUUID(String pid) {
+    	String playerToken = pidAndToken.get(pid);
+		return tokensSocketBE.resolveSIOId(playerToken);
+    }
 	
 }

@@ -1,5 +1,7 @@
 package com.pverge.core.be.util;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,6 +18,11 @@ public class MiscUtils {
 	
 	public static int[] strArrayToIntArray(String[] strArray) {
 	    return Stream.of(strArray).mapToInt(Integer::parseInt).toArray();
+	}
+	
+	public static String getCurrentTime() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		return LocalDateTime.now().format(formatter);
 	}
 	
 }

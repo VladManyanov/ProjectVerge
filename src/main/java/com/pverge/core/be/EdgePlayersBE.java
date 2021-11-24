@@ -26,9 +26,7 @@ public class EdgePlayersBE {
 	@EJB
 	private PlayerDBLoader playerDB;
 	@EJB
-	private EdgeChatEventsBE chatEventsBE;
-	@EJB
-	private EdgePresenceBE presenceBE;
+	private EdgeTokensBE tokensBE;
 	@EJB
 	private PlayerSettingsDBLoader playerSettingsDB;
 	
@@ -85,9 +83,6 @@ public class EdgePlayersBE {
 		mileageJson.addProperty("nextResetAt", "2021-09-30T16:00:00.000Z"); 
 		playerJson.add("mileage", mileageJson);
 		
-		if (presenceBE.getPlayerState().contentEquals("idle")) {
-			chatEventsBE.owPlayerSnippetUpdateSIO(player.getPid());
-		}
 		if (isArray) { // "players" and "checkedat" have different JSON output
 			return rootArrayJson.toString();}
 		else {
@@ -227,7 +222,7 @@ public class EdgePlayersBE {
 		cashOpts.setBody(999998);
 		optsList.add(cashOpts);
 		
-		socketIO.sendEvent("msg", rootData, rootData.getCmd());
+		socketIO.sendEvent("msg", rootData, rootData.getCmd(), tokensBE.getSessionUUID(playerId));
 		System.out.println("### [Socket] Cash value update request from player ID " + playerId + ".");
 	}
 	

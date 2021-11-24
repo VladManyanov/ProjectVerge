@@ -1,5 +1,7 @@
 package com.pverge.core.socket;
 
+import java.util.UUID;
+
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketConfig;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -17,7 +19,8 @@ public class NettySocketIO {
 		Configuration config = new Configuration();
 	    config.setHostname("localhost");
 	    config.setPort(3000);
-	    config.setPingTimeout(30);
+	    config.setPingTimeout(60000);
+	    config.setPingInterval(30000);
 	    config.setContext("/socket.io");
 	    
 	    SocketConfig socketConfig = new SocketConfig();
@@ -42,9 +45,9 @@ public class NettySocketIO {
 	/**
 	 * Process and emit server-to-client Socket events
 	 */
-	public void sendEvent(String type, Object data, String logType) {
-		// TODO Save player session UUID to send event only to him
-		ioServer.getBroadcastOperations().sendEvent(type, data);
-		System.out.println("### [Socket] Event emit, type: " + type + ", " + logType + ".");
+	public void sendEvent(String type, Object data, String logType, UUID playerSessionId) {
+		ioServer.getClient(playerSessionId).sendEvent(type, data);
+		System.out.println("### [Socket] Event emit of player UUID " + playerSessionId 
+				+ ", type: " + type + ", " + logType + ".");
 	}
 }

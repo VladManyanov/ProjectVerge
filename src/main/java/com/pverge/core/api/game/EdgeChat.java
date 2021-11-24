@@ -7,6 +7,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonObject;
+import com.pverge.core.be.EdgeChatEventsBE;
+import com.pverge.core.be.EdgePresenceBE;
 import com.pverge.core.be.EdgeTokensBE;
 import com.pverge.core.db.dbobjects.PlayerEntity;
 
@@ -18,7 +20,11 @@ import com.pverge.core.db.dbobjects.PlayerEntity;
 public class EdgeChat {
 	
 	@EJB
+	private EdgePresenceBE presenceBE;
+	@EJB
 	private EdgeTokensBE tokensBE;
+	@EJB
+	private EdgeChatEventsBE chatEventsBE;
 	@Context
 	private HttpServletRequest sr;
 	
@@ -33,6 +39,9 @@ public class EdgeChat {
 		
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("itemCount", 0);
+		if (presenceBE.getPlayerState().contentEquals("idle")) {
+			chatEventsBE.owPlayerSnippetUpdateSIO(player.getPid());
+		}
 		
 		System.out.println("### [Chat] Get broadcasts items request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();
