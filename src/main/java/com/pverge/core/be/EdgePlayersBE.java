@@ -10,8 +10,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pverge.core.db.PlayerDBLoader;
 import com.pverge.core.db.PlayerSettingsDBLoader;
+import com.pverge.core.db.PlayerVehicleDBLoader;
 import com.pverge.core.db.dbobjects.PlayerEntity;
 import com.pverge.core.db.dbobjects.PlayerSettingsEntity;
+import com.pverge.core.db.dbobjects.PlayerVehicleEntity;
 import com.pverge.core.socket.NettySocketIO;
 import com.pverge.core.socket.dataobjects.SIODataObjects.MessageDataIntObject;
 import com.pverge.core.socket.dataobjects.SIODataObjects.ResourceListDataObject;
@@ -28,7 +30,11 @@ public class EdgePlayersBE {
 	@EJB
 	private EdgeTokensBE tokensBE;
 	@EJB
+	private EdgeVehiclesBE vehiclesBE;
+	@EJB
 	private PlayerSettingsDBLoader playerSettingsDB;
+	@EJB
+	private PlayerVehicleDBLoader playerVehicleDB;
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	
@@ -37,8 +43,6 @@ public class EdgePlayersBE {
 	 * @return Player data
 	 */
 	public String getPlayerInfoCommon(boolean isArray, PlayerEntity player) {
-		PlayerEntity playerEntity = playerDB.getPlayer(player.getPid());
-		
 		JsonArray rootArrayJson = new JsonArray();
 		JsonObject playerJson = new JsonObject();
 		rootArrayJson.add(playerJson);
@@ -69,7 +73,7 @@ public class EdgePlayersBE {
 		playerJson.add("checkedat", checkedAtJson);
 		
 		JsonObject recentJson = new JsonObject();
-		recentJson.addProperty("vid", playerEntity.getVid()); // player recent vehicle ID
+		recentJson.addProperty("vid", player.getVid()); // player recent vehicle ID
 		playerJson.add("recent", recentJson);
 		
 		playerJson.addProperty("challengepoint", 1400);
@@ -87,6 +91,51 @@ public class EdgePlayersBE {
 			return rootArrayJson.toString();}
 		else {
 			return playerJson.toString();}
+	}
+	
+	/**
+	 * Get player snippet
+	 * @return Player data
+	 */
+	public JsonObject getPlayerSnippet(String playerId) {
+		JsonObject playerJson = new JsonObject();
+		PlayerEntity playerEntity = playerDB.getPlayer(playerId);
+		PlayerVehicleEntity playerCar = playerVehicleDB.getVehicleByVid(playerEntity.getVid());
+		
+		playerJson.addProperty("pid", playerEntity.getPid());
+		playerJson.addProperty("name", playerEntity.getUserName());
+		playerJson.addProperty("level", 63);
+		playerJson.addProperty("avatar", "");
+		playerJson.addProperty("igr", false);
+		playerJson.addProperty("vip", false);
+		playerJson.addProperty("vid", playerEntity.getVid());
+		playerJson.addProperty("vCode", playerCar.getVcode()); // vehicle model code
+		playerJson.addProperty("ovr", vehiclesBE.calcCarRating(playerCar).getOvrDefault());
+		playerJson.addProperty("loginDate", "2021-09-19T12:15:03.597Z");
+		playerJson.addProperty("online", true);
+		playerJson.addProperty("clanId", "");
+		
+		JsonObject rankedJson = new JsonObject();
+		playerJson.add("ranked", rankedJson);
+		
+		JsonObject gm1Json = new JsonObject();
+		gm1Json.addProperty("fp", 1219);
+		gm1Json.addProperty("currSeasonId", "60fe8dc1d512c69eea50797c");
+		rankedJson.add("SPEED1ON1", gm1Json);
+		
+		JsonObject gm2Json = new JsonObject();
+		gm2Json.addProperty("medalTier", 11);
+		gm2Json.addProperty("medalSeasonId", "600fcc2fe50540f3c5c8d151");
+		gm2Json.addProperty("fp", 2142);
+		gm2Json.addProperty("currSeasonId", "60fe8dc1d512c69eea50797c");
+		rankedJson.add("SPEEDINDIVIDUAL", gm2Json);
+		
+		rankedJson.addProperty("currSeasonId", "59c8b6325d72a200075de6a1");
+		rankedJson.addProperty("fp", 600);
+		rankedJson.addProperty("medalTier", 0);
+		
+		playerJson.addProperty("updatedAt", "2021-09-19T12:15:03.599Z");
+		return playerJson;
 	}
 	
 	/**

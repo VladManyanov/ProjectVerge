@@ -17,7 +17,7 @@ public class NettySocketIO {
 	
 	public static Configuration getSocketIOConfig() {
 		Configuration config = new Configuration();
-	    config.setHostname("localhost");
+	    //config.setHostname("localhost");
 	    config.setPort(3000);
 	    config.setPingTimeout(60000);
 	    config.setPingInterval(30000);

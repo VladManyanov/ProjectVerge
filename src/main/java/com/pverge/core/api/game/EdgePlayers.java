@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.pverge.core.be.EdgeEventLauncherBE;
 import com.pverge.core.be.EdgePlayersBE;
@@ -138,8 +139,8 @@ public class EdgePlayers {
 	}
 	
 	/**
-	 * Player Snippet request, used for Open World or Rooms player announces
-	 * @return actual player data
+	 * Player Snippet request, used to load players data & vehicles
+	 * @return Actual player data
 	 */
 	@POST
 	@Path("snippets/players")
@@ -147,88 +148,16 @@ public class EdgePlayers {
 	public String apiPlayerSnippet(String requestBody) {
 		PlayerEntity player = tokensBE.resolveToken(sr.getHeader("Authorization"));
 		JsonArray requestJson = new Gson().fromJson(requestBody, JsonArray.class);
-		PlayerEntity playerEntity = playerDB.getPlayer(player.getPid());
 		
 		JsonArray rootArrayJson = new JsonArray();
-		if (!requestJson.get(0).getAsString().contentEquals("33")) {
-			for (int i = 1; i < 6; i++) { // Attempt to set AI cars for freeroam races, not working yet
-				JsonObject aiJson = new JsonObject();
-				rootArrayJson.add(aiJson);
-				
-				aiJson.addProperty("pid", "RACEAI_1_" + String.valueOf(i));
-				aiJson.addProperty("name", "AIguy");
-				aiJson.addProperty("level", 63);
-				aiJson.addProperty("avatar", "");
-				aiJson.addProperty("igr", false);
-				aiJson.addProperty("vip", false);
-				aiJson.addProperty("isAi", true);
-				aiJson.addProperty("vid", playerEntity.getVid());
-				aiJson.addProperty("vCode", playerVehicleDB.getVehicleByVid(playerEntity.getVid()).getVcode()); // vehicle model code
-				aiJson.addProperty("ovr", 707);
-				aiJson.addProperty("loginDate", "2021-09-19T12:15:03.597Z");
-				aiJson.addProperty("online", true);
-				aiJson.addProperty("clanId", "");
-				
-				JsonObject rankedJson = new JsonObject();
-				aiJson.add("ranked", rankedJson);
-				
-				JsonObject gm1Json = new JsonObject();
-				gm1Json.addProperty("fp", 1219);
-				gm1Json.addProperty("currSeasonId", "60fe8dc1d512c69eea50797c");
-				rankedJson.add("SPEED1ON1", gm1Json);
-				
-				JsonObject gm2Json = new JsonObject();
-				gm2Json.addProperty("medalTier", 11);
-				gm2Json.addProperty("medalSeasonId", "600fcc2fe50540f3c5c8d151");
-				gm2Json.addProperty("fp", 2142);
-				gm2Json.addProperty("currSeasonId", "60fe8dc1d512c69eea50797c");
-				rankedJson.add("SPEEDINDIVIDUAL", gm2Json);
-				
-				rankedJson.addProperty("currSeasonId", "59c8b6325d72a200075de6a1");
-				rankedJson.addProperty("fp", 600);
-				rankedJson.addProperty("medalTier", 0);
-				
-				aiJson.addProperty("updatedAt", "2021-09-19T12:15:03.599Z");
-			}
+		if (requestJson.isEmpty()) {
+			System.out.println("!!! [TEST] Player Snippet request is empty!");
 		}
-		
-		JsonObject playerJson = new JsonObject();
-		rootArrayJson.add(playerJson);
-		
-		playerJson.addProperty("pid", player.getPid());
-		playerJson.addProperty("name", player.getUserName());
-		playerJson.addProperty("level", 63);
-		playerJson.addProperty("avatar", "");
-		playerJson.addProperty("igr", false);
-		playerJson.addProperty("vip", false);
-		playerJson.addProperty("vid", playerEntity.getVid());
-		playerJson.addProperty("vCode", playerVehicleDB.getVehicleByVid(playerEntity.getVid()).getVcode()); // vehicle model code
-		playerJson.addProperty("ovr", 707);
-		playerJson.addProperty("loginDate", "2021-09-19T12:15:03.597Z");
-		playerJson.addProperty("online", true);
-		playerJson.addProperty("clanId", "");
-		
-		JsonObject rankedJson = new JsonObject();
-		playerJson.add("ranked", rankedJson);
-		
-		JsonObject gm1Json = new JsonObject();
-		gm1Json.addProperty("fp", 1219);
-		gm1Json.addProperty("currSeasonId", "60fe8dc1d512c69eea50797c");
-		rankedJson.add("SPEED1ON1", gm1Json);
-		
-		JsonObject gm2Json = new JsonObject();
-		gm2Json.addProperty("medalTier", 11);
-		gm2Json.addProperty("medalSeasonId", "600fcc2fe50540f3c5c8d151");
-		gm2Json.addProperty("fp", 2142);
-		gm2Json.addProperty("currSeasonId", "60fe8dc1d512c69eea50797c");
-		rankedJson.add("SPEEDINDIVIDUAL", gm2Json);
-		
-		rankedJson.addProperty("currSeasonId", "59c8b6325d72a200075de6a1");
-		rankedJson.addProperty("fp", 600);
-		rankedJson.addProperty("medalTier", 0);
-		
-		playerJson.addProperty("updatedAt", "2021-09-19T12:15:03.599Z");
-		
+		for (JsonElement playerJsonId : requestJson) {
+			String playerId = playerJsonId.getAsString();
+			System.out.println("### [TEST] Player Snippet: " + playerId);
+			rootArrayJson.add(edgePlayersBE.getPlayerSnippet(playerId));
+		}
 		System.out.println("### [Players] Player Snippet request from player ID " + player.getPid() + ".");
 	    return rootArrayJson.toString();
 	}

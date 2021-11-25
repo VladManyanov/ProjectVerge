@@ -47,7 +47,14 @@ public class EdgeGameConfig {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String apiPushAddress(@HeaderParam("_") String someValue) {
 		JsonObject rootJson = new JsonObject();
-		rootJson.addProperty("pushServer", "http://127.0.0.1:3000");
+		if (sr.getRemoteAddr().contentEquals("90.189.209.138")) {
+			rootJson.addProperty("pushServer", "http://127.0.0.1:3000");
+			System.out.println("### [GameConfig] Socket-IO is in Localhost");
+		} else {
+			rootJson.addProperty("pushServer", "http://192.168.0.10:3000");
+			System.out.println("### [GameConfig] Socket-IO is in LAN");
+		}
+		
 
 		System.out.println("### [GameConfig] Socket-IO Push address request from IP " + sr.getRemoteAddr() + ".");
 	    return rootJson.toString();

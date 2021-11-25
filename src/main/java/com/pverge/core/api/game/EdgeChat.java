@@ -40,7 +40,7 @@ public class EdgeChat {
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("itemCount", 0);
 		if (presenceBE.getPlayerState().contentEquals("idle")) {
-			chatEventsBE.owPlayerSnippetUpdateSIO(player.getPid());
+		//	chatEventsBE.owPlayerSnippetUpdateSIO(player.getPid());
 		}
 		
 		System.out.println("### [Chat] Get broadcasts items request from player ID " + player.getPid() + ".");

@@ -98,7 +98,7 @@ public class EdgeRoom2 {
 		
 		p1Json.add("vehicle", edgeVehiclesBE.prepareVehicleData(
 				playerVehicleDB.getVehicleByVid(playerEntity.getVid())));
-		p1Json.addProperty("status", "JOIN");
+		p1Json.addProperty("status", "READY");
 		p1Json.addProperty("team", 0);
 		p1Json.addProperty("clientVersion", 0);
 		
@@ -110,6 +110,29 @@ public class EdgeRoom2 {
 		plateJson.addProperty("background", 1);
 		plateJson.addProperty("fontColor", "#ffffff");
 		p1Json.add("plate", plateJson);
+		//
+		JsonObject p2Json = new JsonObject();
+		PlayerEntity player2Entity = playerDB.getPlayer("34");
+		p2Json.addProperty("sid", "1337"); // session ID
+		p2Json.addProperty("slot", 2);
+		p2Json.addProperty("pid", "34");
+		
+		playersArray.add(p2Json);
+		
+		p2Json.add("vehicle", edgeVehiclesBE.prepareVehicleData(
+				playerVehicleDB.getVehicleByVid(player2Entity.getVid())));
+		p2Json.addProperty("status", "READY");
+		p2Json.addProperty("team", 0);
+		p2Json.addProperty("clientVersion", 0);
+		
+		JsonObject plate2Json = new JsonObject();
+		plate2Json.addProperty("pid", player.getPid());
+		plate2Json.addProperty("prefix", "PJ");
+		plate2Json.addProperty("plateNumber", "VERGE");
+		plate2Json.addProperty("templateCode", 0);
+		plate2Json.addProperty("background", 1);
+		plate2Json.addProperty("fontColor", "#ffffff");
+		p2Json.add("plate", plate2Json);
 		
 		System.out.println("### [Room] New room creation request from player ID " + player.getPid() + ".");
 	    return rootJson.toString();

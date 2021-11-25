@@ -22,6 +22,8 @@ public class EdgePresenceBE {
 	static int futureTrackId = 22;
 	static int room2MaxPlayers = 1;
 	static String room2GameModeMeta = "SPEEDINDIVIDUAL";
+	static String p1 = "33";
+	static String p2 = "34";
 	
 	/**
 	 * Set current player state
@@ -100,6 +102,18 @@ public class EdgePresenceBE {
 					break;
 				case "matchFinish":
 					eventLauncher.MatchRewardSIO(savePlayerId, room2GameModeMeta, futureTrackId);
+					break;
+				case "testFinishLoading":
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					eventLauncher.changeMatchEntriesState(p1, p1);
+					eventLauncher.changeMatchEntriesState(p1, p2);
+					eventLauncher.changeMatchEntriesState(p2, p1);
+					eventLauncher.changeMatchEntriesState(p2, p2);
 					break;
 				}
 			}

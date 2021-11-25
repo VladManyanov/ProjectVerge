@@ -110,6 +110,60 @@ public class SIOMatch2Objects {
 		}
 	}
 	
+	public static class MatchDediCreatedOpts {
+		private int matchId; 
+		private String host; 
+		private int port; 
+		private String securityKey; 
+
+		public int getMatchId() {
+			return matchId;
+		}
+		public void setMatchId(int value) {
+			this.matchId = value;
+		}
+
+		public String getHost() {
+			return host;
+		}
+		public void setHost(String value) {
+			this.host = value;
+		}
+		
+		public int getPort() {
+			return port;
+		}
+		public void setPort(int value) {
+			this.port = value;
+		}
+		
+		public String getSecurityKey() {
+			return securityKey;
+		}
+		public void setSecurityKey(String value) {
+			this.securityKey = value;
+		}
+	}
+	
+	public static class MatchEntriesChangedOpts {
+		private String pid;
+		private String state;
+
+		public String getPid() {
+			return pid;
+		}
+		public void setPid(String value) {
+			this.pid = value;
+		}
+		
+		public String getState() {
+			return state;
+		}
+		public void setState(String value) {
+			this.state = value;
+		}
+	}
+	
 	public static class TakeDownTarget{}
 	
 	public static class End {

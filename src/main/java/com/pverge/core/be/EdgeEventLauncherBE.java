@@ -16,6 +16,8 @@ import com.pverge.core.socket.NettySocketIO;
 import com.pverge.core.socket.dataobjects.SIOChannelJoinObjects.OWJoinOpts;
 import com.pverge.core.socket.dataobjects.SIODataObjects.*;
 import com.pverge.core.socket.dataobjects.SIOMatch2Objects.End;
+import com.pverge.core.socket.dataobjects.SIOMatch2Objects.MatchDediCreatedOpts;
+import com.pverge.core.socket.dataobjects.SIOMatch2Objects.MatchEntriesChangedOpts;
 import com.pverge.core.socket.dataobjects.SIOMatch2Objects.MatchPeerOpts;
 import com.pverge.core.socket.dataobjects.SIOMatch2Objects.TakeDownTarget;
 import com.pverge.core.socket.dataobjects.SIOMatchObjects.*;
@@ -52,6 +54,8 @@ public class EdgeEventLauncherBE {
 	private EdgeVehiclesBE edgeVehiclesBE;
 	@EJB
 	private EdgeTokensBE edgeTokensBE;
+	@EJB
+	private EdgePresenceBE presenceBE;
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	static int[] aiDrivers = new int[]{677,691,693,694,695}; 
@@ -235,10 +239,53 @@ public class EdgeEventLauncherBE {
 		
 		player.setVehicle(vehicle);
 		playersList.add(player);
+		//
+		Players player2 = new Players();
+		PlayerVehicleEntity p2Vehicle = playerVehicleDB.getVehicleByVid(playerDB.getPlayer("34").getVid());
+		RatingVehiclesEntity ratingP2 = edgeVehiclesBE.calcCarRating(p2Vehicle);
+		
+		player2.setId("34");
+		player2.setPlate(edgeMatchCreationBE.getDefaultPlate("34"));
+		player2.setTeam(0);
+		
+		Vehicle vehicle2 = new Vehicle();
+		vehicle2.setCode(p2Vehicle.getVcode());
+		vehicle2.setGrade(p2Vehicle.getGrade());
+		vehicle2.setId(p2Vehicle.getId());
+		vehicle2.setIGR(false);
+		vehicle2.setOvr(ratingP2.getOvrDefault());
+		
+		Paint paint2 = new Paint();
+		paint2.setColorCode(p2Vehicle.getColorCode());
+		paint2.setWheelCode(p2Vehicle.getWheelColor());
+		paint2.setWrapCode(p2Vehicle.getWrapCode());
+		vehicle2.setPaint(paint2);
+		
+		Parts parts2 = new Parts();
+		parts2.setBumper(p2Vehicle.getPartBumper());
+		parts2.setEngine(p2Vehicle.getPartEngine());
+		parts2.setFrame(p2Vehicle.getPartFrame());
+		parts2.setNitroTank(p2Vehicle.getPartNitroTank());
+		parts2.setTransmission(p2Vehicle.getPartTransmission());
+		vehicle2.setParts(parts2);
+		
+		Status status2 = new Status();
+		status2.setAcceleration(ratingP2.getAcceleration());
+		status2.setDurability(ratingP2.getDurability());
+		status2.setNitroCapacity(ratingP2.getNitroCapacity());
+		status2.setStrength(ratingP2.getStrength());
+		status2.setTopSpeed(ratingP2.getTopSpeed());
+		vehicle2.setStatus(status2);
+		vehicle2.setSteering(edgeSocketVehiclesBE.prepareSteeringSIO(p2Vehicle.getSteering()));
+		
+		player2.setVehicle(vehicle2);
+		playersList.add(player2);
+		
 		matchOpts.setPlayers(playersList);
 		
 		matchCreatedRootData.setOpts(matchOpts);
 		socketIO.sendEvent("msg", matchCreatedRootData, matchCreatedRootData.getCmd(), edgeTokensBE.getSessionUUID(playerId));
+		socketIO.sendEvent("msg", matchCreatedRootData, matchCreatedRootData.getCmd(), edgeTokensBE.getSessionUUID("34"));
 	}
 	
 	/**
@@ -297,6 +344,39 @@ public class EdgeEventLauncherBE {
 		superPeerOpts.setClients(clientList);
 		matchSuperPeerRootData.setOpts(superPeerOpts);
 		socketIO.sendEvent("msg", matchSuperPeerRootData, matchSuperPeerRootData.getCmd(), edgeTokensBE.getSessionUUID(playerId));
+		prepareRoomDediCreated("34");
+	}
+	
+	/**
+	 * Prepare Room event - dedi-server availability signal for non-hoster players
+	 */
+	public void prepareRoomDediCreated(String playerId) {
+		ResourceDataObject matchDediReadyRootData = new ResourceDataObject();
+		matchDediReadyRootData.setCmd("match2.dedisvr.created");
+		MatchDediCreatedOpts dediCreatedOpts = new MatchDediCreatedOpts();
+		dediCreatedOpts.setMatchId(1);
+		dediCreatedOpts.setHost("192.168.0.10");
+		dediCreatedOpts.setPort(25200);
+		dediCreatedOpts.setSecurityKey("");
+		
+		matchDediReadyRootData.setOpts(dediCreatedOpts);
+		socketIO.sendEvent("msg", matchDediReadyRootData, matchDediReadyRootData.getCmd(), edgeTokensBE.getSessionUUID(playerId));
+		presenceBE.startWithDelay("testFinishLoading");
+	}
+	
+	/**
+	 * Change the match entries state for player
+	 */
+	public void changeMatchEntriesState(String playerId, String playerRecieverId) {
+		ResourceDataObject matchEntriesStateData = new ResourceDataObject();
+		matchEntriesStateData.setCmd("match2.entries.changed");
+		MatchEntriesChangedOpts entriesChangedOpts = new MatchEntriesChangedOpts();
+		entriesChangedOpts.setPid(playerId);
+		entriesChangedOpts.setState("loading");
+		
+		matchEntriesStateData.setOpts(entriesChangedOpts);
+		socketIO.sendEvent("msg", matchEntriesStateData, matchEntriesStateData.getCmd(), 
+				edgeTokensBE.getSessionUUID(playerRecieverId));
 	}
 	
 	/**
