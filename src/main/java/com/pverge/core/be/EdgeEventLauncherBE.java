@@ -310,7 +310,7 @@ public class EdgeEventLauncherBE {
 		superPeerOpts.setLevel(level);
 		superPeerOpts.setLaps(getLapsAmount(level));
 		superPeerOpts.setManagerMode(false);
-		superPeerOpts.setClientVersion(0);
+		superPeerOpts.setClientVersion(243235);
 		List<Observers> observersList = new ArrayList<>();
 		superPeerOpts.setObservers(observersList);
 		superPeerOpts.setSchematic(gameModeCore);
@@ -326,6 +326,7 @@ public class EdgeEventLauncherBE {
 		
 		List<Clients> clientList = new ArrayList<>();
 		clientList.add(edgeMatchCreationBE.createPlayerClient(playerId, currentVehicle, false));
+		clientList.add(edgeMatchCreationBE.createPlayerClient("34", playerVehicleDB.getVehicleByVid(playerDB.getPlayer("34").getVid()), false));
 		switch(gameModeMeta) {
 		case "SPEEDINDIVIDUAL":
 			for (int i = 0; i < maxPlayers; i++) {
@@ -355,7 +356,7 @@ public class EdgeEventLauncherBE {
 		matchDediReadyRootData.setCmd("match2.dedisvr.created");
 		MatchDediCreatedOpts dediCreatedOpts = new MatchDediCreatedOpts();
 		dediCreatedOpts.setMatchId(1);
-		dediCreatedOpts.setHost("192.168.0.10");
+		dediCreatedOpts.setHost("192.168.0.23");
 		dediCreatedOpts.setPort(25200);
 		dediCreatedOpts.setSecurityKey("");
 		

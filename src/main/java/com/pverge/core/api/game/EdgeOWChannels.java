@@ -50,7 +50,7 @@ public class EdgeOWChannels {
 		JsonObject rootJson = new JsonObject();
 		rootJson.addProperty("channelId", forceChannelId);
 		rootJson.addProperty("host", "http://localhost");
-		rootJson.addProperty("port", 9999);
+		rootJson.addProperty("port", 25200);
 		rootJson.addProperty("securityKey", "NMtEu3CAgpk22OIMIC4fBQ==");
 		
 		System.out.println("### [OW Channels] Open World Channel reserve request from player ID " + player.getPid() 

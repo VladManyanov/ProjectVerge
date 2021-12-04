@@ -73,7 +73,7 @@ public class EdgeRoom2 {
 		rootJson.addProperty("trackCode", 30);
 		rootJson.addProperty("lastTrackCode", 0);
 		rootJson.addProperty("isRandomTrack", false);
-		rootJson.addProperty("clientsversion", 0);
+		rootJson.addProperty("clientsversion", 243235);
 		rootJson.addProperty("status", "READY");
 		rootJson.addProperty("isRefereeMode", false);
 		rootJson.addProperty("refereeSlot", -1);
@@ -100,7 +100,7 @@ public class EdgeRoom2 {
 				playerVehicleDB.getVehicleByVid(playerEntity.getVid())));
 		p1Json.addProperty("status", "READY");
 		p1Json.addProperty("team", 0);
-		p1Json.addProperty("clientVersion", 0);
+		p1Json.addProperty("clientVersion", 243235);
 		
 		JsonObject plateJson = new JsonObject();
 		plateJson.addProperty("pid", player.getPid());
@@ -123,7 +123,7 @@ public class EdgeRoom2 {
 				playerVehicleDB.getVehicleByVid(player2Entity.getVid())));
 		p2Json.addProperty("status", "READY");
 		p2Json.addProperty("team", 0);
-		p2Json.addProperty("clientVersion", 0);
+		p2Json.addProperty("clientVersion", 243235);
 		
 		JsonObject plate2Json = new JsonObject();
 		plate2Json.addProperty("pid", player.getPid());
@@ -255,7 +255,7 @@ public class EdgeRoom2 {
 		rootJson.addProperty("trackCode", Integer.parseInt(roomInfo[1]));
 		rootJson.addProperty("lastTrackCode", 0);
 		rootJson.addProperty("isRandomTrack", false);
-		rootJson.addProperty("clientsversion", 0);
+		rootJson.addProperty("clientsversion", 243235);
 		rootJson.addProperty("status", "READY");
 		rootJson.addProperty("isRefereeMode", false);
 		rootJson.addProperty("refereeSlot", -1);
@@ -283,7 +283,7 @@ public class EdgeRoom2 {
 				playerVehicleDB.getVehicleByVid(playerDB.getPlayer(fakePlayer1Id).getVid())));
 		p1Json.addProperty("status", "READY");
 		p1Json.addProperty("team", 0);
-		p1Json.addProperty("clientVersion", 0);
+		p1Json.addProperty("clientVersion", 243235);
 		
 		JsonObject plate1Json = new JsonObject();
 		plate1Json.addProperty("pid", fakePlayer1Id);
@@ -304,7 +304,7 @@ public class EdgeRoom2 {
 				playerVehicleDB.getVehicleByVid(player.getVid())));
 		p2Json.addProperty("status", "READY");
 		p2Json.addProperty("team", 0);
-		p2Json.addProperty("clientVersion", 0);
+		p2Json.addProperty("clientVersion", 243235);
 		
 		JsonObject plate2Json = new JsonObject();
 		plate2Json.addProperty("pid", player.getPid());

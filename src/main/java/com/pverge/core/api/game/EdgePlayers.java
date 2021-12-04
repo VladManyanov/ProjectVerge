@@ -70,7 +70,7 @@ public class EdgePlayers {
 		accountJson.addProperty("__v", 0);
 		accountJson.addProperty("lastloginat", 0);
 		accountJson.addProperty("lastlogoutat", 0);
-		accountJson.addProperty("activate", true);
+		accountJson.addProperty("activate", false);
 		
 		JsonObject lastPlayedJson = new JsonObject();
 		lastPlayedJson.addProperty("time", "1970-01-01T00:00:00.000Z");

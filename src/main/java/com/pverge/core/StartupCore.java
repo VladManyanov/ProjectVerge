@@ -19,6 +19,7 @@ public class StartupCore {
 	
 	NettySocketIO socketIO = new NettySocketIO();
 	Database h2db = new Database();
+	SyncNodeInit sync = new SyncNodeInit();
 	
 	@PostConstruct
 	public void startInit() throws SQLException {
@@ -27,6 +28,7 @@ public class StartupCore {
 	    socketIO.startSocketIO();
 	    System.out.println("### [Init] Project Verge Core (0.0.6) has been started, default address is "
 	    		+ "192.168.0.10:8888" + ".");
+	    sync.start();
 	}
 	
 	@PreDestroy

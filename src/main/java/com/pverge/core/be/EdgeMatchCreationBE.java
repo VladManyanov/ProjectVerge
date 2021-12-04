@@ -63,7 +63,11 @@ public class EdgeMatchCreationBE {
 		client.setVCode(currentVehicle.getVcode());
 		client.setAI(isAI);
 		client.setTeam(0);
-		client.setPositionOnStartingGrid(0);
+		if (playerId.contentEquals("34")) {
+			client.setPositionOnStartingGrid(2);
+		} else {
+			client.setPositionOnStartingGrid(1);
+		}
 		client.setVid(currentVehicle.getId());
 		client.setAttrs(vehicleAttributesBE.getCarAttrs(currentVehicle));
 		client.setSteeringAttrs(vehicleAttributesBE.getSteeringAttrs(currentVehicle));
